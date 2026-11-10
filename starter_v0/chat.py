@@ -86,6 +86,7 @@ def run_model_tool_loop(
     max_tool_rounds: int,
 ) -> dict[str, Any]:
     working_messages = list(messages)
+    allowed_tools = {tool["function"]["name"] for tool in tools}
     rounds: list[dict[str, Any]] = []
     all_tool_events: list[dict[str, Any]] = []
 
@@ -113,7 +114,14 @@ def run_model_tool_loop(
 
         for call in calls:
             print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
-            event = execute_tool_call(call)
+            if call.name in allowed_tools:
+                event = execute_tool_call(call)
+            else:
+                event = {
+                    "tool": call.name,
+                    "args": call.args,
+                    "result": {"error": "tool_not_available"},
+                }
             round_record["tool_results"].append(event)
             all_tool_events.append(event)
 
