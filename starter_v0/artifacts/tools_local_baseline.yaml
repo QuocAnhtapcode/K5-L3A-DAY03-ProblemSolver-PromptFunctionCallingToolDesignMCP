@@ -1,0 +1,159 @@
+# starter_v0 — tool declarations (intentionally vague).
+# Names and descriptions here are a rough first draft. Routing rules, name->handle
+# mapping, arg conventions (news/timeframe/Top), and the send-confirmation boundary
+# are NOT spelled out anywhere yet. Your job is to make these declarations + the
+# system prompt good enough that the agent routes correctly on the eval.
+#
+# If you rename a tool, keep the name in sync across:
+#   this file  ->  tools/__init__.py (TOOL_FUNCTIONS)  ->  data/eval_base.json + data/eval_research_extension.json
+# `pytest tests/test_tool_contract.py` checks this sync for you.
+#
+# TODO(student):
+#   - Rewrite every description: what it does, WHEN to use it, WHEN NOT to use it.
+#   - Spell out arg conventions in parameter descriptions (handle format, topic/timeframe, search_type).
+#   - Make the `send` confirmation boundary explicit.
+#   - Declare your new tool(s) at the end of this file.
+tools:
+  # ---------------- Core tools ----------------
+  - name: clarify
+    description: "Gửi một câu hỏi cho người dùng."
+    parameters:
+      type: object
+      properties:
+        question: { type: string, default: "", description: "Câu hỏi" }
+        response_type: { type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời" }
+        options: { type: array, default: [], items: { type: string }, description: "Các lựa chọn" }
+      required: [question]
+
+  - name: timeline
+    description: "Lấy các bài đăng gần đây."
+    parameters:
+      type: object
+      properties:
+        screenname: { type: string, default: "", description: "Tên tài khoản" }
+        limit: { type: integer, default: 5, description: "Số lượng" }
+      required: [screenname]
+
+  - name: social_search
+    description: >-
+      Gửi nội dung lên Telegram sau khi người dùng xác nhận rõ ràng.
+      Với yêu cầu gửi chưa được xác nhận, trước tiên dùng clarify với
+      response_type="yes_no" để hỏi ý định gửi và chờ trả lời.
+      Chỉ gọi send khi đã có nội dung cụ thể và người dùng xác nhận nội dung đó.
+    parameters:
+      type: object
+      properties:
+        query: { type: string, default: "", description: "Từ khóa" }
+        search_type: { type: string, enum: [Latest, Top], default: "Latest", description: "Cách sắp xếp" }
+        limit: { type: integer, default: 5, description: "Số lượng" }
+      required: [query]
+
+  - name: lookup
+    description: "Tra cứu thông tin trên internet."
+    parameters:
+      type: object
+      properties:
+        query: { type: string, default: "", description: "Truy vấn" }
+        topic: { type: string, enum: [general, news], default: "general", description: "Phân loại" }
+        timeframe: { type: string, enum: [day, week, month, year], default: "week", description: "Khoảng thời gian" }
+        max_results: { type: integer, default: 5, description: "Số kết quả" }
+      required: [query]
+
+  - name: fetch
+    description: "Lấy nội dung từ một địa chỉ."
+    parameters:
+      type: object
+      properties:
+        url: { type: string, default: "", description: "Địa chỉ" }
+      required: [url]
+
+  - name: format
+    description: "Trình bày dữ liệu đã có thành văn bản."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          default: []
+          description: "Danh sách item"
+          items:
+            type: object
+            properties:
+              title: { type: string }
+              url: { type: string }
+              source: { type: string }
+              summary: { type: string }
+              section: { type: string }
+        template: { type: string, enum: [brief, sections, bullets, thread, daily_ai_vn], default: "sections", description: "Khuôn" }
+        headline: { type: string, default: "", description: "Tiêu đề" }
+      required: [items, template]
+
+  # ---------------- Bonus tools ----------------
+  - name: send
+    description: >-
+      Tìm bài đăng trên X/Twitter theo từ khóa. Dùng khi yêu cầu nêu rõ cần tìm
+      trên X/Twitter hoặc nguồn X/Twitter từ lượt trước vẫn còn hiệu lực.
+      Với yêu cầu tìm tin tức nói chung hoặc khi người dùng chuyển nguồn sang
+      web, dùng lookup. Ưu tiên yêu cầu mới nhất của người dùng về nguồn.
+    parameters:
+      type: object
+      properties:
+        text: { type: string, default: "", description: "Nội dung" }
+        confirmed: { type: boolean, default: false, description: "Chỉ đặt true sau khi người dùng xác nhận rõ ràng nội dung cụ thể sẽ được gửi." }
+      required: [text]
+
+  - name: policy
+    description: "Tìm trong tài liệu nội bộ."
+    parameters:
+      type: object
+      properties:
+        query: { type: string, default: "", description: "Truy vấn" }
+        policy_area: { type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "Nhóm" }
+        top_k: { type: integer, default: 3, description: "Số mục" }
+      required: [query]
+
+  - name: papers
+    description: "Tìm bài báo khoa học."
+    parameters:
+      type: object
+      properties:
+        query: { type: string, default: "", description: "Từ khóa" }
+        max_results: { type: integer, default: 5, description: "Số lượng" }
+        sort_by: { type: string, enum: [relevance, lastUpdatedDate, submittedDate], default: "relevance", description: "Sắp xếp" }
+      required: [query]
+
+  - name: paper_text
+    description: "Lấy nội dung text của một bài báo."
+    parameters:
+      type: object
+      properties:
+        arxiv_url: { type: string, default: "", description: "ID hoặc địa chỉ" }
+        max_pages: { type: integer, default: 5, description: "Số trang" }
+        max_chars: { type: integer, default: 8000, description: "Số ký tự" }
+      required: [arxiv_url]
+
+  # ---------------- Team tool ----------------
+  - name: deduplicate
+    description: >-
+      Loại nguồn trùng URL trong danh sách đã có và báo số nguồn đã loại.
+      Dùng khi người dùng yêu cầu lọc trùng các nguồn hoặc kết quả đã thu thập.
+      Giữ item đầu tiên của mỗi URL và thứ tự ban đầu, bỏ qua phần #fragment
+      và các tham số theo dõi utm_*, fbclid, gclid khi so sánh.
+      Để tìm thêm nguồn dùng lookup; để đọc nội dung URL dùng fetch;
+      để trình bày danh sách thành bản tin dùng format.
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          description: "Danh sách đầy đủ các nguồn cần lọc trùng, mỗi nguồn có URL HTTP hoặc HTTPS."
+          items:
+            type: object
+            properties:
+              url: {type: string, description: "URL gốc của nguồn, gồm cả tham số và fragment nếu có."}
+              title: {type: string, description: "Tiêu đề nguồn nếu có."}
+              source: {type: string, description: "Tên nguồn nếu có."}
+              summary: {type: string, description: "Nội dung tóm tắt đã có nếu có."}
+              section: {type: string, description: "Nhóm bản tin nếu có."}
+            required: [url]
+      required: [items]

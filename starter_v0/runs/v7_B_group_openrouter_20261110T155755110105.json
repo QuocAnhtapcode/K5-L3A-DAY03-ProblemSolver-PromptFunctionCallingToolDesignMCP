@@ -1,0 +1,786 @@
+{
+  "run_id": "v7_B_group_openrouter_20261110T155755110105",
+  "version": "v7",
+  "artifact_version": "v7+p01c147b33fa2+tda5603314bdd",
+  "prompt_hash": "01c147b33fa22a338c9127ed08dc825221f8e34ecc5bb2ce7780278df5c9b783",
+  "tools_hash": "da5603314bddbe5311ab450a94cccae08987a4b7d236e04e1ce5bb04e3fc56e2",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "artifacts\\system_prompt_1.md",
+  "tools": "E:\\Lab_VinUni\\Day3\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "10 ca eval nhóm gồm 5 single-turn và 5 multi-turn. Kiểm tra chọn tool, tham số, hỏi lại khi thiếu thông tin, xử lý nguồn đã có và ưu tiên yêu cầu mới nhất trong hội thoại.",
+  "generated_at": "2026-11-10T15:57:55",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_deduplicate_collected_sources",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "deduplicate_existing_sources",
+        "difficulty": "medium",
+        "what_it_tests": "Danh sách đã có và yêu cầu loại trùng URL phải chọn deduplicate. Unit test kiểm tra xử lý dữ liệu và các số đếm."
+      },
+      "input": "Loại nguồn trùng nhau theo URL trong danh sách đã có dưới đây, giữ nguồn xuất hiện đầu tiên và báo số nguồn bị loại. Danh sách gồm [{\"title\": \"Nguồn A\", \"url\": \"https://example.com/research?utm_source=email\"}, {\"title\": \"Nguồn A được chia sẻ lại\", \"url\": \"https://example.com/research#summary\"}, {\"title\": \"Nguồn B\", \"url\": \"https://example.org/paper\"}].",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "url": "https://example.com/research?utm_source=email",
+                  "title": "Nguồn A"
+                },
+                {
+                  "url": "https://example.com/research#summary",
+                  "title": "Nguồn A được chia sẻ lại"
+                },
+                {
+                  "url": "https://example.org/paper",
+                  "title": "Nguồn B"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "url": "https://example.com/research?utm_source=email",
+                "title": "Nguồn A"
+              },
+              {
+                "url": "https://example.com/research#summary",
+                "title": "Nguồn A được chia sẻ lại"
+              },
+              {
+                "url": "https://example.org/paper",
+                "title": "Nguồn B"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "url": "https://example.com/research?utm_source=email",
+                "title": "Nguồn A"
+              },
+              {
+                "url": "https://example.org/paper",
+                "title": "Nguồn B"
+              }
+            ],
+            "input_count": 3,
+            "item_count": 2,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_timeline_handle_and_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "timeline_handle_normalization",
+        "difficulty": "easy",
+        "what_it_tests": "Bài đăng của một tài khoản cụ thể phải dùng timeline, bỏ @ khỏi screenname và truyền đúng limit=4."
+      },
+      "input": "Lấy đúng 4 bài đăng mới nhất của tài khoản X @NASA.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "NASA",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "NASA",
+              "limit": 4
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "NASA",
+            "limit": 4
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=NASA"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_web_news_month_and_result_count",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "web_news_argument_mapping",
+        "difficulty": "medium",
+        "what_it_tests": "Tách chủ đề vào query, tin tức vào topic=news, tháng này vào timeframe=month và số kết quả vào max_results=3."
+      },
+      "input": "Tìm trên web 3 tin về năng lượng mặt trời trong tháng này.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "năng lượng mặt trời",
+              "topic": "news",
+              "timeframe": "month",
+              "max_results": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "năng lượng mặt trời",
+              "topic": "news",
+              "timeframe": "month",
+              "max_results": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "năng lượng mặt trời",
+            "topic": "news",
+            "timeframe": "month",
+            "max_results": 3
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "năng lượng mặt trời",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "Pin mặt trời sắp vượt giới hạn vật lý tồn tại hơn 60 năm?",
+                "url": "https://thanhnien.vn/pin-mat-troi-sap-vuot-gioi-han-vat-ly-ton-tai-hon-60-nam-185261030183353069.htm",
+                "source": "thanhnien.vn",
+                "summary": "Phần lớn các tấm pin mặt trời thương mại hiện nay sử dụng tế bào quang điện đơn lớp để chuyển đổi ánh sáng mặt trời thành năng lượng điện cho các nhu cầu như cung cấp điện cho nhà cửa, ô tô và thiết bị khác. Tuy nhiên, về lý thuyết Shockley-Queisser, một tế bào quang điện đơn lớp chỉ có thể chuyển đổi tối đa 33,7% ánh sáng mặt trời thành năng lượng.\n\nPin mặt trời sắp vượt giới hạn vật lý tồn tại hơn 60 năm? - Ảnh 1. [...] Giáo sư Martorell cho biết: \"Đạt được hiệu suất cao hơn là cần thiết, vì điều này sẽ dẫn đến chi phí trên mỗi watt thấp hơn và sử dụng đất đai, vật liệu hiệu quả hơn cho năng lượng mặt trời\". Nếu các tấm pin mặt trời có thể hoạt động với hiệu suất 40% trở lên, nó có thể giúp nhiều hộ gia đình trở nên độc lập hơn với lưới điện.\n\nViệc nng cao hiệu suất tấm pin mặt trời không chỉ là một bước tiến trong công nghệ mà còn có thể thay đổi cách chúng ta sử dụng năng lượng trong tương lai. [...] ẢNH: ICFO\n\nMặc dù phương pháp này vẫn đang trong giai đoạn thử nghiệm, nhưng nếu thành công, nó có thể mang lại những cải tiến đáng kể cho hiệu suất tấm pin mặt trời, từ đó giúp giải quyết nhiều vấn đề năng lượng hiện nay. Hiện tại, nhiều tấm pin mặt trời chỉ đạt hiệu suất dưới 25%, chủ yếu do các hạn chế vật lý và vấn đề về vật liệu sản xuất hàng loạt.",
+                "score": 0.6581979
+              },
+              {
+                "title": "Chi 90 triệu đồng lắp điện mặt trời mái nhà, tiết kiệm 1,6 triệu mỗi tháng | Báo Dân trí",
+                "url": "https://dantri.com.vn/kinh-doanh/chi-90-trieu-dong-lap-dien-mat-troi-mai-nha-tiet-kiem-16-trieu-moi-thang-20261017115340762.htm",
+                "source": "dantri.com.vn",
+                "summary": "Hiệp hội đề xuất sáng kiến phát triển một triệu mái nhà điện mặt trời, bắt đầu từ TPHCM. Theo tính toán của ông Lm, nếu mỗi mái nhà lắp hệ thống công suất trung bình 5 kWp và pin lưu trữ 10 kWh, tổng công suất điện mặt trời có thể đạt 5 GWp, với dung lượng lưu trữ 10 GWh.\n\nĐịnh hướng này phù hợp với chủ trương khuyến khích tiết kiệm điện, phát triển điện mặt trời mái nhà tự sản xuất, tự tiêu thụ và lưu trữ năng lượng tại Chỉ thị 10/CT-TTg ngày 30/3/2026 của Thủ tướng Chính phủ. [...] Ban tổ chức mô phỏng một \"ngôi nhà tương lai\" sử dụng hệ thống điện cho các thiết bị và ô tô điện tại Ngày hội năng lượng xanh phường Lái Thiêu (Ảnh: Quốc Thái).\n\nÔng Nguyễn Thanh Lm, Chủ tịch Hiệp hội Năng lượng Tái tạo TPHCM, cho rằng nhu cầu điện ngày càng tăng, trong khi nhiều dự án nguồn và lưới điện đối mặt áp lực về tiến độ. Vì vậy, điện mặt trời mái nhà kết hợp pin lưu trữ có thể góp phần bổ sung nguồn điện tại chỗ, giảm áp lực cho hệ thống vào giờ cao điểm. [...] Các phương án được tính toán trên cơ sở mức bức xạ mặt trời tại TPHCM khoảng 1.426 kWh/kWp/năm và nhu cầu sử dụng điện trung bình 25 kWh/ngày.\n\nNhư vậy, thời điểm sử dụng điện ảnh hưởng trực tiếp đến cấu hình và hiệu quả đầu tư. Gia đình tiêu thụ nhiều điện vào ban đêm cần pin lưu trữ lớn hơn, kéo theo chi phí đầu tư ban đầu cao hơn và thời gian hoàn vốn dài hơn.",
+                "score": 0.6508002
+              },
+              {
+                "title": "Thúc đẩy phát triển điện mặt trời mái nhà bằng những chính sách cụ thể",
+                "url": "https://www.evn.com.vn/d/vi-VN/news/Thuc-day-phat-trien-dien-mat-troi-mai-nha-bang-nhung-chinh-sach-cu-the-60-17-510225",
+                "source": "evn.com.vn",
+                "summary": "Việc các địa phương cụ thể hóa chính sách hỗ trợ, cùng với hoạt động hướng dẫn, phối hợp của ngành Điện, đang tạo thêm điều kiện để người dân tham gia phát triển ĐMTMN tự sản xuất, tự tiêu thụ. Đây cũng là một trong những giải pháp góp phần khai thác hiệu quả nguồn năng lượng tại chỗ, giảm áp lực lên hệ thống điện quốc gia và phục vụ mục tiêu bảo đảm cung ứng điện giai đoạn 2027 – 2030.\n\n#### Thúc đẩy phát triển điện mặt trời mái nhà bằng những chính sách cụ thể\n\n13:49, 06/11/2026 [...] Chỉ đạo quyết liệt\n\nTại Chỉ thị số 10/CT-TTg ngày 30/3/2026 về tăng cường thực thi tiết kiệm điện và phát triển điện mặt trời mái nhà, Thủ tướng Chính phủ yêu cầu đẩy mạnh phát triển điện mặt trời mái nhà (ĐMTMN) tự sản xuất, tự tiêu thụ tại cơ quan, công sở, cơ sở sản xuất, kinh doanh, dịch vụ và hộ gia đình. Việc kết hợp hệ thống lưu trữ năng lượng (BESS) được khuyến khích nhằm giảm phụ tải giờ cao điểm và tăng khả năng tự chủ nguồn điện tại chỗ. [...] Phát triển điện mặt trời mái nhà tự sản xuất, tự tiêu thụ được xác định là một trong những giải pháp căn cơ nhằm bảo đảm cung ứng điện giai đoạn 2027 – 2030. Thủ tướng Chính phủ đã yêu cầu các địa phương khẩn trương ban hành chính sách hỗ trợ hộ gia đình lắp đặt loại hình nguồn điện này, hoàn thành trong tháng 12/2026.\n\nEVNSPC giới thiệu Tổng đài 1558 và ứng dụng EVN CSKH tại Tuần lễ Năng lượng Việt Nam 2026",
+                "score": 0.630685
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_clarify_missing_report_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_before_fetch",
+        "difficulty": "easy",
+        "what_it_tests": "Chưa có URL thì hỏi link qua clarify(text), tránh tự đoán địa chỉ và gọi fetch."
+      },
+      "input": "Đọc và tóm tắt nội dung báo cáo ở trang web kia giúp tôi. Tôi chưa gửi đường dẫn.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn vui lòng cung cấp đường dẫn đến báo cáo mà bạn muốn tôi đọc và tóm tắt?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn vui lòng cung cấp đường dẫn đến báo cáo mà bạn muốn tôi đọc và tóm tắt?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn vui lòng cung cấp đường dẫn đến báo cáo mà bạn muốn tôi đọc và tóm tắt?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_format_existing_items_as_bullets",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "format_collected_items",
+        "difficulty": "easy",
+        "what_it_tests": "Khi đã có dữ liệu và chỉ yêu cầu trình bày thì gọi format(template=bullets), tránh gọi thêm tool tra cứu."
+      },
+      "input": "Dữ liệu đã có là [{\"title\": \"Kết quả A\", \"url\": \"https://example.com/a\", \"summary\": \"Nhóm đã hoàn thành bản thử nghiệm.\"}, {\"title\": \"Kết quả B\", \"url\": \"https://example.org/b\", \"summary\": \"Bản đánh giá đã sẵn sàng.\"}]. Hãy trình bày thành danh sách gạch đầu dòng bằng template bullets, dùng đúng dữ liệu đã cung cấp.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "format",
+            "args": {
+              "template": "bullets"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "format",
+            "args": {
+              "items": [
+                {
+                  "title": "Kết quả A",
+                  "url": "https://example.com/a",
+                  "summary": "Nhóm đã hoàn thành bản thử nghiệm."
+                },
+                {
+                  "title": "Kết quả B",
+                  "url": "https://example.org/b",
+                  "summary": "Bản đánh giá đã sẵn sàng."
+                }
+              ],
+              "template": "bullets"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "format",
+          "args": {
+            "items": [
+              {
+                "title": "Kết quả A",
+                "url": "https://example.com/a",
+                "summary": "Nhóm đã hoàn thành bản thử nghiệm."
+              },
+              {
+                "title": "Kết quả B",
+                "url": "https://example.org/b",
+                "summary": "Bản đánh giá đã sẵn sàng."
+              }
+            ],
+            "template": "bullets"
+          },
+          "result": {
+            "tool": "render_digest",
+            "template": "bullets",
+            "markdown": "- Nhóm đã hoàn thành bản thử nghiệm. - [example.com](https://example.com/a)\n- Bản đánh giá đã sẵn sàng. - [example.org](https://example.org/b)",
+            "item_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_fetch_corrected_url_from_history",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_url_correction",
+        "difficulty": "medium",
+        "what_it_tests": "Lấy URL từ lịch sử và ưu tiên URL đã sửa ở lượt sau, chỉ gọi fetch cho link mới. Ca này chấm URL được gọi."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi muốn đọc bài ở https://www.python.org/about/."
+        },
+        {
+          "role": "user",
+          "content": "Tôi gửi nhầm link. Đường dẫn đúng là https://www.python.org/doc/."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc nội dung đường dẫn tôi vừa sửa, dùng đúng URL đó."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://www.python.org/doc/"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://www.python.org/doc/"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://www.python.org/doc/"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://www.python.org/doc/",
+            "items": [
+              {
+                "title": "Our Documentation | Python.org",
+                "url": "https://www.python.org/doc/",
+                "source": "python.org",
+                "summary": "**Notice:** This page displays a fallback because interactive scripts did not run. Possible causes include disabled JavaScript or failure to load scripts or stylesheets.\n\n## Beginner\n\n- [Beginner’s Guide](https://wiki.python.org/python/getting-started/BeginnersGuide.html)\n- [Python FAQs](https://docs.python.org/faq/)\n\n## Moderate\n\n- [Python Periodicals](https://wiki.python.org/moin/PythonPeriodicals)\n- [Python Books](https://wiki.python.org/moin/PythonBooks)\n\n## Advanced\n\n- [Python Packaging User Guide](http://packaging.python.org/)\n- [In-development Docs](https://docs.python.org/dev/)\n- [Guido’s Essays](https://www.python.org/doc/essays/)\n\n## General\n\n- [PEP Index](https://peps.python.org/)\n- [Python Videos](https://pyvideo.org/)\n- [Developer’s Guide](https://devguide.python.org/)\n\n## Python 3.x Resources\n\n- [Browse Python 3.15.2 Documentation](https://docs.python.org/3/)\n\n\\- [(Module Index)](https://docs.python.org/3/py-modindex.html)  - [What's new in Python 3.15](https://docs.python.org/3/whatsnew/3.15.html)\n  - [Tutorial](https://docs.python.org/3/tutorial/index.html)\n  - [Library Reference](https://docs.python.org/3/library/index.html)\n  - [Language Reference](https://docs.python.org/3/reference/index.html)\n  - [Extending and Embedding](https://docs.python.org/3/extending/index.html)\n  - [Python/C API](https://docs.python.org/3/c-api/index.html)\n  - [Using Python](https://docs.python.org/3/using/index.html)\n  - [Python HOWTOs](https://docs.python.org/3/howto/index.html)\n  - [Glossary](https://docs.python.org/3/glossary.html)\n- [Search the online docs](https://docs.python.org/3/search.html)\n- [Download Current Documentation](https://docs.python.org/3/download.html) (multiple formats are available, including typeset versions for printing.)\n\n## Porting from Python 2 to Python 3\n\n- [FAQ: Sunsetting Python 2](https://www.python.org/doc/sunset-python-2/)\n- [Final Python 2.7 Release Schedule](https://peps.python.org/pep-0373/)\n- [Python 3 Statement](https://python3statement.github.io/)\n- [Porting Python 2 Code to Python 3](https://docs.python.org/3/howto/pyporting.html)  - [Determine what projects are blocking you from porting to Python 3](https://pypi.org/project/caniusepython3/)\n  - [Python 2 Support and Migration](https://wiki.python.org/moin/PythonConsulting/Python%202%20support%20and%20migration)\n\nCan’t find what you’re looking for? [Try our comprehensive Help section](https://www.python.org/about/help/)\n\n## >>> [Python Needs You](https://www.python.org/doc/\\#)\n\nOpen source software is made better when users can easily contribute code and documentation to fix bugs and add features. Python strongly encourages community involvement in improving the software. [Learn more](https://docs.python.org/devguide) about how to make Python better for everyone.\n\n[Contribute to Python](https://docs.python.org/devguide/#contributing) [Issue Tracker](https://github.com/python/cpython/issues)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_web_news_timeframe_correction",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_timeframe_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ chủ đề, loại tin và số kết quả từ lịch sử, đồng thời thay timeframe=month bằng week theo yêu cầu mới nhất."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm trên web 2 tin về điện gió trong tháng này."
+        },
+        {
+          "role": "user",
+          "content": "Đổi khoảng thời gian thành tuần này thôi."
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề điện gió và đúng 2 kết quả, vẫn tìm tin trên web."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "điện gió",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "điện gió",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "điện gió",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 2
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "điện gió",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Gia Lai khởi công nhà máy điện gió hơn 7.700 tỷ đồng",
+                "url": "https://baoxaydung.vn/gia-lai-khoi-cong-nha-may-dien-gio-hon-7700-ty-dong-192261107113349023.htm",
+                "source": "baoxaydung.vn",
+                "summary": "Dự án Nhà máy điện gió Vn Canh 2 có công suất thiết kế 180 MW, tổng vốn đầu tư khoảng 7.771 tỷ đồng. Theo kế hoạch, công trình dự kiến hoàn thành, đưa vào vận hành trong năm 2028, với sản lượng điện bình qun khoảng 623 triệu kWh mỗi năm. [...] Đến nay, toàn tỉnh có 85 dự án năng lượng tái tạo đã đi vào vận hành thương mại, với tổng công suất 4.271 MW. Đy là nền tảng quan trọng để Gia Lai tiếp tục khai thác hiệu quả lợi thế, thu hút đầu tư, phát triển công nghiệp, tăng thu ngn sách và tạo việc làm cho người lao động, đồng thời đóng góp vào bảo đảm an ninh năng lượng quốc gia. [...] Theo lãnh đạo tỉnh, Dự án Nhà máy điện gió Vn Canh 2 khi được triển khai sẽ tạo thêm động lực phát triển kinh tế - xã hội địa phương. Trong giai đoạn thi công, dự án góp phần thúc đẩy hoạt động của các doanh nghiệp xy lắp, vận tải, cung ứng vật tư và dịch vụ liên quan. Khi đi vào vận hành, nhà máy sẽ bổ sung năng lực sản xuất điện, đóng góp vào giá trị sản xuất công nghiệp, tăng trưởng GRDP và nguồn thu ngn sách tỉnh.",
+                "score": 0.5778527
+              },
+              {
+                "title": "Phó thủ tướng Phạm Gia Túc dự lễ khởi công dự án điện gió 7.700 tỉ đồng",
+                "url": "https://thanhnien.vn/pho-thu-tuong-pham-gia-tuc-du-le-khoi-cong-du-an-dien-gio-7700-ti-dong-185261107081944686.htm",
+                "source": "thanhnien.vn",
+                "summary": "ẢNH: ĐỨC NHẬT\n\nDự án Nhà máy điện gió Vn Canh 2 có công suất 180 MW, tổng vốn đầu tư 7.700 tỉ đồng, được triển khai tại khu vực xã Canh Liên và Vn Canh. Khi đi vào hoạt động, nhà máy dự kiến cung cấp khoảng 503 triệu kWh điện mỗi năm cho hệ thống điện quốc gia. [...] Theo ông Đặng Thành Tm, Chủ tịch HĐQT Tổng công ty phát triển đô thị Kinh Bắc, đại diện chủ đầu tư, sau dự án Vn Canh 2, doanh nghiệp sẽ tiếp tục triển khai dự án Vn Canh 1 với quy mô tương tự. Tổng vốn đầu tư 2 dự án khoảng 15.000 tỉ đồng, công suất gần 360 MW.\n\nChủ đầu tư dự kiến đưa Nhà máy điện gió Vn Canh 2 vào vận hành cuối năm 2027, cung cấp nguồn năng lượng sạch cho hệ thống điện quốc gia.",
+                "score": 0.575588
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_social_search_sort_correction",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_social_sort_correction",
+        "difficulty": "medium",
+        "what_it_tests": "Giữ nguồn X, chủ đề và limit=3, thay search_type=Top bằng Latest sau khi người dùng đổi cách sắp xếp."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm 3 bài nổi bật nhất trên X về robotics."
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang bài mới nhất, không lấy Top nữa."
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề robotics, nguồn X và đúng 3 bài."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "robotics",
+              "search_type": "Latest",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "robotics",
+              "search_type": "Latest",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "robotics",
+            "search_type": "Latest",
+            "limit": 3
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=robotics&search_type=Latest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_deduplicate_sources_from_history",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_deduplicate_from_history",
+        "difficulty": "medium",
+        "what_it_tests": "Dùng danh sách nguồn từ lượt trước để gọi deduplicate ở lượt cuối. Ca eval chấm routing, unit test kiểm tra dữ liệu và số đếm."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Danh sách nguồn đã có là [{\"title\": \"Bài A\", \"url\": \"https://example.com/a\"}, {\"title\": \"Bài A chia sẻ lại\", \"url\": \"https://example.com/a?utm_source=chat\"}, {\"title\": \"Bài B\", \"url\": \"https://example.org/b\"}]."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn muốn xử lý danh sách nguồn này như thế nào?"
+        },
+        {
+          "role": "user",
+          "content": "Loại nguồn trùng URL trong danh sách vừa đưa, giữ nguồn xuất hiện đầu tiên và báo số nguồn bị loại."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "url": "https://example.com/a",
+                  "title": "Bài A"
+                },
+                {
+                  "url": "https://example.com/a?utm_source=chat",
+                  "title": "Bài A chia sẻ lại"
+                },
+                {
+                  "url": "https://example.org/b",
+                  "title": "Bài B"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "url": "https://example.com/a",
+                "title": "Bài A"
+              },
+              {
+                "url": "https://example.com/a?utm_source=chat",
+                "title": "Bài A chia sẻ lại"
+              },
+              {
+                "url": "https://example.org/b",
+                "title": "Bài B"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "url": "https://example.com/a",
+                "title": "Bài A"
+              },
+              {
+                "url": "https://example.org/b",
+                "title": "Bài B"
+              }
+            ],
+            "input_count": 3,
+            "item_count": 2,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_cancel_telegram_publication",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_cancel_publication",
+        "difficulty": "hard",
+        "what_it_tests": "Ưu tiên lệnh hủy ở lượt cuối và không gọi tool gửi. Bộ chấm tự động kiểm tra không có tool call, nội dung câu trả lời cần đọc thủ công."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi muốn đăng lên Telegram nội dung 'Bản tin nghiên cứu của nhóm đã sẵn sàng.'."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn có xác nhận gửi nội dung này lên Telegram không?"
+        },
+        {
+          "role": "user",
+          "content": "Hủy yêu cầu gửi. Chỉ trả lời rằng yêu cầu đã được hủy."
+        }
+      ],
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Yêu cầu gửi đã được hủy.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    }
+  ]
+}

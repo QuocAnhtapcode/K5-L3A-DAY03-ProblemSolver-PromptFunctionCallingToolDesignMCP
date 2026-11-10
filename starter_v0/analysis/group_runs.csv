@@ -1,0 +1,11 @@
+run_id,version,artifact_version,suite,case_id,is_multiturn,case_failure_type,observed_mismatch,expected_tool,actual_tool,passed,routing_correct,args_correct,failures
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G01_deduplicate_collected_sources,False,wrong_tool,,deduplicate,deduplicate,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G02_timeline_handle_and_limit,False,wrong_arg_value,,timeline,timeline,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G03_web_news_month_and_result_count,False,wrong_arg_value,,lookup,lookup,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G04_clarify_missing_report_url,False,missing_info,,clarify,clarify,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G05_format_existing_items_as_bullets,False,wrong_tool,,format,format,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G06_fetch_corrected_url_from_history,True,wrong_arg_value,,fetch,fetch,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G07_web_news_timeframe_correction,True,wrong_arg_value,,lookup,lookup,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G08_social_search_sort_correction,True,wrong_arg_value,,social_search,social_search,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G09_deduplicate_sources_from_history,True,wrong_tool,,deduplicate,deduplicate,True,True,True,
+v7_B_group_openrouter_20261110T155755110105,v7,v7+p01c147b33fa2+tda5603314bdd,group,G10_cancel_telegram_publication,True,wrong_boundary,,no_tool,,True,True,True,

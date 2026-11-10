@@ -1,7 +1,176 @@
 {
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "description": "10 ca eval nhóm gồm 5 single-turn và 5 multi-turn. Kiểm tra chọn tool, tham số, hỏi lại khi thiếu thông tin, xử lý nguồn đã có và ưu tiên yêu cầu mới nhất trong hội thoại.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_deduplicate_collected_sources",
+      "phase": "B",
+      "suite": "group",
+      "query": "Loại nguồn trùng nhau theo URL trong danh sách đã có dưới đây, giữ nguồn xuất hiện đầu tiên và báo số nguồn bị loại. Danh sách gồm [{\"title\": \"Nguồn A\", \"url\": \"https://example.com/research?utm_source=email\"}, {\"title\": \"Nguồn A được chia sẻ lại\", \"url\": \"https://example.com/research#summary\"}, {\"title\": \"Nguồn B\", \"url\": \"https://example.org/paper\"}].",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [{"name": "deduplicate", "args": {}}]
+      },
+      "metadata": {
+        "skill": "deduplicate_existing_sources",
+        "difficulty": "medium",
+        "what_it_tests": "Danh sách đã có và yêu cầu loại trùng URL phải chọn deduplicate. Unit test kiểm tra xử lý dữ liệu và các số đếm."
+      }
+    },
+    {
+      "id": "G02_timeline_handle_and_limit",
+      "phase": "B",
+      "suite": "group",
+      "query": "Lấy đúng 4 bài đăng mới nhất của tài khoản X @NASA.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "timeline", "args": {"screenname": "NASA", "limit": 4}}]
+      },
+      "metadata": {
+        "skill": "timeline_handle_normalization",
+        "difficulty": "easy",
+        "what_it_tests": "Bài đăng của một tài khoản cụ thể phải dùng timeline, bỏ @ khỏi screenname và truyền đúng limit=4."
+      }
+    },
+    {
+      "id": "G03_web_news_month_and_result_count",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm trên web 3 tin về năng lượng mặt trời trong tháng này.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "lookup", "args": {"query": "năng lượng mặt trời", "topic": "news", "timeframe": "month", "max_results": 3}}]
+      },
+      "metadata": {
+        "skill": "web_news_argument_mapping",
+        "difficulty": "medium",
+        "what_it_tests": "Tách chủ đề vào query, tin tức vào topic=news, tháng này vào timeframe=month và số kết quả vào max_results=3."
+      }
+    },
+    {
+      "id": "G04_clarify_missing_report_url",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đọc và tóm tắt nội dung báo cáo ở trang web kia giúp tôi. Tôi chưa gửi đường dẫn.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]
+      },
+      "metadata": {
+        "skill": "clarify_before_fetch",
+        "difficulty": "easy",
+        "what_it_tests": "Chưa có URL thì hỏi link qua clarify(text), tránh tự đoán địa chỉ và gọi fetch."
+      }
+    },
+    {
+      "id": "G05_format_existing_items_as_bullets",
+      "phase": "B",
+      "suite": "group",
+      "query": "Dữ liệu đã có là [{\"title\": \"Kết quả A\", \"url\": \"https://example.com/a\", \"summary\": \"Nhóm đã hoàn thành bản thử nghiệm.\"}, {\"title\": \"Kết quả B\", \"url\": \"https://example.org/b\", \"summary\": \"Bản đánh giá đã sẵn sàng.\"}]. Hãy trình bày thành danh sách gạch đầu dòng bằng template bullets, dùng đúng dữ liệu đã cung cấp.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [{"name": "format", "args": {"template": "bullets"}}]
+      },
+      "metadata": {
+        "skill": "format_collected_items",
+        "difficulty": "easy",
+        "what_it_tests": "Khi đã có dữ liệu và chỉ yêu cầu trình bày thì gọi format(template=bullets), tránh gọi thêm tool tra cứu."
+      }
+    },
+    {
+      "id": "G06_fetch_corrected_url_from_history",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tôi muốn đọc bài ở https://www.python.org/about/."},
+        {"role": "user", "content": "Tôi gửi nhầm link. Đường dẫn đúng là https://www.python.org/doc/."},
+        {"role": "user", "content": "Chỉ đọc nội dung đường dẫn tôi vừa sửa, dùng đúng URL đó."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "fetch", "args": {"url": "https://www.python.org/doc/"}}]
+      },
+      "metadata": {
+        "skill": "multiturn_url_correction",
+        "difficulty": "medium",
+        "what_it_tests": "Lấy URL từ lịch sử và ưu tiên URL đã sửa ở lượt sau, chỉ gọi fetch cho link mới. Ca này chấm URL được gọi."
+      }
+    },
+    {
+      "id": "G07_web_news_timeframe_correction",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm trên web 2 tin về điện gió trong tháng này."},
+        {"role": "user", "content": "Đổi khoảng thời gian thành tuần này thôi."},
+        {"role": "user", "content": "Giữ chủ đề điện gió và đúng 2 kết quả, vẫn tìm tin trên web."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "lookup", "args": {"query": "điện gió", "topic": "news", "timeframe": "week", "max_results": 2}}]
+      },
+      "metadata": {
+        "skill": "multiturn_timeframe_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Giữ chủ đề, loại tin và số kết quả từ lịch sử, đồng thời thay timeframe=month bằng week theo yêu cầu mới nhất."
+      }
+    },
+    {
+      "id": "G08_social_search_sort_correction",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm 3 bài nổi bật nhất trên X về robotics."},
+        {"role": "user", "content": "Đổi sang bài mới nhất, không lấy Top nữa."},
+        {"role": "user", "content": "Giữ chủ đề robotics, nguồn X và đúng 3 bài."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [{"name": "social_search", "args": {"query": "robotics", "search_type": "Latest", "limit": 3}}]
+      },
+      "metadata": {
+        "skill": "multiturn_social_sort_correction",
+        "difficulty": "medium",
+        "what_it_tests": "Giữ nguồn X, chủ đề và limit=3, thay search_type=Top bằng Latest sau khi người dùng đổi cách sắp xếp."
+      }
+    },
+    {
+      "id": "G09_deduplicate_sources_from_history",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Danh sách nguồn đã có là [{\"title\": \"Bài A\", \"url\": \"https://example.com/a\"}, {\"title\": \"Bài A chia sẻ lại\", \"url\": \"https://example.com/a?utm_source=chat\"}, {\"title\": \"Bài B\", \"url\": \"https://example.org/b\"}]."},
+        {"role": "assistant", "content": "Bạn muốn xử lý danh sách nguồn này như thế nào?"},
+        {"role": "user", "content": "Loại nguồn trùng URL trong danh sách vừa đưa, giữ nguồn xuất hiện đầu tiên và báo số nguồn bị loại."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [{"name": "deduplicate", "args": {}}]
+      },
+      "metadata": {
+        "skill": "multiturn_deduplicate_from_history",
+        "difficulty": "medium",
+        "what_it_tests": "Dùng danh sách nguồn từ lượt trước để gọi deduplicate ở lượt cuối. Ca eval chấm routing, unit test kiểm tra dữ liệu và số đếm."
+      }
+    },
+    {
+      "id": "G10_cancel_telegram_publication",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tôi muốn đăng lên Telegram nội dung 'Bản tin nghiên cứu của nhóm đã sẵn sàng.'."},
+        {"role": "assistant", "content": "Bạn có xác nhận gửi nội dung này lên Telegram không?"},
+        {"role": "user", "content": "Hủy yêu cầu gửi. Chỉ trả lời rằng yêu cầu đã được hủy."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
+      "metadata": {
+        "skill": "multiturn_cancel_publication",
+        "difficulty": "hard",
+        "what_it_tests": "Ưu tiên lệnh hủy ở lượt cuối và không gọi tool gửi. Bộ chấm tự động kiểm tra không có tool call, nội dung câu trả lời cần đọc thủ công."
+      }
+    }
+  ]
 }

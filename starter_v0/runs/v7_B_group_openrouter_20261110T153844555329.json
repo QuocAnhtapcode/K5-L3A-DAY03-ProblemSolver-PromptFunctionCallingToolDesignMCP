@@ -1,0 +1,121 @@
+{
+  "run_id": "v7_B_group_openrouter_20261110T153844555329",
+  "version": "v7",
+  "artifact_version": "v7+p01c147b33fa2+tda5603314bdd",
+  "prompt_hash": "01c147b33fa22a338c9127ed08dc825221f8e34ecc5bb2ce7780278df5c9b783",
+  "tools_hash": "da5603314bddbe5311ab450a94cccae08987a4b7d236e04e1ce5bb04e3fc56e2",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "artifacts\\system_prompt_1.md",
+  "tools": "E:\\Lab_VinUni\\Day3\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T15:38:44",
+  "summary": {
+    "total_cases": 1,
+    "measured_cases": 1,
+    "provider_error_cases": 0,
+    "passed_cases": 1,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": null,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_deduplicate_collected_sources",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "deduplicate_existing_sources",
+        "difficulty": "medium",
+        "what_it_tests": "Danh sách đã có và yêu cầu loại trùng URL phải chọn deduplicate. Unit test kiểm tra xử lý dữ liệu và các số đếm."
+      },
+      "input": "Loại nguồn trùng nhau theo URL trong danh sách đã có dưới đây, giữ nguồn xuất hiện đầu tiên và báo số nguồn bị loại. Danh sách gồm [{\"title\": \"Nguồn A\", \"url\": \"https://example.com/research?utm_source=email\"}, {\"title\": \"Nguồn A được chia sẻ lại\", \"url\": \"https://example.com/research#summary\"}, {\"title\": \"Nguồn B\", \"url\": \"https://example.org/paper\"}].",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "url": "https://example.com/research?utm_source=email",
+                  "title": "Nguồn A"
+                },
+                {
+                  "url": "https://example.com/research#summary",
+                  "title": "Nguồn A được chia sẻ lại"
+                },
+                {
+                  "url": "https://example.org/paper",
+                  "title": "Nguồn B"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "url": "https://example.com/research?utm_source=email",
+                "title": "Nguồn A"
+              },
+              {
+                "url": "https://example.com/research#summary",
+                "title": "Nguồn A được chia sẻ lại"
+              },
+              {
+                "url": "https://example.org/paper",
+                "title": "Nguồn B"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "url": "https://example.com/research?utm_source=email",
+                "title": "Nguồn A"
+              },
+              {
+                "url": "https://example.org/paper",
+                "title": "Nguồn B"
+              }
+            ],
+            "input_count": 3,
+            "item_count": 2,
+            "removed_count": 1
+          }
+        }
+      ]
+    }
+  ]
+}

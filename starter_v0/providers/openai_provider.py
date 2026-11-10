@@ -51,6 +51,12 @@ class OpenAIProvider:
             kwargs["tools"] = tools
         if tool_choice is not None:
             kwargs["tool_choice"] = tool_choice
+        token_budget = os.getenv("MODEL_MAX_TOKENS")
+        if token_budget:
+            max_tokens = int(token_budget)
+            if max_tokens <= 0:
+                raise ValueError("MODEL_MAX_TOKENS must be a positive integer")
+            kwargs["max_tokens"] = max_tokens
 
         resp = client.chat.completions.create(**kwargs)
         msg = resp.choices[0].message
