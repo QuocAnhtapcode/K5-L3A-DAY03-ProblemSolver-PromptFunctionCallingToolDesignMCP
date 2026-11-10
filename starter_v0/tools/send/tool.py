@@ -9,7 +9,8 @@ from tools._shared import TIMEOUT, err
 
 
 def send_telegram(text: str = "", confirmed: bool = False) -> dict[str, Any]:
-    if not confirmed:
+    # Only the actual JSON boolean true authorizes a send; truthy strings do not.
+    if confirmed is not True:
         return {
             "tool": "send_telegram",
             "status": "needs_confirmation",

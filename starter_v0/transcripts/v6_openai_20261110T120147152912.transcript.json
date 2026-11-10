@@ -1,0 +1,314 @@
+{
+  "transcript_id": "v6_openai_20261110T120147152912",
+  "version": "v6",
+  "artifact_version": "v6+p508a98436ab2+t33f07f67b016",
+  "prompt_hash": "508a98436ab209b2a42e251ee9ff6c504e7c17e5d0fe19d6bb2abe6f6e8dce90",
+  "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "system_prompt": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools.yaml",
+  "history_window": 5,
+  "max_tool_rounds": 4,
+  "created_at": "2026-11-10T12:01:47",
+  "updated_at": "2026-11-10T12:36:39",
+  "turns": [
+    {
+      "turn_index": 1,
+      "started_at": "2026-11-10T12:02:12",
+      "user": "Tóm tắt bài viết này giúp tôi.",
+      "status": "answered",
+      "assistant_text": "Vui lòng cung cấp URL của bài viết mà bạn muốn tôi tóm tắt.",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "Vui lòng cung cấp URL của bài viết mà bạn muốn tôi tóm tắt.",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [],
+      "ended_at": "2026-11-10T12:02:15"
+    },
+    {
+      "turn_index": 2,
+      "started_at": "2026-11-10T12:17:24",
+      "user": "Đây là link: https://www.python.org/about/ . Hãy đọc trang và tóm tắt 3 ý chính bằng tiếng Việt, kèm link nguồn.",
+      "status": "answered",
+      "assistant_text": "Dưới đây là tóm tắt 3 ý chính từ trang \"About Python\" trên trang web Python.org:\n\n1. **Dễ dàng bắt đầu**: Python là ngôn ngữ lập trình dễ học, phù hợp cho cả người mới bắt đầu và những lập trình viên có kinh nghiệm. Trang web cung cấp nhiều hướng dẫn và tài nguyên hữu ích để bắt đầu viết chương trình bằng Python.\n\n2. **Cộng đồng thân thiện**: Cộng đồng Python tổ chức nhiều hội nghị, buổi gặp mặt và hợp tác trong việc phát triển mã nguồn. Tài liệu hướng dẫn và danh sách gửi thư giúp người dùng kết nối và nhận hỗ trợ.\n\n3. **Mã nguồn mở**: Python được phát triển dưới giấy phép mã nguồn mở, cho phép sử dụng và phân phối miễn phí, kể cả cho mục đích thương mại. Giấy phép này được quản lý bởi Quỹ Phần mềm Python.\n\nBạn có thể xem chi tiết tại [đây](https://www.python.org/about/).",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "fetch",
+              "args": {
+                "url": "https://www.python.org/about/"
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "fetch",
+              "args": {
+                "url": "https://www.python.org/about/"
+              },
+              "result": {
+                "tool": "read_url",
+                "url": "https://www.python.org/about/",
+                "items": [
+                  {
+                    "title": "About Python™ | Python.org",
+                    "url": "https://www.python.org/about/",
+                    "source": "python.org",
+                    "summary": "**Notice:** This page displays a fallback because interactive scripts did not run. Possible causes include disabled JavaScript or failure to load scripts or stylesheets.\n\n## Getting Started\n\nPython can be easy to pick up whether you're a first time programmer or you're experienced with other languages. The following pages are a useful first step to get on your way writing programs with Python!\n\n- [Beginner's Guide, Programmers](https://wiki.python.org/moin/BeginnersGuide/Programmers)\n- [Beginner's Guide, Non-Programmers](https://wiki.python.org/moin/BeginnersGuide/NonProgrammers)\n- [Beginner's Guide, Download & Installation](https://wiki.python.org/moin/BeginnersGuide/Download)\n- [Code sample and snippets for Beginners](https://wiki.python.org/moin/BeginnersGuide/Examples)\n\n## Friendly & Easy to Learn\n\nThe community hosts conferences and meetups, collaborates on code, and much more. Python's documentation will help you along the way, and the mailing lists will keep you in touch.\n\n- [Conferences and Workshops](https://www.python.org/community/workshops/)\n- [Python Documentation](http://docs.python.org/)\n- [Mailing Lists](https://www.python.org/community/lists) and [IRC channels](https://www.python.org/community/irc/)\n\n## Applications\n\nThe [Python Package Index (PyPI)](https://pypi.python.org/) hosts thousands of third-party modules for Python. Both Python's standard library and the community-contributed modules allow for endless possibilities.\n\n- [Web and Internet Development](https://www.python.org/about/apps/#web-and-internet-development)\n- [Database Access](https://www.python.org/about/apps/#database-access)\n- [Desktop GUIs](https://www.python.org/about/apps/#desktop-guis)\n- [Scientific & Numeric](https://www.python.org/about/apps/#scientific-and-numeric)\n- [Education](https://www.python.org/about/apps/#education)\n- [Network Programming](https://www.python.org/about/apps/#network-programming)\n- [Software & Game Development](https://www.python.org/about/apps/#software-development)\n\n## Open-source\n\nPython is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. Python's license is administered by the [Python Software Foundation](https://www.python.org/psf).\n\n- [Learn more about the license](https://docs.python.org/license.html)\n- [Python license on OSI](https://opensource.org/license/pythonsoftfoundation-php/)\n- [Learn more about the Foundation](https://www.python.org/psf-landing/)\n\nCan’t find what you’re looking for? [Try our comprehensive Help section](https://www.python.org/about/help/)\n\n## Latest News\n\n[More news](https://www.python.org/blogs/)\n\n## Upcoming Events\n\n[More](https://www.python.org/events/calendars/ \"More Events\")\n\n## >>> [Python Software Foundation](https://www.python.org/psf/)\n\nThe mission of the Python Software Foundation is to promote, protect, and advance the Python programming language, and to support and facilitate the growth of a diverse and international community of Python programmers. [Learn more](https://www.python.org/psf/)\n\n[Become a Member](https://www.python.org/psf/membership/) [Donate to the PSF](https://www.python.org/psf/donations/)"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": "Dưới đây là tóm tắt 3 ý chính từ trang \"About Python\" trên trang web Python.org:\n\n1. **Dễ dàng bắt đầu**: Python là ngôn ngữ lập trình dễ học, phù hợp cho cả người mới bắt đầu và những lập trình viên có kinh nghiệm. Trang web cung cấp nhiều hướng dẫn và tài nguyên hữu ích để bắt đầu viết chương trình bằng Python.\n\n2. **Cộng đồng thân thiện**: Cộng đồng Python tổ chức nhiều hội nghị, buổi gặp mặt và hợp tác trong việc phát triển mã nguồn. Tài liệu hướng dẫn và danh sách gửi thư giúp người dùng kết nối và nhận hỗ trợ.\n\n3. **Mã nguồn mở**: Python được phát triển dưới giấy phép mã nguồn mở, cho phép sử dụng và phân phối miễn phí, kể cả cho mục đích thương mại. Giấy phép này được quản lý bởi Quỹ Phần mềm Python.\n\nBạn có thể xem chi tiết tại [đây](https://www.python.org/about/).",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://www.python.org/about/"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://www.python.org/about/",
+            "items": [
+              {
+                "title": "About Python™ | Python.org",
+                "url": "https://www.python.org/about/",
+                "source": "python.org",
+                "summary": "**Notice:** This page displays a fallback because interactive scripts did not run. Possible causes include disabled JavaScript or failure to load scripts or stylesheets.\n\n## Getting Started\n\nPython can be easy to pick up whether you're a first time programmer or you're experienced with other languages. The following pages are a useful first step to get on your way writing programs with Python!\n\n- [Beginner's Guide, Programmers](https://wiki.python.org/moin/BeginnersGuide/Programmers)\n- [Beginner's Guide, Non-Programmers](https://wiki.python.org/moin/BeginnersGuide/NonProgrammers)\n- [Beginner's Guide, Download & Installation](https://wiki.python.org/moin/BeginnersGuide/Download)\n- [Code sample and snippets for Beginners](https://wiki.python.org/moin/BeginnersGuide/Examples)\n\n## Friendly & Easy to Learn\n\nThe community hosts conferences and meetups, collaborates on code, and much more. Python's documentation will help you along the way, and the mailing lists will keep you in touch.\n\n- [Conferences and Workshops](https://www.python.org/community/workshops/)\n- [Python Documentation](http://docs.python.org/)\n- [Mailing Lists](https://www.python.org/community/lists) and [IRC channels](https://www.python.org/community/irc/)\n\n## Applications\n\nThe [Python Package Index (PyPI)](https://pypi.python.org/) hosts thousands of third-party modules for Python. Both Python's standard library and the community-contributed modules allow for endless possibilities.\n\n- [Web and Internet Development](https://www.python.org/about/apps/#web-and-internet-development)\n- [Database Access](https://www.python.org/about/apps/#database-access)\n- [Desktop GUIs](https://www.python.org/about/apps/#desktop-guis)\n- [Scientific & Numeric](https://www.python.org/about/apps/#scientific-and-numeric)\n- [Education](https://www.python.org/about/apps/#education)\n- [Network Programming](https://www.python.org/about/apps/#network-programming)\n- [Software & Game Development](https://www.python.org/about/apps/#software-development)\n\n## Open-source\n\nPython is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. Python's license is administered by the [Python Software Foundation](https://www.python.org/psf).\n\n- [Learn more about the license](https://docs.python.org/license.html)\n- [Python license on OSI](https://opensource.org/license/pythonsoftfoundation-php/)\n- [Learn more about the Foundation](https://www.python.org/psf-landing/)\n\nCan’t find what you’re looking for? [Try our comprehensive Help section](https://www.python.org/about/help/)\n\n## Latest News\n\n[More news](https://www.python.org/blogs/)\n\n## Upcoming Events\n\n[More](https://www.python.org/events/calendars/ \"More Events\")\n\n## >>> [Python Software Foundation](https://www.python.org/psf/)\n\nThe mission of the Python Software Foundation is to promote, protect, and advance the Python programming language, and to support and facilitate the growth of a diverse and international community of Python programmers. [Learn more](https://www.python.org/psf/)\n\n[Become a Member](https://www.python.org/psf/membership/) [Donate to the PSF](https://www.python.org/psf/donations/)"
+              }
+            ]
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T12:17:32"
+    },
+    {
+      "turn_index": 3,
+      "started_at": "2026-11-10T12:21:02",
+      "user": "Lọc các bài trùng URL trong danh sách này và cho biết số bài bị loại, giữ bản đầu tiên: [{\"title\":\"AI\",\"url\":\"https://example.org/ai?utm_source=mail\"},{\"title\":\"AI bản sao\",\"url\":\"https://example.org/ai#intro\"},{\"title\":\"Robotics\",\"url\":\"https://example.org/robotics\"}].",
+      "status": "answered",
+      "assistant_text": "Đã lọc các bài trùng URL trong danh sách của bạn. Kết quả như sau:\n\n1. **Bài đầu tiên**: \n   - Tiêu đề: AI\n   - URL: [https://example.org/ai?utm_source=mail](https://example.org/ai?utm_source=mail)\n\n2. **Bài thứ hai**: \n   - Tiêu đề: Robotics\n   - URL: [https://example.org/robotics](https://example.org/robotics)\n\nSố bài bị loại: 1 bài.",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "deduplicate",
+              "args": {
+                "items": [
+                  {
+                    "title": "AI",
+                    "url": "https://example.org/ai?utm_source=mail"
+                  },
+                  {
+                    "title": "AI bản sao",
+                    "url": "https://example.org/ai#intro"
+                  },
+                  {
+                    "title": "Robotics",
+                    "url": "https://example.org/robotics"
+                  }
+                ]
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "deduplicate",
+              "args": {
+                "items": [
+                  {
+                    "title": "AI",
+                    "url": "https://example.org/ai?utm_source=mail"
+                  },
+                  {
+                    "title": "AI bản sao",
+                    "url": "https://example.org/ai#intro"
+                  },
+                  {
+                    "title": "Robotics",
+                    "url": "https://example.org/robotics"
+                  }
+                ]
+              },
+              "result": {
+                "tool": "deduplicate",
+                "items": [
+                  {
+                    "title": "AI",
+                    "url": "https://example.org/ai?utm_source=mail"
+                  },
+                  {
+                    "title": "Robotics",
+                    "url": "https://example.org/robotics"
+                  }
+                ],
+                "input_count": 3,
+                "output_count": 2,
+                "duplicates_removed": 1
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": "Đã lọc các bài trùng URL trong danh sách của bạn. Kết quả như sau:\n\n1. **Bài đầu tiên**: \n   - Tiêu đề: AI\n   - URL: [https://example.org/ai?utm_source=mail](https://example.org/ai?utm_source=mail)\n\n2. **Bài thứ hai**: \n   - Tiêu đề: Robotics\n   - URL: [https://example.org/robotics](https://example.org/robotics)\n\nSố bài bị loại: 1 bài.",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "AI",
+                "url": "https://example.org/ai?utm_source=mail"
+              },
+              {
+                "title": "AI bản sao",
+                "url": "https://example.org/ai#intro"
+              },
+              {
+                "title": "Robotics",
+                "url": "https://example.org/robotics"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "AI",
+                "url": "https://example.org/ai?utm_source=mail"
+              },
+              {
+                "title": "Robotics",
+                "url": "https://example.org/robotics"
+              }
+            ],
+            "input_count": 3,
+            "output_count": 2,
+            "duplicates_removed": 1
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T12:21:07"
+    },
+    {
+      "turn_index": 4,
+      "started_at": "2026-11-10T12:26:58",
+      "user": "Tìm 2 tin về AI trong tuần này, tóm tắt ngắn bằng tiếng Việt và kèm link nguồn.",
+      "status": "answered",
+      "assistant_text": "Dưới đây là 2 tin tức về AI trong tuần này:\n\n1. **Tin tức: \"Cử tri gửi thông điệp về 'động đất AI', phản đối công nghệ và các tỷ phú\"**  \n   - **Tóm tắt**: AI đã chính thức trở thành vấn đề lớn nhất trong chính trị Mỹ. Cử tri thể hiện sự không tin tưởng sâu sắc vào cuộc đua AI, thông qua việc phê duyệt nhiều lệnh tạm dừng xây dựng trung tâm dữ liệu và bầu chọn những ứng cử viên ủng hộ việc làm chậm lại sự phát triển trị giá 10 nghìn tỷ USD. Kết quả này gửi đi một thông điệp rõ ràng rằng họ muốn có quy định cho AI và các trung tâm dữ liệu.  \n   - **Link nguồn**: [axios.com](https://www.axios.com/2026/11/04/ai-data-center-election-slowdown)\n\n2. **Tin tức: \"Một mô hình AI duy nhất mô phỏng hành vi của nhiều chất, từ cát trượt đến protein gập lại\"**  \n   - **Tóm tắt**: Các nhà nghiên cứu đã phát triển một kiến trúc AI thống nhất có khả năng mô phỏng nhiều loại hiện tượng vật lý khác nhau. Mô hình này học cách giải các phương trình điều khiển, giúp dự đoán chuyển động của vật liệu theo thời gian và không gian. Điều này có thể hỗ trợ trong việc thiết kế thuốc và vật liệu mới.  \n   - **Link nguồn**: [news.mit.edu](https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109)",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "lookup",
+              "args": {
+                "query": "AI",
+                "topic": "news",
+                "timeframe": "week",
+                "max_results": 2
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "lookup",
+              "args": {
+                "query": "AI",
+                "topic": "news",
+                "timeframe": "week",
+                "max_results": 2
+              },
+              "result": {
+                "tool": "web_search",
+                "query": "AI",
+                "topic": "news",
+                "timeframe": "week",
+                "items": [
+                  {
+                    "title": "Voters deliver \"AI earthquake,\" rebuking tech and billionaires",
+                    "url": "https://www.axios.com/2026/11/04/ai-data-center-election-slowdown",
+                    "source": "axios.com",
+                    "summary": "AI had its \"official debut\" as the biggest issue in American politics, former New York Assemblymember and RAISE Act author Alex Bores told Axios. \"AI is reaching into every part of our society and economy and it's now crystal clear it's impacting every part of our politics, too.\" [...] Voters showed deep distrust of the AI race Tuesday, approving dozens of data center moratoriums and electing a raft of candidates who favor slowing a $10 trillion buildout, including in Texas — the epicenter of the boom.\n\nWhy it matters: In an election that hinged on an affordability crisis for many Americans, voters made it clear they view Silicon Valley's AI ambitions not as a technological miracle, but as a resource-draining threat to their wallets and communities. [...] The results were a warning shot to some of the nation's wealthiest and most powerful executives, many of whom are already working on ways to build a more palatable version of the revolution they are dead-set on winning.\n\n\"What we just witnessed was an AI earthquake,\"Brad Carson, co-founder of Americans for Responsible Innovation, told Axios. \"Voters just sent a clear message that they want rules for AI and data centers.\"",
+                    "score": 0.51194537
+                  },
+                  {
+                    "title": "A single AI model simulates the behavior of many substances, from sliding sand to folding proteins | MIT News | Massachusetts Institute of Technology",
+                    "url": "https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109",
+                    "source": "news.mit.edu",
+                    "summary": "Unified simulation\n\nFor this work, the researchers drew inspiration from world models. These powerful AI systems learn the rules that govern the physical world so they can predict how objects or environments will change over time in response to certain actions or conditions.\n\nThe researchers applied these concepts to develop a unified AI architecture that can simulate multiple types of physical phenomena. [...] ### With a feel for physics, AI models simulate a wider range of real-world scenarios\n\nIllustration shows purple and orange balls, floating and connected like a neural network or like molecules. White molecule figures are also floating against the dark background.\n\n### Learning the language of molecules to predict their properties\n\nBlack molecule icons have red and green additional parts.\n\n### Could LLMs help design our next medicines and materials?\n\n## More MIT News [...] Instead, the researchers designed a neural network that learns to solve governing equations in general, eliminating the need to design a new model and solver to handle each one.\n\nOnce WorldParticle converts an object into particles, a neural network takes the 3D positions and physical properties of the particles as inputs. It outputs their positions and properties for the next frame of the simulation, predicting the material’s motion over time and space in one-second increments.",
+                    "score": 0.5199174
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": "Dưới đây là 2 tin tức về AI trong tuần này:\n\n1. **Tin tức: \"Cử tri gửi thông điệp về 'động đất AI', phản đối công nghệ và các tỷ phú\"**  \n   - **Tóm tắt**: AI đã chính thức trở thành vấn đề lớn nhất trong chính trị Mỹ. Cử tri thể hiện sự không tin tưởng sâu sắc vào cuộc đua AI, thông qua việc phê duyệt nhiều lệnh tạm dừng xây dựng trung tâm dữ liệu và bầu chọn những ứng cử viên ủng hộ việc làm chậm lại sự phát triển trị giá 10 nghìn tỷ USD. Kết quả này gửi đi một thông điệp rõ ràng rằng họ muốn có quy định cho AI và các trung tâm dữ liệu.  \n   - **Link nguồn**: [axios.com](https://www.axios.com/2026/11/04/ai-data-center-election-slowdown)\n\n2. **Tin tức: \"Một mô hình AI duy nhất mô phỏng hành vi của nhiều chất, từ cát trượt đến protein gập lại\"**  \n   - **Tóm tắt**: Các nhà nghiên cứu đã phát triển một kiến trúc AI thống nhất có khả năng mô phỏng nhiều loại hiện tượng vật lý khác nhau. Mô hình này học cách giải các phương trình điều khiển, giúp dự đoán chuyển động của vật liệu theo thời gian và không gian. Điều này có thể hỗ trợ trong việc thiết kế thuốc và vật liệu mới.  \n   - **Link nguồn**: [news.mit.edu](https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109)",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 2
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Voters deliver \"AI earthquake,\" rebuking tech and billionaires",
+                "url": "https://www.axios.com/2026/11/04/ai-data-center-election-slowdown",
+                "source": "axios.com",
+                "summary": "AI had its \"official debut\" as the biggest issue in American politics, former New York Assemblymember and RAISE Act author Alex Bores told Axios. \"AI is reaching into every part of our society and economy and it's now crystal clear it's impacting every part of our politics, too.\" [...] Voters showed deep distrust of the AI race Tuesday, approving dozens of data center moratoriums and electing a raft of candidates who favor slowing a $10 trillion buildout, including in Texas — the epicenter of the boom.\n\nWhy it matters: In an election that hinged on an affordability crisis for many Americans, voters made it clear they view Silicon Valley's AI ambitions not as a technological miracle, but as a resource-draining threat to their wallets and communities. [...] The results were a warning shot to some of the nation's wealthiest and most powerful executives, many of whom are already working on ways to build a more palatable version of the revolution they are dead-set on winning.\n\n\"What we just witnessed was an AI earthquake,\"Brad Carson, co-founder of Americans for Responsible Innovation, told Axios. \"Voters just sent a clear message that they want rules for AI and data centers.\"",
+                "score": 0.51194537
+              },
+              {
+                "title": "A single AI model simulates the behavior of many substances, from sliding sand to folding proteins | MIT News | Massachusetts Institute of Technology",
+                "url": "https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109",
+                "source": "news.mit.edu",
+                "summary": "Unified simulation\n\nFor this work, the researchers drew inspiration from world models. These powerful AI systems learn the rules that govern the physical world so they can predict how objects or environments will change over time in response to certain actions or conditions.\n\nThe researchers applied these concepts to develop a unified AI architecture that can simulate multiple types of physical phenomena. [...] ### With a feel for physics, AI models simulate a wider range of real-world scenarios\n\nIllustration shows purple and orange balls, floating and connected like a neural network or like molecules. White molecule figures are also floating against the dark background.\n\n### Learning the language of molecules to predict their properties\n\nBlack molecule icons have red and green additional parts.\n\n### Could LLMs help design our next medicines and materials?\n\n## More MIT News [...] Instead, the researchers designed a neural network that learns to solve governing equations in general, eliminating the need to design a new model and solver to handle each one.\n\nOnce WorldParticle converts an object into particles, a neural network takes the 3D positions and physical properties of the particles as inputs. It outputs their positions and properties for the next frame of the simulation, predicting the material’s motion over time and space in one-second increments.",
+                "score": 0.5199174
+              }
+            ]
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T12:27:07"
+    }
+  ]
+}

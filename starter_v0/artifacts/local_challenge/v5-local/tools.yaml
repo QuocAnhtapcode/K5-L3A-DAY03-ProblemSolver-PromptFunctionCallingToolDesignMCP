@@ -1,0 +1,162 @@
+tools:
+- name: clarify
+  description: Gửi câu hỏi cho người dùng và tạm dừng để chờ lượt trả lời tiếp theo.
+    Dùng khi thiếu thông tin thiết yếu như tài khoản hoặc URL, hoặc cần xác nhận gửi
+    Telegram. Nếu yêu cầu lấy/tóm tắt bài đăng gần đây không xác định tác giả hay
+    chủ đề, hãy hỏi tài khoản với response_type=text; không tự chọn người hoặc tìm
+    chung từ khóa tweet. Dùng response_type=yes_no để xin xác nhận gửi. Không dùng
+    khi thông tin đã có trong hội thoại, khi chỉ cần giới thiệu khả năng, hoặc khi
+    yêu cầu nằm ngoài phạm vi research.
+  parameters:
+    type: object
+    properties:
+      question:
+        type: string
+        default: ''
+        description: Câu hỏi cụ thể về thông tin còn thiếu hoặc hành động cần xác
+          nhận. Khi hỏi xác nhận gửi, nêu nội dung và đích gửi đã biết; chỉ rõ phần
+          còn thiếu, không tự bịa nội dung.
+      response_type:
+        type: string
+        enum:
+        - text
+        - yes_no
+        - choice
+        default: text
+        description: 'Chọn đúng enum: text để bổ sung thông tin research như tài khoản/URL;
+          yes_no để xác nhận yêu cầu gửi/đăng Telegram; choice khi có các lựa chọn
+          cụ thể trong options. Với yêu cầu gửi/đăng chưa được xác nhận, dùng yes_no
+          thay vì text. Xin xác nhận không đồng nghĩa được phép gửi khi nội dung còn
+          thiếu.'
+      options:
+        type: array
+        default: []
+        items:
+          type: string
+        description: Danh sách các lựa chọn thực tế cho response_type=choice. Với
+          text hoặc yes_no, để [] hoặc bỏ tham số; không tự tạo lựa chọn không liên
+          quan.
+    required:
+    - question
+- name: timeline
+  description: Lấy các bài đăng gần đây từ một tài khoản X/Twitter cụ thể đã được
+    xác định. Dùng khi người dùng muốn xem bài do một người hoặc tài khoản đăng, kể
+    cả tài khoản đã được cung cấp ở lượt trước. Không dùng để tìm thảo luận về một
+    chủ đề trên nhiều tài khoản; trường hợp đó dùng social_search. Nếu chưa xác định
+    được tác giả, dùng clarify.
+  parameters:
+    type: object
+    properties:
+      screenname:
+        type: string
+        default: ''
+        description: Handle X/Twitter không có @, không phải tên hiển thị hoặc URL;
+          ví dụ @sama thành sama. Dùng tài khoản đã xác định từ yêu cầu/ngữ cảnh;
+          chỉ ánh xạ tên người sang handle khi biết chắc, nếu thiếu hoặc mơ hồ thì
+          gọi clarify.
+      limit:
+        type: integer
+        default: 5
+        description: Số bài đăng tối đa cần lấy, là số nguyên dương, không phải chuỗi.
+          Giữ số lượng người dùng yêu cầu hoặc đã sửa ở lượt mới nhất; chỉ dùng mặc
+          định 5 khi không có số lượng trong yêu cầu/ngữ cảnh.
+    required:
+    - screenname
+- name: social_search
+  description: Tìm bài đăng X/Twitter theo một chủ đề hoặc từ khóa cụ thể trên nhiều
+    tài khoản. Dùng khi người dùng hỏi mọi người đang bàn gì về một chủ đề, hoặc muốn
+    tìm bài phổ biến hay mới nhất về chủ đề đó. Không dùng thay timeline khi cần bài
+    của một tài khoản cụ thể. Không dùng để né việc hỏi lại khi yêu cầu bài đăng thiếu
+    tác giả và không có chủ đề; từ tweet hoặc bài đăng đơn thuần không phải chủ đề
+    tìm kiếm. Không dùng cho tin tức trên web hoặc để đọc một URL đã biết.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Chủ đề hoặc từ khóa cụ thể mà người dùng muốn tìm trên X/Twitter.
+          Giữ chủ đề từ yêu cầu/ngữ cảnh; không thêm điều kiện mới nhất/phổ biến vào
+          query vì đã có search_type. Không dùng từ tweet chung chung để thay cho
+          tài khoản hoặc chủ đề còn thiếu.
+      search_type:
+        type: string
+        enum:
+        - Latest
+        - Top
+        default: Latest
+        description: 'Đúng hai giá trị phân biệt hoa thường: Top cho bài phổ biến/nổi
+          bật/top; Latest cho bài mới nhất/gần đây. Nếu không yêu cầu xếp hạng, dùng
+          Latest. Không truyền top, latest hoặc tên giá trị khác.'
+      limit:
+        type: integer
+        default: 5
+        description: Số kết quả tối đa, là số nguyên dương, không phải chuỗi. Dùng
+          số lượng được yêu cầu hoặc đính chính gần nhất; mặc định 5 khi chưa có số
+          lượng trong ngữ cảnh.
+    required:
+    - query
+- name: lookup
+  description: Tìm thông tin hoặc tin tức trên web theo chủ đề và khoảng thời gian.
+    Dùng khi cần khám phá nguồn, tìm tin thời sự hoặc tra cứu thông tin mà chưa có
+    URL cụ thể cần đọc. Không dùng thay fetch khi đã có URL, thay social_search khi
+    cần thảo luận trên X/Twitter, thay policy khi hỏi quy định nội bộ, hoặc thay papers
+    khi tìm paper arXiv. Không dùng cho bài toán hay yêu cầu viết code ngoài phạm
+    vi research.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Chỉ chứa chủ đề/từ khóa cần tra cứu, giữ cách gọi của người dùng.
+          Không tự thêm news, today, latest hoặc mở rộng chủ đề; loại tin và thời
+          gian được truyền riêng qua topic và timeframe. Khi đổi chủ đề ở lượt mới,
+          thay query nhưng giữ các ràng buộc chưa được sửa.
+      topic:
+        type: string
+        enum:
+        - general
+        - news
+        default: general
+        description: news cho yêu cầu tin tức, tin thời sự hoặc diễn biến mới, kể
+          cả khi tìm tiếp chủ đề ở lượt sau; general cho tra cứu thông tin thông thường.
+          Với yêu cầu tin tức phải truyền rõ news, không để mặc định general. Chỉ
+          dùng đúng chữ thường general hoặc news.
+      timeframe:
+        type: string
+        enum:
+        - day
+        - week
+        - month
+        - year
+        default: week
+        description: 'Khoảng thời gian tương đối: hôm nay/24 giờ qua = day; tuần này/7
+          ngày qua = week; tháng này = month; năm nay = year. Giữ mốc thời gian từ
+          ngữ cảnh nếu người dùng chỉ đổi chủ đề. Chỉ dùng day, week, month hoặc year;
+          nếu không có mốc nào, dùng mặc định week.'
+      max_results:
+        type: integer
+        default: 5
+        description: Số kết quả web tối đa, là số nguyên dương, không phải chuỗi.
+          Dùng số lượng được yêu cầu; mặc định 5 nếu người dùng không nêu số lượng.
+    required:
+    - query
+- name: fetch
+  description: Đọc nội dung một trang web từ URL cụ thể để cung cấp dữ liệu cho việc
+    tóm tắt hoặc phân tích. Dùng khi người dùng hoặc kết quả tìm kiếm đã cung cấp
+    đúng URL cần đọc. Không dùng để khám phá tin theo chủ đề; dùng lookup cho việc
+    đó. Không tự đoán URL khi người dùng nói bài này nhưng chưa cung cấp link; dùng
+    clarify. Với nội dung PDF của một paper arXiv đã xác định, dùng paper_text.
+  parameters:
+    type: object
+    properties:
+      url:
+        type: string
+        default: ''
+        description: URL đầy đủ bắt đầu bằng http:// hoặc https://, đã được người
+          dùng cung cấp hoặc có trong kết quả tool. Giữ nguyên đường dẫn và query
+          string; không thay bằng trang chủ hoặc URL phỏng đoán. Thiếu URL thì gọi
+          clarify.
+    required:
+    - url

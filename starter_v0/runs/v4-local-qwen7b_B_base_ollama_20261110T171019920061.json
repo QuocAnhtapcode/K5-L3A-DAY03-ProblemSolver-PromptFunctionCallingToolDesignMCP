@@ -1,0 +1,1441 @@
+{
+  "run_id": "v4-local-qwen7b_B_base_ollama_20261110T171019920061",
+  "version": "v4-local-qwen7b",
+  "artifact_version": "v4-local-qwen7b+p735f90bd19c4+t33f07f67b016",
+  "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+  "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "model": "qwen2.5:7b",
+  "system_prompt": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\system_prompt_local.md",
+  "tools": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\local_challenge\\v6-cloud\\tools.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T17:10:19",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 5,
+    "case_accuracy": 0.25,
+    "tool_routing_accuracy": 0.5,
+    "argument_accuracy": 0.25,
+    "multiturn_accuracy": 0.1667,
+    "failure_counts": {
+      "wrong_tool": 5,
+      "wrong_arg_value": 6,
+      "missing_info": 3,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 6,
+      "missing_tool_call": 9
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "SamAltman",
+              "count": 1
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "screenname: expected 'sama', got 'SamAltman'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "SamAltman",
+            "count": 1
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "get_user_tweets() got an unexpected keyword argument 'count'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "GPT-5",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "GPT-5",
+            "max_results": 5
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'max_results'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI hôm nay",
+              "template": "brief"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "query: expected 'AI', got 'AI hôm nay'",
+          "topic: expected 'news', got None",
+          "timeframe: expected 'day', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI hôm nay",
+            "template": "brief"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "web_search() got an unexpected keyword argument 'template'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "arxiv_url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "url: expected 'https://openai.com/blog/gpt-5', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "arxiv_url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "read_url() got an unexpected keyword argument 'arxiv_url'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Elon Musk",
+              "sort_by": "lastUpdatedDate",
+              "max_results": 10
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call timeline",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Elon Musk",
+            "sort_by": "lastUpdatedDate",
+            "max_results": 10
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'sort_by'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "tin công nghệ",
+              "top_k": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "topic: expected 'news', got None",
+          "timeframe: expected 'week', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "tin công nghệ",
+            "top_k": 5
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "web_search() got an unexpected keyword argument 'top_k'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "sort_by": "relevance",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "search_type: expected 'Top', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "sort_by": "relevance",
+            "max_results": 5
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'sort_by'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Xin lỗi, nhưng bài toán tích phân này thuộc lĩnh vực toán học và không liên quan đến các công cụ và chức năng được cung cấp trong bộ công cụ của tôi. Tuy nhiên, tôi có thể giải thích cho bạn cách tìm nguyên hàm của \\(x^2\\).\n\nNguyên hàm của \\(x^2\\) là \\(\\frac{x^3}{3} + C\\), trong đó \\(C\\) là hằng số tích phân.\n\nNếu bạn muốn sử dụng công cụ trực tuyến hoặc phần mềm tính toán để kiểm tra kết quả, tôi có thể hướng dẫn bạn cách làm. Bạn có muốn thử không?",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một trợ lý nghiên cứu, có thể thực hiện các tác vụ như tìm kiếm thông tin, đọc và tóm tắt paper, định dạng bản tin, và xuất bản nội dung lên kênh Telegram theo yêu cầu. Tôi cũng có thể tìm chính sách nội bộ về quy trình nghiên cứu, trích dẫn nguồn, bảo mật dữ liệu, xuất bản ra ngoài và sử dụng công cụ.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "sort_by": "relevance",
+              "max_results": 5,
+              "query": "tweet"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "sort_by": "relevance",
+            "max_results": 5,
+            "query": "tweet"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "search_tweets() got an unexpected keyword argument 'sort_by'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi cần URL của bài viết để giúp bạn tóm tắt. Hãy cung cấp URL hoặc thông tin thêm về bài viết nếu bạn đã xóa liên kết.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi cần thêm một số thông tin trước khi thực hiện yêu cầu của bạn. Bạn có thể cung cấp nội dung bản tin và kênh Telegram mà bạn muốn đăng lên không?",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI hôm nay",
+              "policy_area": "external_publishing"
+            }
+          },
+          {
+            "name": "papers",
+            "args": {
+              "query": "AI",
+              "sort_by": "relevance"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "query: expected 'AI', got 'AI hôm nay'",
+          "topic: expected 'news', got None",
+          "timeframe: expected 'day', got None",
+          "missing tool call social_search",
+          "extra tool call papers"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI hôm nay",
+            "policy_area": "external_publishing"
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "web_search() got an unexpected keyword argument 'policy_area'"
+          }
+        },
+        {
+          "tool": "papers",
+          "args": {
+            "query": "AI",
+            "sort_by": "relevance"
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "AI",
+            "api_query": "all:AI",
+            "total_results": 70544,
+            "items": [
+              {
+                "arxiv_id": "2603.28944v2",
+                "title": "Faith in AI can narrow the futures individuals consider",
+                "summary": "Artificial intelligence (AI) predictions are increasingly used to inform human decisions. Here, using a behavioral implementation of the classic Newcomb's paradox in 1,305 participants, we show that AI predictions can also shape the reasoning people use to make a decision. In this paradigm, perceived predictive authority can alter how people reason about their future actions, leading them to forgo a guaranteed reward. Over 40% of participants treated AI as such a predictive authority about their own behavior, significantly increasing the odds of forgoing the guaranteed reward by a factor of 3.39 (95% CI: 2.45-4.70) and reducing earnings by 10.7-42.9%. The effect appeared across AI presentations and decision contexts and remained detectable even when predictions repeatedly failed. When people perceive AI as capable of predicting their personal behavior, the mere presence of AI predictions may shape their decision-making, narrowing the futures they consider.",
+                "authors": [
+                  "Aoi Naito",
+                  "Hirokazu Shirado"
+                ],
+                "published": "2026-03-30T19:36:10Z",
+                "updated": "2026-07-03T09:41:30Z",
+                "url": "http://arxiv.org/abs/2603.28944v2",
+                "pdf_url": "https://arxiv.org/pdf/2603.28944v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC"
+                ]
+              },
+              {
+                "arxiv_id": "2611.09870v1",
+                "title": "AI Exposure and the Changing Responsibilities in Job Postings",
+                "summary": "The growing adoption of artificial intelligence (AI) in the workplace has raised questions about how employer demand for different work activities is changing. We examine how the prevalence and content of work activities in online job postings change in association with activity-level measures of AI exposure, derived from Copilot and Claude usage. To enable systematic comparisons, we develop a pipeline that extracts the responsibilities from job advertisements and maps them onto O*NET's standardized taxonomy of Intermediate Work Activities (IWAs). We then apply this approach to 50,000 job advertisements from 33 firms between 2023 and 2025. From this analysis, we first find that explicit mentions of AI increased by 66%, although much of this growth occurs outside descriptions of the actual work activities associated with a job. Looking specifically at the advertised job responsibilities, activities with greater AI exposure tend to decline in advertised prevalence, but only mildly as a share of the total number of responsibilities. At the same time, more AI-exposed work activities increasingly are associated with explicitly AI-related responsibilities, suggesting that employers are looking to hire people who can perform these responsibilities with AI.",
+                "authors": [
+                  "Dora Zhao",
+                  "Lin Ai",
+                  "Pranav Khadpe",
+                  "Siddharth Suri",
+                  "Scott Counts"
+                ],
+                "published": "2026-11-06T18:48:36Z",
+                "updated": "2026-11-06T18:48:36Z",
+                "url": "http://arxiv.org/abs/2611.09870v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.09870v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2501.02842v1",
+                "title": "Foundations of GenIR",
+                "summary": "The chapter discusses the foundational impact of modern generative AI models on information access (IA) systems. In contrast to traditional AI, the large-scale training and superior data modeling of generative AI models enable them to produce high-quality, human-like responses, which brings brand new opportunities for the development of IA paradigms. In this chapter, we identify and introduce two of them in details, i.e., information generation and information synthesis. Information generation allows AI to create tailored content addressing user needs directly, enhancing user experience with immediate, relevant outputs. Information synthesis leverages the ability of generative AI to integrate and reorganize existing information, providing grounded responses and mitigating issues like model hallucination, which is particularly valuable in scenarios requiring precision and external knowledge. This chapter delves into the foundational aspects of generative models, including architecture, scaling, and training, and discusses their applications in multi-modal scenarios. Additionally, it examines the retrieval-augmented generation paradigm and other methods for corpus modeling and understanding, demonstrating how generative AI can enhance information access systems. It also summarizes potential challenges and fruitful directions for future studies.",
+                "authors": [
+                  "Qingyao Ai",
+                  "Jingtao Zhan",
+                  "Yiqun Liu"
+                ],
+                "published": "2025-01-06T08:38:29Z",
+                "updated": "2025-01-06T08:38:29Z",
+                "url": "http://arxiv.org/abs/2501.02842v1",
+                "pdf_url": "https://arxiv.org/pdf/2501.02842v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.IR",
+                "categories": [
+                  "cs.IR",
+                  "cs.LG"
+                ]
+              },
+              {
+                "arxiv_id": "2601.16513v1",
+                "title": "Competing Visions of Ethical AI: A Case Study of OpenAI",
+                "summary": "Introduction. AI Ethics is framed distinctly across actors and stakeholder groups. We report results from a case study of OpenAI analysing ethical AI discourse. Method. Research addressed: How has OpenAI's public discourse leveraged 'ethics', 'safety', 'alignment' and adjacent related concepts over time, and what does discourse signal about framing in practice? A structured corpus, differentiating between communication for a general audience and communication with an academic audience, was assembled from public documentation. Analysis. Qualitative content analysis of ethical themes combined inductively derived and deductively applied codes. Quantitative analysis leveraged computational content analysis methods via NLP to model topics and quantify changes in rhetoric over time. Visualizations report aggregate results. For reproducible results, we have released our code at https://github.com/famous-blue-raincoat/AI_Ethics_Discourse. Results. Results indicate that safety and risk discourse dominate OpenAI's public communication and documentation, without applying academic and advocacy ethics frameworks or vocabularies. Conclusions. Implications for governance are presented, along with discussion of ethics-washing practices in industry.",
+                "authors": [
+                  "Melissa Wilfley",
+                  "Mengting Ai",
+                  "Madelyn Rose Sanfilippo"
+                ],
+                "published": "2026-01-23T07:26:45Z",
+                "updated": "2026-01-23T07:26:45Z",
+                "url": "http://arxiv.org/abs/2601.16513v1",
+                "pdf_url": "https://arxiv.org/pdf/2601.16513v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2607.04282v3",
+                "title": "The New Shape of Search: How Conversational AI Recomposes Information Seeking",
+                "summary": "The familiar search journey begins with a query and moves outward into documents, and conversational AI is commonly imagined at its mouth: ask first, then click out. Linking captured prompts and responses to the same panelists' observed searches and pageviews, and reconstructing inactivity-defined cross-surface temporal sessions (standalone assistant surfaces; search-embedded AI such as AI Overviews and AI Mode is out of scope, since it co-occurs with the results page), we find the observed journeys more often run the other way. Content usually follows search but more often precedes assistant use. Within the same panelist, the paired difference-of-directions between the two anchors is +20.6 [19.9, 21.3] percentage points; it persists within every coarse destination-domain stratum we can observe (semantic task and task-stage matching remain unresolved), and every headline result replicates in a second, adjacent month. Search tends to anchor the front of the observed journey; assistants sit deeper inside it. Assistant sessions are also far more often self-contained. User-weighted, 34.1% [33.5, 34.7] of assistant-containing sessions show no observed external web step (AI-first 10.5% [10.2, 10.9], AI-last 18.3% [17.8, 18.7], bridge/interleaved 37.1% [36.5, 37.7]), against 19.5% [19.2, 19.8] contained for search-centered sessions of the same users, a within-user contrast of +13.0 [12.5, 13.6] percentage points. We call this difference recomposition: activity is distributed differently across dialogue, search, and browsing, without implying that assistant use caused the difference. Assistant-contained also does not mean resolved: timestamps alone cannot establish one task, satisfaction, or completion. The result is a cross-surface topology of the emerging search journey and a discipline for distinguishing observed containment from inferred resolution.",
+                "authors": [
+                  "Michael Iannelli",
+                  "Alan Ai"
+                ],
+                "published": "2026-07-05T12:48:17Z",
+                "updated": "2026-08-25T17:59:40Z",
+                "url": "http://arxiv.org/abs/2607.04282v3",
+                "pdf_url": "https://arxiv.org/pdf/2607.04282v3",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC",
+                  "cs.CY",
+                  "cs.IR"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ]
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Xin lỗi, nhưng theo hướng dẫn của bạn, tôi không thể viết mã Python cho bạn trong này. Tuy nhiên, tôi có thể giải thích cách viết một hàm tính Fibonacci bằng recursion trong Python:\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n       return n\n    else:\n       return(fibonacci(n-1) + fibonacci(n-2))\n```\n\nHàm này sẽ tính số Fibonacci thứ n. Vui lòng cài đặt Python trên máy tính của bạn và thử chạy mã này. Nếu bạn cần thêm hỗ trợ hoặc giải thích về cách hoạt động của hàm này, hãy cho tôi biết!",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call timeline"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "query": "robotics",
+              "max_results": 5,
+              "sort_by": "relevance"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call papers"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {
+            "query": "robotics",
+            "max_results": 5,
+            "sort_by": "relevance"
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "robotics",
+            "api_query": "all:robotics",
+            "total_results": 76503,
+            "items": [
+              {
+                "arxiv_id": "2611.08577v1",
+                "title": "Meituan-Robotics-0: A Vision-Language-Action Foundation Model for Desktop Manipulation",
+                "summary": "We present Meituan-Robotics-0 (MR0), a vision-language-action foundation model and embodied-agent system for stationary-base desktop manipulation. MR0 combines 147 million vision-language samples with 15,060 hours of curated robot trajectories spanning 12 embodiments. A three-stage training recipe aligns multimodal representations with robot behavior through discrete action-token pre-training, transfers these priors to continuous cross-embodiment control through flow-matching mid-training, and adapts the policy through real-world post-training. We introduce Rollback, which pairs replaced policy segments with human corrections to provide positive and negative supervision for CFG-DAgger without value learning or advantage labeling. A unified end-effector interface supports heterogeneous embodiments, while asynchronous action-chunk merging maintains smooth execution under variable inference latency. An event-driven agent maintains persistent task events and reassesses plans when progress or feasibility changes, enabling cross-task retrieval and conditional task resumption. MR0 achieves 93.6% success on RoboTwin 2.0 and ranks fifth in the RoboDojo VLA track. Under matched HG-DAgger post-training, MR0 achieves higher average success rate and progress score than $π_{0.5}$ across three real-robot tasks. On Ethernet insertion, CFG-DAgger trained with Rollback data reaches 70% success and a progress score of 0.90. Qualitative agent deployments demonstrate cross-task event retrieval and recovery from temporarily unsatisfied task conditions.",
+                "authors": [
+                  "Meituan Robotics Team",
+                  "Caicheng Wang",
+                  "Chen Zhao",
+                  "Chengpeng Jin",
+                  "Duo Xu",
+                  "Fengjiao Chen",
+                  "Guanglu Wan",
+                  "Heqing Yang",
+                  "Jia Wang",
+                  "Jiacong Zhou",
+                  "Jie Hu",
+                  "Jiyuan Ru",
+                  "Lingfeng Zhang",
+                  "Linjiang Huang",
+                  "Manyuan Zhang",
+                  "Ningchu Liu",
+                  "Shijie Zhou",
+                  "Si Liu",
+                  "Shuo Li",
+                  "Tianyi Zhang",
+                  "Xi Zhang",
+                  "Xin Chen",
+                  "Xuezhi Cao",
+                  "Xunliang Cai",
+                  "Yanbin Zeng",
+                  "Yang Yang",
+                  "Yang Yi",
+                  "Yanli Tan",
+                  "Yifu Xu",
+                  "Yimeng Jia",
+                  "Yuchen Tang",
+                  "Yuchen Xie",
+                  "Yuxiang Zheng",
+                  "Zerwei Chng",
+                  "Zilong Huang",
+                  "Zipeng Ye",
+                  "Ziyuan Qin",
+                  "Ziqin Wang"
+                ],
+                "published": "2026-11-05T18:55:42Z",
+                "updated": "2026-11-05T18:55:42Z",
+                "url": "http://arxiv.org/abs/2611.08577v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.08577v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.RO",
+                "categories": [
+                  "cs.RO",
+                  "cs.CV"
+                ]
+              },
+              {
+                "arxiv_id": "2607.15330v2",
+                "title": "Xiaomi-Robotics-1: Scaling Vision-Language-Action Models with over 100K Hours of Real-World Trajectories",
+                "summary": "We present Xiaomi-Robotics-1, a foundational vision-language-action (VLA) model capable of (1) following diverse language instructions to perform a wide range of mobile manipulation tasks in unseen environments out-of-the-box, and (2) efficiently adapting to novel downstream tasks with minimal fine-tuning data. We propose a two-stage training recipe consisting of pre-training and post-training. During pre-training, we imbue the model with broad and generalizable action-generation capabilities by training on over 100k hours of real-world manipulation trajectories collected via UMI devices. Crucially, we develop a scalable auto-labeling pipeline that annotates trajectory clips with natural languages describing scene state transitions, providing rich and precise conditioning for action learning. During post-training, we aim to align these capabilities with robot embodiments and imperative instructions that humans naturally use to prompt robots. Extensive experiments demonstrate strong scaling behavior. Xiaomi-Robotics-1 consistently improves with increased data scales and model sizes during pre-training. This scaling behavior directly transfers to post-training, where a stronger pre-training model yields better out-of-the-box real-robot performance in unseen environments. Furthermore, Xiaomi-Robotics-1 serves as a strong robot foundation policy that can be efficiently fine-tuned on complex, dexterous tasks with high data efficiency. Across multiple simulation benchmarks, Xiaomi-Robotics-1 outperforms state-of-the-art methods. Notably, it establishes a new state-of-the-art with a 57.4% success rate on RoboCasa365, surpassing the previous best of 46.6%. Furthermore, it achieves an average score of 20.07 on RoboDojo, significantly outperforming the prior state-of-the-art (13.07). Code and model checkpoints will be released. Project page: https://robotics.xiaomi.com/xiaomi-robotics-1.html",
+                "authors": [
+                  "Xiaomi Robotics Team",
+                  "Jun Guo",
+                  "Piaopiao Jin",
+                  "Jason Li",
+                  "Peiyan Li",
+                  "Yingyan Li",
+                  "Futeng Liu",
+                  "Wanli Peng",
+                  "Optimus Qin",
+                  "Yifei Su",
+                  "Nan Sun",
+                  "Qiao Sun",
+                  "Runze Suo",
+                  "Heyun Wang",
+                  "Yunhong Wang",
+                  "Rujie Wu",
+                  "Caoyu Xia",
+                  "Lina Zhang",
+                  "Jack Zhao",
+                  "Guoliang Chen",
+                  "Wenlong Chen",
+                  "Xinze He",
+                  "Bin Li",
+                  "Qing Li",
+                  "Zhuorong Li",
+                  "Heng Qu",
+                  "Wenxuan Song",
+                  "Diyun Xiang",
+                  "Yifan Xie",
+                  "Peiran Xu",
+                  "Hangjun Ye",
+                  "Wen Ye",
+                  "Han Zhao",
+                  "Quanyun Zhou"
+                ],
+                "published": "2026-07-16T16:02:25Z",
+                "updated": "2026-07-22T11:38:14Z",
+                "url": "http://arxiv.org/abs/2607.15330v2",
+                "pdf_url": "https://arxiv.org/pdf/2607.15330v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.RO",
+                "categories": [
+                  "cs.RO",
+                  "cs.CV"
+                ]
+              },
+              {
+                "arxiv_id": "2611.11789v1",
+                "title": "HolidayFactory 1.0: Simulating, Generating, and Evaluating Industrial Robot Tasks",
+                "summary": "Robots are typically evaluated in episodes that begin from a reset, while industrial work consists of repeated jobs whose outcomes affect subsequent operations. Evaluating such work at scale requires simulation of task-critical physical interactions, construction of industrial environments, and measurements of performance as scene state persists. We present HOLIDAYFACTORY 1.0, a framework for simulating, generating, and evaluating industrial robot work. Given a human-specified workplace and task, the framework defines a world pairing a scenario of scene variants and process logic with an evaluation defining a job, metrics, and a rubric. HOLIDAYFACTORY 1.0 comprises three components. HOLIDAY-SIM extends Newton's SDF-based hydroelastic contact with additional constitutive laws and a semi-implicit primal-dual solver, couples stateful actuator dynamics to articulated motion, and derives tactile and joint observations from simulated states. Agentic world construction generates simulation-ready assets and scene variants using geometric and interaction checks, and proposes task-conditioned evaluations for human confirmation and executable checks. 24/7-BENCH introduces seven industrial tasks in which jobs are evaluated without resetting the scene, measuring completed, failed, and unfinished jobs, throughput, latency, and motor energy. Controlled studies characterize the proposed contact, actuator, and tactile models and examine the effectiveness of verification-guided world construction. Experiments on scene and evaluation generation further reveal the limitations of model critics and the difficulty of ensuring that generated evaluations faithfully capture task requirements. We examine job-level evaluations with scripted trajectories (e.g., code-as-policy) but have not yet compared policies over persistent runs.",
+                "authors": [
+                  "Holiday Robotics",
+                  ":",
+                  "Jeongmin Lee",
+                  "Taehyeon Kim",
+                  "Dohyun Jang",
+                  "Minji Lee",
+                  "Seonghun Oh",
+                  "Dongwoo Park",
+                  "Geonhyup Lee",
+                  "Jaehyung Kim",
+                  "Jaemin Yoon",
+                  "Jinseop Bok",
+                  "Jungwoo Kim",
+                  "Minseok Yang",
+                  "Philsik Chang",
+                  "Soomin Lee"
+                ],
+                "published": "2026-11-09T02:46:18Z",
+                "updated": "2026-11-09T02:46:18Z",
+                "url": "http://arxiv.org/abs/2611.11789v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.11789v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.RO",
+                "categories": [
+                  "cs.RO",
+                  "cs.AI"
+                ]
+              },
+              {
+                "arxiv_id": "2302.14334v2",
+                "title": "Design of an Adaptive Lightweight LiDAR to Decouple Robot-Camera Geometry",
+                "summary": "A fundamental challenge in robot perception is the coupling of the sensor pose and robot pose. This has led to research in active vision where robot pose is changed to reorient the sensor to areas of interest for perception. Further, egomotion such as jitter, and external effects such as wind and others affect perception requiring additional effort in software such as image stabilization. This effect is particularly pronounced in micro-air vehicles and micro-robots who typically are lighter and subject to larger jitter but do not have the computational capability to perform stabilization in real-time. We present a novel microelectromechanical (MEMS) mirror LiDAR system to change the field of view of the LiDAR independent of the robot motion. Our design has the potential for use on small, low-power systems where the expensive components of the LiDAR can be placed external to the small robot. We show the utility of our approach in simulation and on prototype hardware mounted on a UAV. We believe that this LiDAR and its compact movable scanning design provide mechanisms to decouple robot and sensor geometry allowing us to simplify robot perception. We also demonstrate examples of motion compensation using IMU and external odometry feedback in hardware.",
+                "authors": [
+                  "Yuyang Chen",
+                  "Dingkang Wang",
+                  "Lenworth Thomas",
+                  "Karthik Dantu",
+                  "Sanjeev J. Koppal"
+                ],
+                "published": "2023-02-28T06:03:42Z",
+                "updated": "2024-03-01T01:48:16Z",
+                "url": "http://arxiv.org/abs/2302.14334v2",
+                "pdf_url": "https://arxiv.org/pdf/2302.14334v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.RO",
+                "categories": [
+                  "cs.RO"
+                ]
+              },
+              {
+                "arxiv_id": "1904.09266v3",
+                "title": "Secure and secret cooperation in robotic swarms",
+                "summary": "The importance of swarm robotics systems in both academic research and real-world applications is steadily increasing. However, to reach widespread adoption, new models that ensure the secure cooperation of large groups of robots need to be developed. This work introduces a novel method to encapsulate cooperative robotic missions in an authenticated data structure known as Merkle tree. With this method, operators can provide the \"blueprint\" of the swarm's mission without disclosing its raw data. In other words, data verification can be separated from data itself. We propose a system where robots in a swarm, to cooperate towards mission completion, have to \"prove\" their integrity to their peers by exchanging cryptographic proofs. We show the implications of this approach for two different swarm robotics missions: foraging and maze formation. In both missions, swarm robots were able to cooperate and carry out sequential operations without having explicit knowledge about the mission's high-level objectives. The results presented in this work demonstrate the feasibility of using Merkle trees as a cooperation mechanism for swarm robotics systems in both simulation and real-robot experiments, which has implications for future decentralized robotics applications where security plays a crucial role such as environmental monitoring, infrastructure surveillance, and disaster management.",
+                "authors": [
+                  "Eduardo Castelló Ferrer",
+                  "Thomas Hardjono",
+                  "Alex 'Sandy' Pentland",
+                  "Marco Dorigo"
+                ],
+                "published": "2019-04-19T17:00:13Z",
+                "updated": "2021-04-01T21:45:13Z",
+                "url": "http://arxiv.org/abs/1904.09266v3",
+                "pdf_url": "https://arxiv.org/pdf/1904.09266v3",
+                "source": "arxiv.org",
+                "primary_category": "cs.RO",
+                "categories": [
+                  "cs.RO",
+                  "cs.CR",
+                  "cs.DS",
+                  "cs.ET",
+                  "cs.MA"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ]
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "query": "Andrej Karpathy",
+              "count": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call timeline",
+          "extra tool call fetch"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "query": "Andrej Karpathy",
+            "count": 3
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "read_url() got an unexpected keyword argument 'query'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://anthropic.com/news/claude",
+            "items": [
+              {
+                "title": "https://anthropic.com/news/claude",
+                "url": "https://anthropic.com/news/claude",
+                "source": "anthropic.com",
+                "summary": "[Skip to main content](https://www.anthropic.com/news/claude#main-content)\n\nA 404 poem byClaude Fable 5Claude Opus 5.5Claude Sonnet 5.5Claude Haiku 5.5\n\nYou came"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "query": "Elon Musk",
+              "max_results": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call timeline",
+          "extra tool call fetch"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "query": "Elon Musk",
+            "max_results": 3
+          },
+          "result": {
+            "error": "TypeError",
+            "message": "read_url() got an unexpected keyword argument 'query'"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup"
+        ]
+      },
+      "tool_results": []
+    }
+  ],
+  "action_execution": "dry_run_no_telegram"
+}

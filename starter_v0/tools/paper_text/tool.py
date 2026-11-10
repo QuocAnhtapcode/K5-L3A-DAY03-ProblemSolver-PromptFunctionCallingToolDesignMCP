@@ -1,34 +1,19 @@
 from __future__ import annotations
 
-import os
 import re
-import time
 from pathlib import Path
 from typing import Any
 
-import requests
-
-from tools._shared import ROOT, TIMEOUT, err
+from tools._shared import ROOT, err
+from tools.papers._http import arxiv_get
 
 
 ARXIV_DIR = ROOT / "arxiv_papers"
-ARXIV_MIN_INTERVAL_SECONDS = 3.0
-_last_arxiv_request_at = 0.0
-
-
-def _arxiv_user_agent() -> str:
-    return os.getenv("ARXIV_USER_AGENT", "AI20k-Day03-Research-Agent/1.0 (educational lab; contact: local)")
-
-
-def _rate_limit_arxiv() -> None:
-    global _last_arxiv_request_at
-    elapsed = time.monotonic() - _last_arxiv_request_at
-    if elapsed < ARXIV_MIN_INTERVAL_SECONDS:
-        time.sleep(ARXIV_MIN_INTERVAL_SECONDS - elapsed)
-    _last_arxiv_request_at = time.monotonic()
 
 
 def _arxiv_id(value: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError("arxiv_url must be an arXiv ID or URL string")
     match = re.search(r"(\d{4}\.\d{4,5}(?:v\d+)?)", value or "")
     if not match:
         raise ValueError("Invalid arXiv ID or URL")
@@ -40,13 +25,21 @@ def _download_arxiv_pdf(arxiv_url: str) -> tuple[str, Path, str]:
     pdf_url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
     ARXIV_DIR.mkdir(parents=True, exist_ok=True)
     output_path = ARXIV_DIR / f"{arxiv_id}.pdf"
-    _rate_limit_arxiv()
-    response = requests.get(pdf_url, headers={"User-Agent": _arxiv_user_agent()}, timeout=TIMEOUT, stream=True)
-    response.raise_for_status()
-    with output_path.open("wb") as file:
-        for chunk in response.iter_content(chunk_size=8192):
-            if chunk:
-                file.write(chunk)
+    response = arxiv_get(pdf_url, stream=True)
+    pending_path = output_path.with_suffix(".pdf.part")
+    try:
+        response.raise_for_status()
+        with pending_path.open("wb") as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    file.write(chunk)
+        with pending_path.open("rb") as file:
+            if file.read(5) != b"%PDF-":
+                raise ValueError("arXiv did not return a PDF document")
+        pending_path.replace(output_path)
+    finally:
+        response.close()
+        pending_path.unlink(missing_ok=True)
     return arxiv_id, output_path, pdf_url
 
 

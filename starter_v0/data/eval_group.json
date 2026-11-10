@@ -2,6 +2,450 @@
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G01_deduplicate_supplied_items",
+      "phase": "B",
+      "suite": "group",
+      "query": "Loại các bài trùng URL khỏi danh sách đã có sau đây, giữ bài đầu tiên và cho biết có bao nhiêu bài bị loại: [{\"title\":\"Bài A\",\"url\":\"https://example.org/ai?utm_source=mail#intro\"},{\"title\":\"Bài A bản sao\",\"url\":\"https://example.org/ai\"},{\"title\":\"Bài B\",\"url\":\"https://example.org/robotics\"}].",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "deduplicate_supplied_items",
+        "difficulty": "medium",
+        "what_it_tests": "Đã có items và cần bỏ URL trùng: route tới deduplicate, không tìm web hay format. Case này chấm routing; logic xử lý items và tham số tracking được kiểm tra bằng unit test."
+      }
+    },
+    {
+      "id": "G02_two_specific_urls",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đọc cả hai link này để đối chiếu nội dung: https://example.org/report/a và https://example.org/report/b",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/report/a"
+            }
+          },
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/report/b"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "parallel_specific_urls",
+        "difficulty": "medium",
+        "what_it_tests": "Hai URL cụ thể cần hai fetch trong cùng lượt; không thay bằng tìm web hoặc format khi chưa có kết quả."
+      }
+    },
+    {
+      "id": "G03_social_top_and_limit",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm 4 tweet phổ biến nhất về robotics trên X.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "robotics",
+              "search_type": "Top",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "social_ranking_and_quantity",
+        "difficulty": "medium",
+        "what_it_tests": "Giữ đúng chủ đề robotics; phổ biến dùng Top và số lượng là integer 4."
+      }
+    },
+    {
+      "id": "G04_missing_clipboard_url",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đọc và tóm tắt link trong clipboard của tôi; tôi chưa dán link vào chat.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "unavailable_url_requires_clarification",
+        "difficulty": "medium",
+        "what_it_tests": "Agent không có quyền đọc clipboard qua các tool đã khai báo; phải xin URL thay vì bịa URL hoặc tìm web."
+      }
+    },
+    {
+      "id": "G05_capabilities_without_tool",
+      "phase": "B",
+      "suite": "group",
+      "query": "Bạn có thể giúp gì với các nguồn research và có tự ý gửi Telegram không?",
+      "failure_type": "unnecessary_tool",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "skill": "capabilities_and_guardrail_explanation",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi về khả năng và nguyên tắc hoạt động cần trả lời trực tiếp; không truy xuất dữ liệu hoặc gửi tin."
+      }
+    },
+    {
+      "id": "G06_carry_month_switch_topic",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm tin về robotics trong tháng này."
+        },
+        {
+          "role": "user",
+          "content": "Đổi chủ đề thành OpenAI."
+        },
+        {
+          "role": "user",
+          "content": "Giữ nguyên khoảng thời gian đã yêu cầu và chỉ tìm tin về OpenAI."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "carry_timeframe_after_topic_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Đổi chủ đề robotics thành OpenAI nhưng giữ topic=news và timeframe=month từ ngữ cảnh."
+      }
+    },
+    {
+      "id": "G07_correct_ranking_and_quantity",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm 8 tweet phổ biến về OpenAI."
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang bài mới nhất thay vì bài phổ biến."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy 2 bài, vẫn chủ đề OpenAI."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Latest",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "latest_argument_corrections",
+        "difficulty": "hard",
+        "what_it_tests": "Hai lần đính chính phải ghi đè Top thành Latest và limit 8 thành 2, đồng thời giữ chủ đề OpenAI."
+      }
+    },
+    {
+      "id": "G08_use_corrected_url",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đọc bài https://example.org/old-report"
+        },
+        {
+          "role": "user",
+          "content": "Tôi gửi nhầm; link đúng là https://example.org/new-report?lang=vi"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc link tôi sửa gần nhất."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/new-report?lang=vi"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "corrected_url_preserves_query_string",
+        "difficulty": "hard",
+        "what_it_tests": "Dùng URL mới nhất và giữ query string; không đọc lại URL cũ hoặc thay bằng trang chủ."
+      }
+    },
+    {
+      "id": "G09_cancel_publication",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Chuẩn bị bản tin 'Bản tin research thử nghiệm' để đăng Telegram; chưa gửi."
+        },
+        {
+          "role": "assistant",
+          "content": "Nội dung dự kiến: Bản tin research thử nghiệm. Bạn có xác nhận gửi lên kênh Telegram đã cấu hình không?"
+        },
+        {
+          "role": "user",
+          "content": "Không, hủy việc đăng và không gửi gì nữa."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "skill": "cancelled_action_must_not_execute",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt mới nhất từ chối và hủy xuất bản; không gọi send, không coi yêu cầu chuẩn bị ở lượt trước là xác nhận."
+      }
+    },
+    {
+      "id": "G10_cancel_research_switch_out_of_scope",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm tin research về AI trong tuần này."
+        },
+        {
+          "role": "user",
+          "content": "Bỏ yêu cầu tìm tin trước."
+        },
+        {
+          "role": "user",
+          "content": "Bây giờ giải phương trình 2x + 4 = 0 cho tôi."
+        }
+      ],
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "metadata": {
+        "skill": "latest_scope_after_cancellation",
+        "difficulty": "hard",
+        "what_it_tests": "Chỉ xử lý yêu cầu mới ngoài phạm vi research, không tiếp tục lookup cho yêu cầu đã hủy và không dùng send làm kênh trả lời."
+      }
+    },
+    {
+      "id": "G11_extract_links_from_supplied_text",
+      "phase": "B",
+      "suite": "group",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "extract_links",
+            "args": {
+              "max_links": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Văn bản đã có và chỉ cần lấy link: extract_links, không fetch/lookup.",
+        "skill": "bonus_new_tool_routing",
+        "difficulty": "medium"
+      },
+      "query": "Trích tối đa 2 URL từ đoạn ghi chú sau, chỉ liệt kê link chứ không mở trang: Nguồn A https://example.org/ai và nguồn B https://arxiv.org/abs/1706.03762."
+    },
+    {
+      "id": "G12_audit_supplied_citations",
+      "phase": "B",
+      "suite": "group",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_audit",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Audit citation metadata có sẵn: không thay bằng policy hay web search.",
+        "skill": "bonus_new_tool_routing",
+        "difficulty": "medium"
+      },
+      "query": "Kiểm tra URL thiếu và loại nguồn trong các items đã có sau đây, không tìm dữ liệu mới và không xác minh sự thật: [{\"title\":\"Preprint\",\"url\":\"https://arxiv.org/abs/1706.03762\"},{\"title\":\"Chưa có link\"}]."
+    },
+    {
+      "id": "G13_export_existing_items_json",
+      "phase": "B",
+      "suite": "group",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "export_digest",
+            "args": {
+              "format": "json"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Yêu cầu tạo file thật: export_digest(format=json), không chỉ format trong chat.",
+        "skill": "bonus_new_tool_routing",
+        "difficulty": "medium"
+      },
+      "query": "Xuất các items có sẵn sau thành một file JSON để tải về: [{\"title\":\"Ghi chú AI\",\"url\":\"https://example.org/ai\",\"summary\":\"Nội dung được cung cấp.\"}]. Không tìm web."
+    },
+    {
+      "id": "G14_extract_links_carry_quantity",
+      "phase": "B",
+      "suite": "group",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "extract_links",
+            "args": {
+              "max_links": 1
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Giữ văn bản từ lượt cũ và áp dụng giới hạn mới nhất khi trích link.",
+        "skill": "bonus_new_tool_routing",
+        "difficulty": "medium"
+      },
+      "turns": [
+        {
+          "role": "user",
+          "content": "Ghi chú của tôi: https://example.org/a và https://example.org/b . Hãy trích các link, không mở trang."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy tối đa 1 link trong ghi chú đó."
+        }
+      ]
+    },
+    {
+      "id": "G15_audit_declared_official_domain",
+      "phase": "B",
+      "suite": "group",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_audit",
+            "args": {
+              "official_domains": [
+                "example.org"
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Dùng domain do user khai báo, không tự gán nguồn chính thức hoặc kiểm chứng fact.",
+        "skill": "bonus_new_tool_routing",
+        "difficulty": "medium"
+      },
+      "turns": [
+        {
+          "role": "user",
+          "content": "Items đã có: [{\"title\":\"Bản tin\",\"url\":\"https://example.org/news\"},{\"title\":\"Post\",\"url\":\"https://x.com/example/status/1\"}]. Kiểm tra metadata nguồn, không xác minh nội dung."
+        },
+        {
+          "role": "user",
+          "content": "Trong lần audit này, tôi khai báo example.org là domain chính thức; hãy dùng đúng domain đó."
+        }
+      ]
+    },
+    {
+      "id": "G16_export_corrected_format",
+      "phase": "B",
+      "suite": "group",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "export_digest",
+            "args": {
+              "format": "csv"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Giữ item đã có, đổi định dạng cuối cùng từ Markdown sang CSV.",
+        "skill": "bonus_new_tool_routing",
+        "difficulty": "medium"
+      },
+      "turns": [
+        {
+          "role": "user",
+          "content": "Items có sẵn: [{\"title\":\"AI\",\"url\":\"https://example.org/ai\",\"summary\":\"Ghi chú của tôi.\"}]. Tôi muốn lưu thành file Markdown."
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang file CSV để tải về, vẫn dùng các items đó. Không cần tra cứu gì thêm."
+        }
+      ]
+    }
+  ]
 }

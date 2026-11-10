@@ -1,0 +1,2647 @@
+{
+  "run_id": "v6-qwen3b_B_base_ollama_20261110T165759259540",
+  "version": "v6-qwen3b",
+  "artifact_version": "v6-qwen3b+p508a98436ab2+t33f07f67b016",
+  "prompt_hash": "508a98436ab209b2a42e251ee9ff6c504e7c17e5d0fe19d6bb2abe6f6e8dce90",
+  "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "system_prompt": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\local_challenge\\v6-cloud\\system_prompt.md",
+  "tools": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\local_challenge\\v6-cloud\\tools.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T16:57:59",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 3,
+    "case_accuracy": 0.15,
+    "tool_routing_accuracy": 0.15,
+    "argument_accuracy": 0.15,
+    "multiturn_accuracy": 0.1667,
+    "failure_counts": {
+      "wrong_tool": 6,
+      "wrong_arg_value": 6,
+      "unnecessary_tool": 1,
+      "missing_info": 3,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 16,
+      "unexpected_tool_call": 1
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://twitter.com/samaltman/status/1468572362425201473"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call timeline",
+          "extra tool call fetch"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://twitter.com/samaltman/status/1468572362425201473"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://twitter.com/samaltman/status/1468572362425201473",
+            "items": [
+              {
+                "title": "https://twitter.com/samaltman/status/1468572362425201473",
+                "url": "https://twitter.com/samaltman/status/1468572362425201473",
+                "source": "twitter.com",
+                "summary": "# X/Twitter Post\n\n## Post\n\n## Top Comments\n\nNo top comments were returned.\n"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call social_search"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "query": "AI",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call papers"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {
+            "query": "AI",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "AI",
+            "api_query": "all:AI",
+            "total_results": 70544,
+            "items": [
+              {
+                "arxiv_id": "2603.28944v2",
+                "title": "Faith in AI can narrow the futures individuals consider",
+                "summary": "Artificial intelligence (AI) predictions are increasingly used to inform human decisions. Here, using a behavioral implementation of the classic Newcomb's paradox in 1,305 participants, we show that AI predictions can also shape the reasoning people use to make a decision. In this paradigm, perceived predictive authority can alter how people reason about their future actions, leading them to forgo a guaranteed reward. Over 40% of participants treated AI as such a predictive authority about their own behavior, significantly increasing the odds of forgoing the guaranteed reward by a factor of 3.39 (95% CI: 2.45-4.70) and reducing earnings by 10.7-42.9%. The effect appeared across AI presentations and decision contexts and remained detectable even when predictions repeatedly failed. When people perceive AI as capable of predicting their personal behavior, the mere presence of AI predictions may shape their decision-making, narrowing the futures they consider.",
+                "authors": [
+                  "Aoi Naito",
+                  "Hirokazu Shirado"
+                ],
+                "published": "2026-03-30T19:36:10Z",
+                "updated": "2026-07-03T09:41:30Z",
+                "url": "http://arxiv.org/abs/2603.28944v2",
+                "pdf_url": "https://arxiv.org/pdf/2603.28944v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC"
+                ]
+              },
+              {
+                "arxiv_id": "2611.09870v1",
+                "title": "AI Exposure and the Changing Responsibilities in Job Postings",
+                "summary": "The growing adoption of artificial intelligence (AI) in the workplace has raised questions about how employer demand for different work activities is changing. We examine how the prevalence and content of work activities in online job postings change in association with activity-level measures of AI exposure, derived from Copilot and Claude usage. To enable systematic comparisons, we develop a pipeline that extracts the responsibilities from job advertisements and maps them onto O*NET's standardized taxonomy of Intermediate Work Activities (IWAs). We then apply this approach to 50,000 job advertisements from 33 firms between 2023 and 2025. From this analysis, we first find that explicit mentions of AI increased by 66%, although much of this growth occurs outside descriptions of the actual work activities associated with a job. Looking specifically at the advertised job responsibilities, activities with greater AI exposure tend to decline in advertised prevalence, but only mildly as a share of the total number of responsibilities. At the same time, more AI-exposed work activities increasingly are associated with explicitly AI-related responsibilities, suggesting that employers are looking to hire people who can perform these responsibilities with AI.",
+                "authors": [
+                  "Dora Zhao",
+                  "Lin Ai",
+                  "Pranav Khadpe",
+                  "Siddharth Suri",
+                  "Scott Counts"
+                ],
+                "published": "2026-11-06T18:48:36Z",
+                "updated": "2026-11-06T18:48:36Z",
+                "url": "http://arxiv.org/abs/2611.09870v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.09870v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2501.02842v1",
+                "title": "Foundations of GenIR",
+                "summary": "The chapter discusses the foundational impact of modern generative AI models on information access (IA) systems. In contrast to traditional AI, the large-scale training and superior data modeling of generative AI models enable them to produce high-quality, human-like responses, which brings brand new opportunities for the development of IA paradigms. In this chapter, we identify and introduce two of them in details, i.e., information generation and information synthesis. Information generation allows AI to create tailored content addressing user needs directly, enhancing user experience with immediate, relevant outputs. Information synthesis leverages the ability of generative AI to integrate and reorganize existing information, providing grounded responses and mitigating issues like model hallucination, which is particularly valuable in scenarios requiring precision and external knowledge. This chapter delves into the foundational aspects of generative models, including architecture, scaling, and training, and discusses their applications in multi-modal scenarios. Additionally, it examines the retrieval-augmented generation paradigm and other methods for corpus modeling and understanding, demonstrating how generative AI can enhance information access systems. It also summarizes potential challenges and fruitful directions for future studies.",
+                "authors": [
+                  "Qingyao Ai",
+                  "Jingtao Zhan",
+                  "Yiqun Liu"
+                ],
+                "published": "2025-01-06T08:38:29Z",
+                "updated": "2025-01-06T08:38:29Z",
+                "url": "http://arxiv.org/abs/2501.02842v1",
+                "pdf_url": "https://arxiv.org/pdf/2501.02842v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.IR",
+                "categories": [
+                  "cs.IR",
+                  "cs.LG"
+                ]
+              },
+              {
+                "arxiv_id": "2601.16513v1",
+                "title": "Competing Visions of Ethical AI: A Case Study of OpenAI",
+                "summary": "Introduction. AI Ethics is framed distinctly across actors and stakeholder groups. We report results from a case study of OpenAI analysing ethical AI discourse. Method. Research addressed: How has OpenAI's public discourse leveraged 'ethics', 'safety', 'alignment' and adjacent related concepts over time, and what does discourse signal about framing in practice? A structured corpus, differentiating between communication for a general audience and communication with an academic audience, was assembled from public documentation. Analysis. Qualitative content analysis of ethical themes combined inductively derived and deductively applied codes. Quantitative analysis leveraged computational content analysis methods via NLP to model topics and quantify changes in rhetoric over time. Visualizations report aggregate results. For reproducible results, we have released our code at https://github.com/famous-blue-raincoat/AI_Ethics_Discourse. Results. Results indicate that safety and risk discourse dominate OpenAI's public communication and documentation, without applying academic and advocacy ethics frameworks or vocabularies. Conclusions. Implications for governance are presented, along with discussion of ethics-washing practices in industry.",
+                "authors": [
+                  "Melissa Wilfley",
+                  "Mengting Ai",
+                  "Madelyn Rose Sanfilippo"
+                ],
+                "published": "2026-01-23T07:26:45Z",
+                "updated": "2026-01-23T07:26:45Z",
+                "url": "http://arxiv.org/abs/2601.16513v1",
+                "pdf_url": "https://arxiv.org/pdf/2601.16513v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2607.04282v3",
+                "title": "The New Shape of Search: How Conversational AI Recomposes Information Seeking",
+                "summary": "The familiar search journey begins with a query and moves outward into documents, and conversational AI is commonly imagined at its mouth: ask first, then click out. Linking captured prompts and responses to the same panelists' observed searches and pageviews, and reconstructing inactivity-defined cross-surface temporal sessions (standalone assistant surfaces; search-embedded AI such as AI Overviews and AI Mode is out of scope, since it co-occurs with the results page), we find the observed journeys more often run the other way. Content usually follows search but more often precedes assistant use. Within the same panelist, the paired difference-of-directions between the two anchors is +20.6 [19.9, 21.3] percentage points; it persists within every coarse destination-domain stratum we can observe (semantic task and task-stage matching remain unresolved), and every headline result replicates in a second, adjacent month. Search tends to anchor the front of the observed journey; assistants sit deeper inside it. Assistant sessions are also far more often self-contained. User-weighted, 34.1% [33.5, 34.7] of assistant-containing sessions show no observed external web step (AI-first 10.5% [10.2, 10.9], AI-last 18.3% [17.8, 18.7], bridge/interleaved 37.1% [36.5, 37.7]), against 19.5% [19.2, 19.8] contained for search-centered sessions of the same users, a within-user contrast of +13.0 [12.5, 13.6] percentage points. We call this difference recomposition: activity is distributed differently across dialogue, search, and browsing, without implying that assistant use caused the difference. Assistant-contained also does not mean resolved: timestamps alone cannot establish one task, satisfaction, or completion. The result is a cross-surface topology of the emerging search journey and a discipline for distinguishing observed containment from inferred resolution.",
+                "authors": [
+                  "Michael Iannelli",
+                  "Alan Ai"
+                ],
+                "published": "2026-07-05T12:48:17Z",
+                "updated": "2026-08-25T17:59:40Z",
+                "url": "http://arxiv.org/abs/2607.04282v3",
+                "pdf_url": "https://arxiv.org/pdf/2607.04282v3",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC",
+                  "cs.CY",
+                  "cs.IR"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ]
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "https://arxiv.org/abs/2305.17048"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call fetch",
+          "extra tool call paper_text"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "paper_text",
+          "args": {
+            "arxiv_url": "https://arxiv.org/abs/2305.17048"
+          },
+          "result": {
+            "tool": "get_arxiv_paper_text",
+            "arxiv_id": "2305.17048",
+            "url": "https://arxiv.org/abs/2305.17048",
+            "pdf_url": "https://arxiv.org/pdf/2305.17048.pdf",
+            "pdf_path": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\arxiv_papers\\2305.17048.pdf",
+            "txt_path": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\arxiv_papers\\2305.17048.txt",
+            "page_count": 44,
+            "pages_read": 5,
+            "chars_returned": 8000,
+            "items": [
+              {
+                "title": "arXiv paper 2305.17048",
+                "url": "https://arxiv.org/abs/2305.17048",
+                "source": "arxiv.org",
+                "summary": "Intrinsic Self-Supervision for Data Quality Audits\nFabian Gröger∗ 1,2, Simone Lionetti 2, Philippe Gottfrois 1, Alvaro Gonzalez-Jimenez 1,\nLudovic Amruthalingam2, Labelling Consortium † 3, Matthew Groh 4,\nAlexander A. Navarini‡ 1,3, Marc Pouly ‡ 2\n1University of Basel 2Lucerne University of Applied Sciences and Arts\n3University Hospital of Basel 4Northwestern University\nAbstract\nBenchmark datasets in computer vision often contain off-topic images, near dupli-\ncates, and label errors, leading to inaccurate estimates of model performance. In\nthis paper, we revisit the task of data cleaning and formalize it as either a ranking\nproblem, which significantly reduces human inspection effort, or a scoring problem,\nwhich allows for automated decisions based on score distributions. We find that\na specific combination of context-aware self-supervised representation learning\nand distance-based indicators is effective in finding issues without annotation bi-\nases. This methodology, which we call SELF CLEAN , surpasses state-of-the-art\nperformance in detecting off-topic images, near duplicates, and label errors within\nwidely-used image datasets, such as ImageNet-1k, Food-101N, and STL-10, both\nfor synthetic issues and real contamination. We apply the detailed method to multi-\nple image benchmarks, identify up to 16% of issues, and confirm an improvement\nin evaluation reliability upon cleaning. The official implementation can be found\nat: https://github.com/Digital-Dermatology/SelfClean.\n1 Introduction\nIn traditional machine learning (ML), data cleaning is essential since minor contamination in the\ndataset can significantly impact model performance and robustness [1]. However, with the rise of\ndeep learning (DL) and large-scale datasets, data cleaning has become less crucial as large models\nhave shown to work relatively well even when training data has low quality [ 2]. Validating and\ncleaning large datasets is challenging, especially for high-dimensional data, because thorough manual\nverification is often not feasible. Thus, a lot of research has been focusing on learning from noisy\ndata [3] rather than fixing quality issues, as the overwhelming benefits of large-scale datasets are\nbelieved to exceed the drawback of diminished control. On the other hand, for many domains, the size\nof available datasets is still one of the main limiting factors for the progress of artificial intelligence\n(AI). In these low-data regimes, the importance of clean data is more pronounced since even fractional\namounts of poor-quality samples can substantially hamper performance and possibly lead to wrong\nconclusions [4]. This is especially relevant in high-stakes settings such as the medical domain, where\nhigh-quality data is needed to train robust models and validate their performance. However, also in\nthese domains, many practitioners rather focus on data quantity as a key performance driver and\nimplicitly assume a high-quality collection process [5]. Thus, even medical datasets are known to\ncontain varying noise levels, which can substantially undermine the progress of ML [6].\nThe necessity to report comparable results has led DL practitioners to heavily rely on benchmark\ndatasets despite them being known for containing data quality issues. For example, an evaluation of\n∗Correspondence: fabian.groeger@unibas.ch\n†Valerie Amann, Elisabeth Gössinger, Hazem Juratli, Beda Mühleisen, Alina Müller, and Veronika Schmidt\n‡Joint last authorship\n38th Conference on Neural Information Processing Systems (NeurIPS 2024) Track on Datasets and Benchmarks.\narXiv:2305.17048v3  [cs.CV]  28 Oct 2024\n\nSelfClean\nKite\nNoisy \nData\nSelf-Supervised \nRepresentation\n ImageNet\nCheXpert\nFitzpatrick17k\nLabel \nErrors\nIntra-/extra- \nclass \ndistance \nratio\nLabel \nErrors\nAtelectasis: \npositive\nBenign \nepidermal\nExact \nDuplicate\nApproximate \nDuplicate\nClustered\nIsolated\nPairwise \ndistance\nNear \nDuplicates\nOff-topic \nSamples\nAgglomerative \nclustering\nFigure 1: SELF CLEAN first trains a self-supervised encoder on noisy data to obtain latent represen-\ntations for dataset samples. It then detects off-topic samples with agglomerative clustering, near\nduplicates based on pairwise distances, and label errors using the intra-/extra- class distance ratio.\nten of the most used benchmark datasets found them to have an average label error rate of 3.4% in\nthe evaluation set [7]. Such issues in benchmark sets, especially when used for evaluation, undermine\nthe framework by which scientific progress is measured. Specifically, contamination in evaluation\nsets corrupts scores, making it unclear which methods successfully handle edge cases and obscuring\ntheir proximity to optimal performance. This is particularly relevant since many popular benchmarks\nare saturating, i.e., only saw minor relative changes in performance over the last few years [8]. Data\nquality issues in training sets, instead, may hinder optimization and produce suboptimal models.\nImportantly, despite the need for correct evaluation data, cleaning evaluation sets can be problematic,\nas it may optimistically bias performance estimates. Ignoring known data quality issues during\nevaluation is, however, also incorrect, so an appropriate compromise is necessary.\nIn this paper, we address three types of data quality issues that illustrate these mechanisms well.\nOff-topic samples, i.e., inputs included in a dataset by mistake, add noise to evaluation metrics\nwhile slowing down and confusing training. Near duplicates , i.e., different views of the same\nobject, produce arbitrary re-weighting in the evaluation set, reduce variability in the training set,\nand most importantly, often introduce leaks between training and evaluation sets that can lead to\nover-optimistic results. Label errors, i.e., wrongly annotated samples, result in incorrect evaluation\nand poison the training process. We focus on these three data quality issues because we empirically\nfound them to be frequent in existing image benchmark datasets and challenging to detect. There\nare of course other types of data quality issues, including many that can be detected using ad-hoc\nrules, such as odd brightness, aspect ratio, resolution, sharpness, and entropy in the case of images.\nIn this paper, we formulate dataset cleaning as a set of ranking problems, which greatly reduce the\neffort for manual inspection, or alternatively as a set of scoring problems, which can be used for fully\nautomatic decisions based on score distributions. We then find that a combination of self-supervised,\ndataset-specific representation learning and distance-based indicators can effectively identify multiple\nissues in image collections. We apply this approach to well-known benchmark datasets in computer\nvision and medical imaging, and discuss implications for reliability of results across these domains.\nThe outlined method enables practitioners to audit data collections, increase evaluation reliability, and\namend the training set to improve results. This work contributes to data-centric ML [9] and aims to\nbolster confidence in both existing and newly collected datasets. In summary, the main contributions\nare: 1) A novel data cleaning procedure called SELF CLEAN , which can be used to find off-topic sam-\nples, near duplicates, and label errors, and relies exclusively on the dataset itself, illustrated in figure 1.\n2) A detailed comparison between this cleaning method and competing approaches on synthetic and\nnatural contamination, including validation against human experts. 3) The application ofSELF CLEAN\nto well-known benchmarks in computer vision and medical imaging and the identification of their\nissues. 4) A practical recommendation to clean training and evaluation splits of benchmark datasets\nas a reasonable trade-off between correctness and bias for more accurate performance estimates.\n2\n\n2 Related work\nData cleaning is a core component of data analytics and a topic of interest in the data management\ncommunity [10]. Recently, the data-c"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call timeline"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "query": "technology",
+              "max_results": 5,
+              "sort_by": "relevance"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call papers"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {
+            "query": "technology",
+            "max_results": 5,
+            "sort_by": "relevance"
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "technology",
+            "api_query": "all:technology",
+            "total_results": 92425,
+            "items": [
+              {
+                "arxiv_id": "2603.01172v1",
+                "title": "Midterm Status Report of the ILC Technology Network Activities",
+                "summary": "The ILC Technology Network (ITN) was established in 2022 by the ILC International Development Team, a subcommittee of the International Committee for Future Accelerators, to advance engineering studies toward the realisation of the International Linear Collider (ILC). While the ITN work packages focus on engineering activities for the ILC, their topics are also relevant to a broad range of accelerator applications in particle physics and beyond. These work packages are being carried out now by laboratories in Asia and Europe in close collaboration. This report summarises the current status of the ITN activities.",
+                "authors": [
+                  "ILC Technology Network"
+                ],
+                "published": "2026-03-01T16:22:42Z",
+                "updated": "2026-03-01T16:22:42Z",
+                "url": "http://arxiv.org/abs/2603.01172v1",
+                "pdf_url": "https://arxiv.org/pdf/2603.01172v1",
+                "source": "arxiv.org",
+                "primary_category": "physics.acc-ph",
+                "categories": [
+                  "physics.acc-ph",
+                  "hep-ex",
+                  "hep-ph"
+                ]
+              },
+              {
+                "arxiv_id": "1908.07391v1",
+                "title": "The Rise of Blockchain Technology in Agriculture and Food Supply Chains",
+                "summary": "Blockchain is an emerging digital technology allowing ubiquitous financial transactions among distributed untrusted parties, without the need of intermediaries such as banks. This article examines the impact of blockchain technology in agriculture and food supply chain, presents existing ongoing projects and initiatives, and discusses overall implications, challenges and potential, with a critical view over the maturity of these projects. Our findings indicate that blockchain is a promising technology towards a transparent supply chain of food, with many ongoing initiatives in various food products and food-related issues, but many barriers and challenges still exist, which hinder its wider popularity among farmers and systems. These challenges involve technical aspects, education, policies and regulatory frameworks.",
+                "authors": [
+                  "Andreas Kamilaris",
+                  "Agusti Fonts",
+                  "Francesc X. Prenafeta-Boldu"
+                ],
+                "published": "2019-08-18T16:25:59Z",
+                "updated": "2019-08-18T16:25:59Z",
+                "url": "http://arxiv.org/abs/1908.07391v1",
+                "pdf_url": "https://arxiv.org/pdf/1908.07391v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY",
+                  "cs.DC",
+                  "cs.SI"
+                ]
+              },
+              {
+                "arxiv_id": "1406.5020v1",
+                "title": "Integration of Cloud Computing and Web2.0 Collaboration Technologies in E-Learning",
+                "summary": "Cloud computing technology is an emerging new computing paradigm for delivering computing services. Although it still in its early stage, it has changed the way how many applications are developed and accessed. This computing approach relies on a number of existing technologies, such as Web2.0, virtualization, Service oriented architecture SOA, Web services,etc.Cloud computing is growing rapidly and becoming an adoptable technology for the organizations especially education institutes, with its dynamic scalability and usage of virtualized resources as a service through the Internet.Today, eLearning is also becoming a very popular and powerful trend.However,in traditional web based eLearning systems,building and maintenance are located onsite in institutions or enterprises, which cause lot of problems to appear such as lacking the support of underlying infrastructure, which can dynamically allocate the needed calculation and storage resources for eLearning systems.As the need for e learning is increasing continuously and its necessary for eLearning systems to keep pace with the right technology needed for development and improvement.However, todays technologies such as Web 2.0, Cloud, etc.enable to build more successful and effective educational environment,that provide collaboration and interaction in eLearning environments.The challenge is to use and integrate these technologies in order to construct tools that allow the best possible learning results.Cloud computing and Web 2.0 are two areas that are starting to strongly effect how the development,deployment and usage of eLearning application.This paper presents the benefits of using cloud computing with the integration of Web 2.0 collaboration technologies in eLearning environment.",
+                "authors": [
+                  "Rasha Fouad AlCattan"
+                ],
+                "published": "2014-06-19T12:24:30Z",
+                "updated": "2014-06-19T12:24:30Z",
+                "url": "http://arxiv.org/abs/1406.5020v1",
+                "pdf_url": "https://arxiv.org/pdf/1406.5020v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY",
+                  "cs.DC"
+                ]
+              },
+              {
+                "arxiv_id": "1405.1157v1",
+                "title": "Persuasive Technology Contributions Toward Enhance Information Security Awareness in an Organization",
+                "summary": "Persuasion is part and parcel of human interaction. The human persuaders in society have been always exit, masters of rhetoric skilled of changing our minds, or at least our behaviors. Leaders, mothers, salesmen, and teachers are clear examples of persuaders. Persuaders often turn to technology and digital media to amplify their persuasive ends. Besides, our lives and how we lead them influenced by technologies and digital media,but for the most part, their effects on our attitudes and behaviors have been incidental, even accidental. Although, nowadays, the use of computers to sell products and services considered as the most frequent application of persuasive technology. In this short paper, based on an extensive review of literatures, we aim to give a brief introduction to persuasive technology, and how it can play a role and contribute to enhance and deliver the best practice of IT. Some challenges of persuasive technology have been discussed. At the end, some recommendations and steps should be taken place to empower IT professional practices have been listed.",
+                "authors": [
+                  "Hani A. Qudaih",
+                  "Mohammed A. Bawazir",
+                  "Shuaibu Hassan Usman",
+                  "Jamaludin Ibrahim"
+                ],
+                "published": "2014-05-06T05:54:59Z",
+                "updated": "2014-05-06T05:54:59Z",
+                "url": "http://arxiv.org/abs/1405.1157v1",
+                "pdf_url": "https://arxiv.org/pdf/1405.1157v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2012.05411v2",
+                "title": "Plasma Switch-Based Technology for High-Speed and High-Power Impedance Tuning",
+                "summary": "This paper introduces a new technology for a high-speed, high-power mobile form-factor tuner utilizing gas discharge tube plasma cells as switching components. To the best of our knowledge, this represents the first plasma-enabled RF matching network. Technology development is reviewed, the fabrication and measurement of a proof-of-concept switched stub impedance tuner are presented, and techniques for improvement are discussed. The proof-of-concept impedance tuner functions with a 27% bandwidth from 3 to almost 4 GHz and shows a power gain better than -2.5 dB across all switching state-frequency combinations at a 50 W input power level with spread coverage of the Smith chart. State change transient timing is measured to be on the order of 500 ns. This technology demonstration highlights the potential of miniaturized, rapidly-tunable, high-power, plasma-based RF devices.",
+                "authors": [
+                  "Zach Vander Missen",
+                  "Sergey Macheret",
+                  "Abbas Semnani",
+                  "Dimitrios Peroulis"
+                ],
+                "published": "2020-12-10T02:10:43Z",
+                "updated": "2021-07-19T15:21:15Z",
+                "url": "http://arxiv.org/abs/2012.05411v2",
+                "pdf_url": "https://arxiv.org/pdf/2012.05411v2",
+                "source": "arxiv.org",
+                "primary_category": "eess.SP",
+                "categories": [
+                  "eess.SP",
+                  "physics.plasm-ph"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ]
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call social_search"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {}
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": "unexpected_tool_call",
+        "failure_type": "unnecessary_tool",
+        "failures": [
+          "expected no tool call"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {},
+          "result": {
+            "tool": "arxiv_search",
+            "error": "ValueError",
+            "message": "query must be a non-empty string"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "abs/2205.08997"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call paper_text"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "paper_text",
+          "args": {
+            "arxiv_url": "abs/2205.08997"
+          },
+          "result": {
+            "tool": "get_arxiv_paper_text",
+            "arxiv_id": "2205.08997",
+            "url": "https://arxiv.org/abs/2205.08997",
+            "pdf_url": "https://arxiv.org/pdf/2205.08997.pdf",
+            "pdf_path": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\arxiv_papers\\2205.08997.pdf",
+            "txt_path": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\arxiv_papers\\2205.08997.txt",
+            "page_count": 18,
+            "pages_read": 5,
+            "chars_returned": 8000,
+            "items": [
+              {
+                "title": "arXiv paper 2205.08997",
+                "url": "https://arxiv.org/abs/2205.08997",
+                "source": "arxiv.org",
+                "summary": " \nVOLUME XX, 2017 1 \nDate of publication xxxx 00, 0000, date of current version xxxx 00, 0000.  \nDigital Object Identifier 10.1109/ACCESS.2017.Doi Number \nResilience Enhancement at Edge Cloud \nSystems \nJose Moura1 and David Hutchison2 \n1ISCTE-Instituto Universitário Lisboa, Instituto de Telecomunicações, Lisbon, Portugal   \n2School of Computing and Communications, Lancaster University, Lancaster LA1 4WA, U.K.  \nCorresponding author: Jose Moura (e-mail: jose.moura@iscte-iul.pt) \nThe work of Jose Moura was supported by Fundação para a Ciência e Tecnologia / Ministério da Ciência, Tecnologia e Ensino Superior \n(FCT/MCTES) through National Funds When Applicable Co-Funded European Union (EU) Funds under Project UIDB/50008/2020; and in \npart by the Instituto de Telecomunicações, Lisbon, Portugal. The work of David Hutchison was supported in part by the Next Generation-\nConverged Digital Infrastructure (NG-CDI) Project through U.K. Engineering and Physical Sciences Research Council (EPSRC) under \nGrant EP/R004935/1, and in part by British Telecom plc. \nABSTRACT It is becoming common practice to push interactive and location -based services from remote \ndatacenters to resource -constrained edge domains. This trend creates new management challenges at the \nnetwork edge, not least to ensure resilience. These challenges now need to be investigated and overcome. In \nthis paper, we explore the use of open -source programmable asset orchestration at edge cloud systems to \nguarantee operational resilience and a satisfactory performance level despite system incidents such as faults, \ncongestion, or cyber -attacks. We discuss the design and deployment of a new cross -level configurable \nsolution, Resilient Edge Cloud Systems (RECS). Results from appropriate tests made on RECS highlight the \npositive effects of deploying novel service and resource management algorithms at both data and control \nplanes of the programmable edge system to mitigate against disruptive events such as control channel issues, \nservice overload, or link congestion. RECS offers the following benefits: i) the switch automatically selects \nthe standalone operation mode after its disconnection from the upper-level controllers; ii) deployment of edge \nvirtualized services is made, according to client requests; iii) the client requests are served by edge services \nand the related traffic is balanced among the alternative on-demand routing paths to the edge location where \neach service is available for its clients; iv) the TCP traffic quality is protected from unfair competitiveness of \nUDP flows; and v) a set of redundant controllers is orchestrated by a top-level multi-thread cluster manager, \nusing a novel management protocol with low overhead.   \nINDEX TERMS Fault Detection, Software Design, Resilience, Mobile Computing. \nI. INTRODUCTION \nProgrammable networking concepts including Software \nDefined Networking (SDN) offer excellent prospects for \nhighly adaptable and fast management of network resources \nand data flows [1] in many modern networking scenarios such \nas Internet of Things (IoT)-enabled healthcare systems [2] or \nPeer-to-Peer (P2P) energy trading in intelligent transportation \nsystems [3]; these are typically hybrid systems joining \ncommunication and computational edge resources. \nNevertheless, SDN also brings potential problems such as \nincreasing management complexity and as a target for attack, \npotentially com promising the desired resilience of such \nsystems [4][5]. In fact, an SDN -based system could \nexperience significant degradation of its performance due to \nvarious system threats or congestion at both data forwarding \nand control levels. Consequently, it is appropriate to explore \nsuitable programmable solutions to mitigate unexpected \nsystem faults [6], congestion [7], or cyber-attacks [8]. \n \nA. BACKGROUND \nThe background of current research work as well as the \nmain operating scenario are now presented. The emerging \ndata-intensive, interactive, and location-sensitive user services \nsuch as 5G, IoT, augmented reality, and vehicle -to-vehicle \ncommunications [9] force computational resources being \nmoved from remote clouds [10] to edge clouds [11] in order \nto diminish the data and service access latency, to provide the \nedge network infrastructure with local scalable processing, \nand even to run local sel f-adaptable algorithms [12]. The \nhigher heterogeneity and scarcity of edge resources must not \nimpair the upcoming demand for reliable and efficient edge \nservices. Therefore, we propose RECS (Resilient Edge Cloud \nSystems), a programmable serverless system [13] that \norchestrates both elastic networking and computing resources \nfor enhancing the operational resilience of local on-demand \nvirtualized services at edge network domains, shown in Fig. 1. \n\n \nVOLUME XX, 2017 9 \n \nB. CONTRIBUTION AND NOVELTY \nThis work proposes practical solutions to mitigate the negative \neffects on the system performance imposed by system \nmenaces or high loads. These solutions are deployed with a \ncross-layer design at distinct vertical levels of the SDN-based \nsystem (see Fig. 2), viz. data forwarding, switching logic, and \nresilience management, aiming to build up a more resilient \nSDN-assisted system for edge computing network scenarios. \nIn a nutshell, the main aims of this contribution are to design, \nimplement, and evaluate diverse prog rammable solutions to \nsatisfy a set of goals, as follows: i) increase the resilience of a \nSDN-based system after communication failures  between \nnetwork devices and their controllers  by using a suitable \nswitch functional mode; ii) mitigate congestion situat ions at \nthe network server side , providing an elastic supply of \nvirtualized services that follows load variation; iii) overcome \ncongested links and collaborate with other solutions towards \nthe most effective use of system available resources; and iv) \nbalance control workload among SDN controllers and \nincrease resilience at the system control level. By coherently \nintegrating diverse programmable solutions, our SDN -based \nwork is a novel orchestrator for edge cloud distributed \nresources, enhancing system opera tional resilience in \nchallenging cases such as faults, congestion, or attacks. We \nalso envisage the minimization of deployment and operational \ncosts of the network infrastructure owned by a specific \nInternet provider. \n \nFIGURE 1.  RECS - a programmable serverless computing system providing on-\ndemand edge resources and elastic virtualized services with enhanced resilience \nC. STRUCTURE \nThe paper structure is as follows. After the introduction, \nSection II analyses related work, highlightin g the novel \naspects of our work. Section III discusses the design of RECS. \nThe deployment of RECS is in Section IV, and Section V \nbroadly evaluates the proposed system. Section VI \nsummarizes the discussion about the main evaluation results \nand describes how our proposal can be applied to real-life \nscenarios. Finally, Section VII concludes the paper with some \nsuggestions for future research directions. \n \n \n \nII. RELATED WORK \nRecent advances have occurred in the resilient operation of \nprogrammable edge systems [14][15][11][16]. The work \nreported here builds on the authors’ previous publications \n[14][15] which investigate important design steps toward s \nresilient operation of programmable systems at the network \nedge, in the face of severe threats to their normal operation . \nSpecifically, [14] discusses cooperation models among system \nplayers together with a penalization mechanism aga inst \ndefecting players, aiming for resilient operation. The main \noutcome from [15] is that the offloading of processes and data \nin (edge) cloud-based scenarios may undermine the accuracy \nof anomaly system detection components unless proper \ncorrective actions are taken to increase the robustness of these \ncomponents. Ref. [11] discusses best practices, following \nEuropean Telecommunication"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {}
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call send"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {},
+          "result": {
+            "tool": "send_telegram",
+            "status": "needs_confirmation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "query": "AI",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "missing tool call social_search",
+          "extra tool call papers"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {
+            "query": "AI",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "AI",
+            "api_query": "all:AI",
+            "total_results": 70544,
+            "items": [
+              {
+                "arxiv_id": "2603.28944v2",
+                "title": "Faith in AI can narrow the futures individuals consider",
+                "summary": "Artificial intelligence (AI) predictions are increasingly used to inform human decisions. Here, using a behavioral implementation of the classic Newcomb's paradox in 1,305 participants, we show that AI predictions can also shape the reasoning people use to make a decision. In this paradigm, perceived predictive authority can alter how people reason about their future actions, leading them to forgo a guaranteed reward. Over 40% of participants treated AI as such a predictive authority about their own behavior, significantly increasing the odds of forgoing the guaranteed reward by a factor of 3.39 (95% CI: 2.45-4.70) and reducing earnings by 10.7-42.9%. The effect appeared across AI presentations and decision contexts and remained detectable even when predictions repeatedly failed. When people perceive AI as capable of predicting their personal behavior, the mere presence of AI predictions may shape their decision-making, narrowing the futures they consider.",
+                "authors": [
+                  "Aoi Naito",
+                  "Hirokazu Shirado"
+                ],
+                "published": "2026-03-30T19:36:10Z",
+                "updated": "2026-07-03T09:41:30Z",
+                "url": "http://arxiv.org/abs/2603.28944v2",
+                "pdf_url": "https://arxiv.org/pdf/2603.28944v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC"
+                ]
+              },
+              {
+                "arxiv_id": "2611.09870v1",
+                "title": "AI Exposure and the Changing Responsibilities in Job Postings",
+                "summary": "The growing adoption of artificial intelligence (AI) in the workplace has raised questions about how employer demand for different work activities is changing. We examine how the prevalence and content of work activities in online job postings change in association with activity-level measures of AI exposure, derived from Copilot and Claude usage. To enable systematic comparisons, we develop a pipeline that extracts the responsibilities from job advertisements and maps them onto O*NET's standardized taxonomy of Intermediate Work Activities (IWAs). We then apply this approach to 50,000 job advertisements from 33 firms between 2023 and 2025. From this analysis, we first find that explicit mentions of AI increased by 66%, although much of this growth occurs outside descriptions of the actual work activities associated with a job. Looking specifically at the advertised job responsibilities, activities with greater AI exposure tend to decline in advertised prevalence, but only mildly as a share of the total number of responsibilities. At the same time, more AI-exposed work activities increasingly are associated with explicitly AI-related responsibilities, suggesting that employers are looking to hire people who can perform these responsibilities with AI.",
+                "authors": [
+                  "Dora Zhao",
+                  "Lin Ai",
+                  "Pranav Khadpe",
+                  "Siddharth Suri",
+                  "Scott Counts"
+                ],
+                "published": "2026-11-06T18:48:36Z",
+                "updated": "2026-11-06T18:48:36Z",
+                "url": "http://arxiv.org/abs/2611.09870v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.09870v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2501.02842v1",
+                "title": "Foundations of GenIR",
+                "summary": "The chapter discusses the foundational impact of modern generative AI models on information access (IA) systems. In contrast to traditional AI, the large-scale training and superior data modeling of generative AI models enable them to produce high-quality, human-like responses, which brings brand new opportunities for the development of IA paradigms. In this chapter, we identify and introduce two of them in details, i.e., information generation and information synthesis. Information generation allows AI to create tailored content addressing user needs directly, enhancing user experience with immediate, relevant outputs. Information synthesis leverages the ability of generative AI to integrate and reorganize existing information, providing grounded responses and mitigating issues like model hallucination, which is particularly valuable in scenarios requiring precision and external knowledge. This chapter delves into the foundational aspects of generative models, including architecture, scaling, and training, and discusses their applications in multi-modal scenarios. Additionally, it examines the retrieval-augmented generation paradigm and other methods for corpus modeling and understanding, demonstrating how generative AI can enhance information access systems. It also summarizes potential challenges and fruitful directions for future studies.",
+                "authors": [
+                  "Qingyao Ai",
+                  "Jingtao Zhan",
+                  "Yiqun Liu"
+                ],
+                "published": "2025-01-06T08:38:29Z",
+                "updated": "2025-01-06T08:38:29Z",
+                "url": "http://arxiv.org/abs/2501.02842v1",
+                "pdf_url": "https://arxiv.org/pdf/2501.02842v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.IR",
+                "categories": [
+                  "cs.IR",
+                  "cs.LG"
+                ]
+              },
+              {
+                "arxiv_id": "2601.16513v1",
+                "title": "Competing Visions of Ethical AI: A Case Study of OpenAI",
+                "summary": "Introduction. AI Ethics is framed distinctly across actors and stakeholder groups. We report results from a case study of OpenAI analysing ethical AI discourse. Method. Research addressed: How has OpenAI's public discourse leveraged 'ethics', 'safety', 'alignment' and adjacent related concepts over time, and what does discourse signal about framing in practice? A structured corpus, differentiating between communication for a general audience and communication with an academic audience, was assembled from public documentation. Analysis. Qualitative content analysis of ethical themes combined inductively derived and deductively applied codes. Quantitative analysis leveraged computational content analysis methods via NLP to model topics and quantify changes in rhetoric over time. Visualizations report aggregate results. For reproducible results, we have released our code at https://github.com/famous-blue-raincoat/AI_Ethics_Discourse. Results. Results indicate that safety and risk discourse dominate OpenAI's public communication and documentation, without applying academic and advocacy ethics frameworks or vocabularies. Conclusions. Implications for governance are presented, along with discussion of ethics-washing practices in industry.",
+                "authors": [
+                  "Melissa Wilfley",
+                  "Mengting Ai",
+                  "Madelyn Rose Sanfilippo"
+                ],
+                "published": "2026-01-23T07:26:45Z",
+                "updated": "2026-01-23T07:26:45Z",
+                "url": "http://arxiv.org/abs/2601.16513v1",
+                "pdf_url": "https://arxiv.org/pdf/2601.16513v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2607.04282v3",
+                "title": "The New Shape of Search: How Conversational AI Recomposes Information Seeking",
+                "summary": "The familiar search journey begins with a query and moves outward into documents, and conversational AI is commonly imagined at its mouth: ask first, then click out. Linking captured prompts and responses to the same panelists' observed searches and pageviews, and reconstructing inactivity-defined cross-surface temporal sessions (standalone assistant surfaces; search-embedded AI such as AI Overviews and AI Mode is out of scope, since it co-occurs with the results page), we find the observed journeys more often run the other way. Content usually follows search but more often precedes assistant use. Within the same panelist, the paired difference-of-directions between the two anchors is +20.6 [19.9, 21.3] percentage points; it persists within every coarse destination-domain stratum we can observe (semantic task and task-stage matching remain unresolved), and every headline result replicates in a second, adjacent month. Search tends to anchor the front of the observed journey; assistants sit deeper inside it. Assistant sessions are also far more often self-contained. User-weighted, 34.1% [33.5, 34.7] of assistant-containing sessions show no observed external web step (AI-first 10.5% [10.2, 10.9], AI-last 18.3% [17.8, 18.7], bridge/interleaved 37.1% [36.5, 37.7]), against 19.5% [19.2, 19.8] contained for search-centered sessions of the same users, a within-user contrast of +13.0 [12.5, 13.6] percentage points. We call this difference recomposition: activity is distributed differently across dialogue, search, and browsing, without implying that assistant use caused the difference. Assistant-contained also does not mean resolved: timestamps alone cannot establish one task, satisfaction, or completion. The result is a cross-surface topology of the emerging search journey and a discipline for distinguishing observed containment from inferred resolution.",
+                "authors": [
+                  "Michael Iannelli",
+                  "Alan Ai"
+                ],
+                "published": "2026-07-05T12:48:17Z",
+                "updated": "2026-08-25T17:59:40Z",
+                "url": "http://arxiv.org/abs/2607.04282v3",
+                "pdf_url": "https://arxiv.org/pdf/2607.04282v3",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC",
+                  "cs.CY",
+                  "cs.IR"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ]
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call timeline"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call lookup"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "query": "Sam Altman",
+              "max_results": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call timeline",
+          "extra tool call papers"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {
+            "query": "Sam Altman",
+            "max_results": 3
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "Sam Altman",
+            "api_query": "all:Sam AND all:Altman",
+            "total_results": 6,
+            "items": [
+              {
+                "arxiv_id": "2601.03267v2",
+                "title": "OpenAI GPT-5 System Card",
+                "summary": "This is the system card published alongside the OpenAI GPT-5 launch, August 2025. GPT-5 is a unified system with a smart and fast model that answers most questions, a deeper reasoning model for harder problems, and a real-time router that quickly decides which model to use based on conversation type, complexity, tool needs, and explicit intent (for example, if you say 'think hard about this' in the prompt). The router is continuously trained on real signals, including when users switch models, preference rates for responses, and measured correctness, improving over time. Once usage limits are reached, a mini version of each model handles remaining queries. This system card focuses primarily on gpt-5-thinking and gpt-5-main, while evaluations for other models are available in the appendix. The GPT-5 system not only outperforms previous models on benchmarks and answers questions more quickly, but -- more importantly -- is more useful for real-world queries. We've made significant advances in reducing hallucinations, improving instruction following, and minimizing sycophancy, and have leveled up GPT-5's performance in three of ChatGPT's most common uses: writing, coding, and health. All of the GPT-5 models additionally feature safe-completions, our latest approach to safety training to prevent disallowed content. Similarly to ChatGPT agent, we have decided to treat gpt-5-thinking as High capability in the Biological and Chemical domain under our Preparedness Framework, activating the associated safeguards. While we do not have definitive evidence that this model could meaningfully help a novice to create severe biological harm -- our defined threshold for High capability -- we have chosen to take a precautionary approach.",
+                "authors": [
+                  "Aaditya Singh",
+                  "Adam Fry",
+                  "Adam Perelman",
+                  "Adam Tart",
+                  "Adi Ganesh",
+                  "Ahmed El-Kishky",
+                  "Aidan McLaughlin",
+                  "Aiden Low",
+                  "AJ Ostrow",
+                  "Akhila Ananthram",
+                  "Akshay Nathan",
+                  "Alan Luo",
+                  "Alec Helyar",
+                  "Aleksander Madry",
+                  "Aleksandr Efremov",
+                  "Aleksandra Spyra",
+                  "Alex Baker-Whitcomb",
+                  "Alex Beutel",
+                  "Alex Karpenko",
+                  "Alex Makelov",
+                  "Alex Neitz",
+                  "Alex Wei",
+                  "Alexandra Barr",
+                  "Alexandre Kirchmeyer",
+                  "Alexey Ivanov",
+                  "Alexi Christakis",
+                  "Alistair Gillespie",
+                  "Allison Tam",
+                  "Ally Bennett",
+                  "Alvin Wan",
+                  "Alyssa Huang",
+                  "Amy McDonald Sandjideh",
+                  "Amy Yang",
+                  "Ananya Kumar",
+                  "Andre Saraiva",
+                  "Andrea Vallone",
+                  "Andrei Gheorghe",
+                  "Andres Garcia Garcia",
+                  "Andrew Braunstein",
+                  "Andrew Liu",
+                  "Andrew Schmidt",
+                  "Andrey Mereskin",
+                  "Andrey Mishchenko",
+                  "Andy Applebaum",
+                  "Andy Rogerson",
+                  "Ann Rajan",
+                  "Annie Wei",
+                  "Anoop Kotha",
+                  "Anubha Srivastava",
+                  "Anushree Agrawal",
+                  "Arun Vijayvergiya",
+                  "Ashley Tyra",
+                  "Ashvin Nair",
+                  "Avi Nayak",
+                  "Ben Eggers",
+                  "Bessie Ji",
+                  "Beth Hoover",
+                  "Bill Chen",
+                  "Blair Chen",
+                  "Boaz Barak",
+                  "Borys Minaiev",
+                  "Botao Hao",
+                  "Bowen Baker",
+                  "Brad Lightcap",
+                  "Brandon McKinzie",
+                  "Brandon Wang",
+                  "Brendan Quinn",
+                  "Brian Fioca",
+                  "Brian Hsu",
+                  "Brian Yang",
+                  "Brian Yu",
+                  "Brian Zhang",
+                  "Brittany Brenner",
+                  "Callie Riggins Zetino",
+                  "Cameron Raymond",
+                  "Camillo Lugaresi",
+                  "Carolina Paz",
+                  "Cary Hudson",
+                  "Cedric Whitney",
+                  "Chak Li",
+                  "Charles Chen",
+                  "Charlotte Cole",
+                  "Chelsea Voss",
+                  "Chen Ding",
+                  "Chen Shen",
+                  "Chengdu Huang",
+                  "Chris Colby",
+                  "Chris Hallacy",
+                  "Chris Koch",
+                  "Chris Lu",
+                  "Christina Kaplan",
+                  "Christina Kim",
+                  "CJ Minott-Henriques",
+                  "Cliff Frey",
+                  "Cody Yu",
+                  "Coley Czarnecki",
+                  "Colin Reid",
+                  "Colin Wei",
+                  "Cory Decareaux",
+                  "Cristina Scheau",
+                  "Cyril Zhang",
+                  "Cyrus Forbes",
+                  "Da Tang",
+                  "Dakota Goldberg",
+                  "Dan Roberts",
+                  "Dana Palmie",
+                  "Daniel Kappler",
+                  "Daniel Levine",
+                  "Daniel Wright",
+                  "Dave Leo",
+                  "David Lin",
+                  "David Robinson",
+                  "Declan Grabb",
+                  "Derek Chen",
+                  "Derek Lim",
+                  "Derek Salama",
+                  "Dibya Bhattacharjee",
+                  "Dimitris Tsipras",
+                  "Dinghua Li",
+                  "Dingli Yu",
+                  "DJ Strouse",
+                  "Drew Williams",
+                  "Dylan Hunn",
+                  "Ed Bayes",
+                  "Edwin Arbus",
+                  "Ekin Akyurek",
+                  "Elaine Ya Le",
+                  "Elana Widmann",
+                  "Eli Yani",
+                  "Elizabeth Proehl",
+                  "Enis Sert",
+                  "Enoch Cheung",
+                  "Eri Schwartz",
+                  "Eric Han",
+                  "Eric Jiang",
+                  "Eric Mitchell",
+                  "Eric Sigler",
+                  "Eric Wallace",
+                  "Erik Ritter",
+                  "Erin Kavanaugh",
+                  "Evan Mays",
+                  "Evgenii Nikishin",
+                  "Fangyuan Li",
+                  "Felipe Petroski Such",
+                  "Filipe de Avila Belbute Peres",
+                  "Filippo Raso",
+                  "Florent Bekerman",
+                  "Foivos Tsimpourlas",
+                  "Fotis Chantzis",
+                  "Francis Song",
+                  "Francis Zhang",
+                  "Gaby Raila",
+                  "Garrett McGrath",
+                  "Gary Briggs",
+                  "Gary Yang",
+                  "Giambattista Parascandolo",
+                  "Gildas Chabot",
+                  "Grace Kim",
+                  "Grace Zhao",
+                  "Gregory Valiant",
+                  "Guillaume Leclerc",
+                  "Hadi Salman",
+                  "Hanson Wang",
+                  "Hao Sheng",
+                  "Haoming Jiang",
+                  "Haoyu Wang",
+                  "Haozhun Jin",
+                  "Harshit Sikchi",
+                  "Heather Schmidt",
+                  "Henry Aspegren",
+                  "Honglin Chen",
+                  "Huida Qiu",
+                  "Hunter Lightman",
+                  "Ian Covert",
+                  "Ian Kivlichan",
+                  "Ian Silber",
+                  "Ian Sohl",
+                  "Ibrahim Hammoud",
+                  "Ignasi Clavera",
+                  "Ikai Lan",
+                  "Ilge Akkaya",
+                  "Ilya Kostrikov",
+                  "Irina Kofman",
+                  "Isak Etinger",
+                  "Ishaan Singal",
+                  "Jackie Hehir",
+                  "Jacob Huh",
+                  "Jacqueline Pan",
+                  "Jake Wilczynski",
+                  "Jakub Pachocki",
+                  "James Lee",
+                  "James Quinn",
+                  "Jamie Kiros",
+                  "Janvi Kalra",
+                  "Jasmyn Samaroo",
+                  "Jason Wang",
+                  "Jason Wolfe",
+                  "Jay Chen",
+                  "Jay Wang",
+                  "Jean Harb",
+                  "Jeffrey Han",
+                  "Jeffrey Wang",
+                  "Jennifer Zhao",
+                  "Jeremy Chen",
+                  "Jerene Yang",
+                  "Jerry Tworek",
+                  "Jesse Chand",
+                  "Jessica Landon",
+                  "Jessica Liang",
+                  "Ji Lin",
+                  "Jiancheng Liu",
+                  "Jianfeng Wang",
+                  "Jie Tang",
+                  "Jihan Yin",
+                  "Joanne Jang",
+                  "Joel Morris",
+                  "Joey Flynn",
+                  "Johannes Ferstad",
+                  "Johannes Heidecke",
+                  "John Fishbein",
+                  "John Hallman",
+                  "Jonah Grant",
+                  "Jonathan Chien",
+                  "Jonathan Gordon",
+                  "Jongsoo Park",
+                  "Jordan Liss",
+                  "Jos Kraaijeveld",
+                  "Joseph Guay",
+                  "Joseph Mo",
+                  "Josh Lawson",
+                  "Josh McGrath",
+                  "Joshua Vendrow",
+                  "Joy Jiao",
+                  "Julian Lee",
+                  "Julie Steele",
+                  "Julie Wang",
+                  "Junhua Mao",
+                  "Kai Chen",
+                  "Kai Hayashi",
+                  "Kai Xiao",
+                  "Kamyar Salahi",
+                  "Kan Wu",
+                  "Karan Sekhri",
+                  "Karan Sharma",
+                  "Karan Singhal",
+                  "Karen Li",
+                  "Kenny Nguyen",
+                  "Keren Gu-Lemberg",
+                  "Kevin King",
+                  "Kevin Liu",
+                  "Kevin Stone",
+                  "Kevin Yu",
+                  "Kristen Ying",
+                  "Kristian Georgiev",
+                  "Kristie Lim",
+                  "Kushal Tirumala",
+                  "Kyle Miller",
+                  "Lama Ahmad",
+                  "Larry Lv",
+                  "Laura Clare",
+                  "Laurance Fauconnet",
+                  "Lauren Itow",
+                  "Lauren Yang",
+                  "Laurentia Romaniuk",
+                  "Leah Anise",
+                  "Lee Byron",
+                  "Leher Pathak",
+                  "Leon Maksin",
+                  "Leyan Lo",
+                  "Leyton Ho",
+                  "Li Jing",
+                  "Liang Wu",
+                  "Liang Xiong",
+                  "Lien Mamitsuka",
+                  "Lin Yang",
+                  "Lindsay McCallum",
+                  "Lindsey Held",
+                  "Liz Bourgeois",
+                  "Logan Engstrom",
+                  "Lorenz Kuhn",
+                  "Louis Feuvrier",
+                  "Lu Zhang",
+                  "Lucas Switzer",
+                  "Lukas Kondraciuk",
+                  "Lukasz Kaiser",
+                  "Manas Joglekar",
+                  "Mandeep Singh",
+                  "Mandip Shah",
+                  "Manuka Stratta",
+                  "Marcus Williams",
+                  "Mark Chen",
+                  "Mark Sun",
+                  "Marselus Cayton",
+                  "Martin Li",
+                  "Marvin Zhang",
+                  "Marwan Aljubeh",
+                  "Matt Nichols",
+                  "Matthew Haines",
+                  "Max Schwarzer",
+                  "Mayank Gupta",
+                  "Meghan Shah",
+                  "Melody Y. Guan",
+                  "Melody Huang",
+                  "Meng Dong",
+                  "Mengqing Wang",
+                  "Mia Glaese",
+                  "Micah Carroll",
+                  "Michael Lampe",
+                  "Michael Malek",
+                  "Michael Sharman",
+                  "Michael Zhang",
+                  "Michele Wang",
+                  "Michelle Pokrass",
+                  "Mihai Florian",
+                  "Mikhail Pavlov",
+                  "Miles Wang",
+                  "Ming Chen",
+                  "Mingxuan Wang",
+                  "Minnia Feng",
+                  "Mo Bavarian",
+                  "Molly Lin",
+                  "Moose Abdool",
+                  "Mostafa Rohaninejad",
+                  "Nacho Soto",
+                  "Natalie Staudacher",
+                  "Natan LaFontaine",
+                  "Nathan Marwell",
+                  "Nelson Liu",
+                  "Nick Preston",
+                  "Nick Turley",
+                  "Nicklas Ansman",
+                  "Nicole Blades",
+                  "Nikil Pancha",
+                  "Nikita Mikhaylin",
+                  "Niko Felix",
+                  "Nikunj Handa",
+                  "Nishant Rai",
+                  "Nitish Keskar",
+                  "Noam Brown",
+                  "Ofir Nachum",
+                  "Oleg Boiko",
+                  "Oleg Murk",
+                  "Olivia Watkins",
+                  "Oona Gleeson",
+                  "Pamela Mishkin",
+                  "Patryk Lesiewicz",
+                  "Paul Baltescu",
+                  "Pavel Belov",
+                  "Peter Zhokhov",
+                  "Philip Pronin",
+                  "Phillip Guo",
+                  "Phoebe Thacker",
+                  "Qi Liu",
+                  "Qiming Yuan",
+                  "Qinghua Liu",
+                  "Rachel Dias",
+                  "Rachel Puckett",
+                  "Rahul Arora",
+                  "Ravi Teja Mullapudi",
+                  "Raz Gaon",
+                  "Reah Miyara",
+                  "Rennie Song",
+                  "Rishabh Aggarwal",
+                  "RJ Marsan",
+                  "Robel Yemiru",
+                  "Robert Xiong",
+                  "Rohan Kshirsagar",
+                  "Rohan Nuttall",
+                  "Roman Tsiupa",
+                  "Ronen Eldan",
+                  "Rose Wang",
+                  "Roshan James",
+                  "Roy Ziv",
+                  "Rui Shu",
+                  "Ruslan Nigmatullin",
+                  "Saachi Jain",
+                  "Saam Talaie",
+                  "Sam Altman",
+                  "Sam Arnesen",
+                  "Sam Toizer",
+                  "Sam Toyer",
+                  "Samuel Miserendino",
+                  "Sandhini Agarwal",
+                  "Sarah Yoo",
+                  "Savannah Heon",
+                  "Scott Ethersmith",
+                  "Sean Grove",
+                  "Sean Taylor",
+                  "Sebastien Bubeck",
+                  "Sever Banesiu",
+                  "Shaokyi Amdo",
+                  "Shengjia Zhao",
+                  "Sherwin Wu",
+                  "Shibani Santurkar",
+                  "Shiyu Zhao",
+                  "Shraman Ray Chaudhuri",
+                  "Shreyas Krishnaswamy",
+                  "Shuaiqi",
+                  "Xia",
+                  "Shuyang Cheng",
+                  "Shyamal Anadkat",
+                  "Simón Posada Fishman",
+                  "Simon Tobin",
+                  "Siyuan Fu",
+                  "Somay Jain",
+                  "Song Mei",
+                  "Sonya Egoian",
+                  "Spencer Kim",
+                  "Spug Golden",
+                  "SQ Mah",
+                  "Steph Lin",
+                  "Stephen Imm",
+                  "Steve Sharpe",
+                  "Steve Yadlowsky",
+                  "Sulman Choudhry",
+                  "Sungwon Eum",
+                  "Suvansh Sanjeev",
+                  "Tabarak Khan",
+                  "Tal Stramer",
+                  "Tao Wang",
+                  "Tao Xin",
+                  "Tarun Gogineni",
+                  "Taya Christianson",
+                  "Ted Sanders",
+                  "Tejal Patwardhan",
+                  "Thomas Degry",
+                  "Thomas Shadwell",
+                  "Tianfu Fu",
+                  "Tianshi Gao",
+                  "Timur Garipov",
+                  "Tina Sriskandarajah",
+                  "Toki Sherbakov",
+                  "Tomek Korbak",
+                  "Tomer Kaftan",
+                  "Tomo Hiratsuka",
+                  "Tongzhou Wang",
+                  "Tony Song",
+                  "Tony Zhao",
+                  "Troy Peterson",
+                  "Val Kharitonov",
+                  "Victoria Chernova",
+                  "Vineet Kosaraju",
+                  "Vishal Kuo",
+                  "Vitchyr Pong",
+                  "Vivek Verma",
+                  "Vlad Petrov",
+                  "Wanning Jiang",
+                  "Weixing Zhang",
+                  "Wenda Zhou",
+                  "Wenlei Xie",
+                  "Wenting Zhan",
+                  "Wes McCabe",
+                  "Will DePue",
+                  "Will Ellsworth",
+                  "Wulfie Bain",
+                  "Wyatt Thompson",
+                  "Xiangning Chen",
+                  "Xiangyu Qi",
+                  "Xin Xiang",
+                  "Xinwei Shi",
+                  "Yann Dubois",
+                  "Yaodong Yu",
+                  "Yara Khakbaz",
+                  "Yifan Wu",
+                  "Yilei Qian",
+                  "Yin Tat Lee",
+                  "Yinbo Chen",
+                  "Yizhen Zhang",
+                  "Yizhong Xiong",
+                  "Yonglong Tian",
+                  "Young Cha",
+                  "Yu Bai",
+                  "Yu Yang",
+                  "Yuan Yuan",
+                  "Yuanzhi Li",
+                  "Yufeng Zhang",
+                  "Yuguang Yang",
+                  "Yujia Jin",
+                  "Yun Jiang",
+                  "Yunyun Wang",
+                  "Yushi Wang",
+                  "Yutian Liu",
+                  "Zach Stubenvoll",
+                  "Zehao Dou",
+                  "Zheng Wu",
+                  "Zhigang Wang"
+                ],
+                "published": "2025-12-19T07:05:38Z",
+                "updated": "2026-05-01T23:55:43Z",
+                "url": "http://arxiv.org/abs/2601.03267v2",
+                "pdf_url": "https://arxiv.org/pdf/2601.03267v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.CL",
+                "categories": [
+                  "cs.CL",
+                  "cs.AI"
+                ]
+              },
+              {
+                "arxiv_id": "2412.16720v2",
+                "title": "OpenAI o1 System Card",
+                "summary": "The o1 model series is trained with large-scale reinforcement learning to reason using chain of thought. These advanced reasoning capabilities provide new avenues for improving the safety and robustness of our models. In particular, our models can reason about our safety policies in context when responding to potentially unsafe prompts, through deliberative alignment. This leads to state-of-the-art performance on certain benchmarks for risks such as generating illicit advice, choosing stereotyped responses, and succumbing to known jailbreaks. Training models to incorporate a chain of thought before answering has the potential to unlock substantial benefits, while also increasing potential risks that stem from heightened intelligence. Our results underscore the need for building robust alignment methods, extensively stress-testing their efficacy, and maintaining meticulous risk management protocols. This report outlines the safety work carried out for the OpenAI o1 and OpenAI o1-mini models, including safety evaluations, external red teaming, and Preparedness Framework evaluations.",
+                "authors": [
+                  "OpenAI",
+                  ":",
+                  "Aaron Jaech",
+                  "Adam Kalai",
+                  "Adam Lerer",
+                  "Adam Richardson",
+                  "Ahmed El-Kishky",
+                  "Aiden Low",
+                  "Alec Helyar",
+                  "Aleksander Madry",
+                  "Alex Beutel",
+                  "Alex Carney",
+                  "Alex Iftimie",
+                  "Alex Karpenko",
+                  "Alex Tachard Passos",
+                  "Alexander Neitz",
+                  "Alexander Prokofiev",
+                  "Alexander Wei",
+                  "Allison Tam",
+                  "Ally Bennett",
+                  "Ananya Kumar",
+                  "Andre Saraiva",
+                  "Andrea Vallone",
+                  "Andrew Duberstein",
+                  "Andrew Kondrich",
+                  "Andrey Mishchenko",
+                  "Andy Applebaum",
+                  "Angela Jiang",
+                  "Ashvin Nair",
+                  "Barret Zoph",
+                  "Behrooz Ghorbani",
+                  "Bohan Zhang",
+                  "Ben Rossen",
+                  "Benjamin Sokolowsky",
+                  "Boaz Barak",
+                  "Bob McGrew",
+                  "Borys Minaiev",
+                  "Botao Hao",
+                  "Bowen Baker",
+                  "Brandon Houghton",
+                  "Brandon McKinzie",
+                  "Brydon Eastman",
+                  "Camillo Lugaresi",
+                  "Cary Bassin",
+                  "Cary Hudson",
+                  "Chak Ming Li",
+                  "Charles de Bourcy",
+                  "Chelsea Voss",
+                  "Chen Shen",
+                  "Chong Zhang",
+                  "Chris Koch",
+                  "Chris Orsinger",
+                  "Christopher Hesse",
+                  "Claudia Fischer",
+                  "Clive Chan",
+                  "Dan Roberts",
+                  "Daniel Kappler",
+                  "Daniel Levy",
+                  "Daniel Selsam",
+                  "David Dohan",
+                  "David Farhi",
+                  "David Mely",
+                  "David Robinson",
+                  "Dimitris Tsipras",
+                  "Doug Li",
+                  "Dragos Oprica",
+                  "Eben Freeman",
+                  "Eddie Zhang",
+                  "Edmund Wong",
+                  "Elizabeth Proehl",
+                  "Enoch Cheung",
+                  "Eric Mitchell",
+                  "Eric Wallace",
+                  "Erik Ritter",
+                  "Evan Mays",
+                  "Fan Wang",
+                  "Felipe Petroski Such",
+                  "Filippo Raso",
+                  "Florencia Leoni",
+                  "Foivos Tsimpourlas",
+                  "Francis Song",
+                  "Fred von Lohmann",
+                  "Freddie Sulit",
+                  "Geoff Salmon",
+                  "Giambattista Parascandolo",
+                  "Gildas Chabot",
+                  "Grace Zhao",
+                  "Greg Brockman",
+                  "Guillaume Leclerc",
+                  "Hadi Salman",
+                  "Haiming Bao",
+                  "Hao Sheng",
+                  "Hart Andrin",
+                  "Hessam Bagherinezhad",
+                  "Hongyu Ren",
+                  "Hunter Lightman",
+                  "Hyung Won Chung",
+                  "Ian Kivlichan",
+                  "Ian O'Connell",
+                  "Ian Osband",
+                  "Ignasi Clavera Gilaberte",
+                  "Ilge Akkaya",
+                  "Ilya Kostrikov",
+                  "Ilya Sutskever",
+                  "Irina Kofman",
+                  "Jakub Pachocki",
+                  "James Lennon",
+                  "Jason Wei",
+                  "Jean Harb",
+                  "Jerry Twore",
+                  "Jiacheng Feng",
+                  "Jiahui Yu",
+                  "Jiayi Weng",
+                  "Jie Tang",
+                  "Jieqi Yu",
+                  "Joaquin Quiñonero Candela",
+                  "Joe Palermo",
+                  "Joel Parish",
+                  "Johannes Heidecke",
+                  "John Hallman",
+                  "John Rizzo",
+                  "Jonathan Gordon",
+                  "Jonathan Uesato",
+                  "Jonathan Ward",
+                  "Joost Huizinga",
+                  "Julie Wang",
+                  "Kai Chen",
+                  "Kai Xiao",
+                  "Karan Singhal",
+                  "Karina Nguyen",
+                  "Karl Cobbe",
+                  "Katy Shi",
+                  "Kayla Wood",
+                  "Kendra Rimbach",
+                  "Keren Gu-Lemberg",
+                  "Kevin Liu",
+                  "Kevin Lu",
+                  "Kevin Stone",
+                  "Kevin Yu",
+                  "Lama Ahmad",
+                  "Lauren Yang",
+                  "Leo Liu",
+                  "Leon Maksin",
+                  "Leyton Ho",
+                  "Liam Fedus",
+                  "Lilian Weng",
+                  "Linden Li",
+                  "Lindsay McCallum",
+                  "Lindsey Held",
+                  "Lorenz Kuhn",
+                  "Lukas Kondraciuk",
+                  "Lukasz Kaiser",
+                  "Luke Metz",
+                  "Madelaine Boyd",
+                  "Maja Trebacz",
+                  "Manas Joglekar",
+                  "Mark Chen",
+                  "Marko Tintor",
+                  "Mason Meyer",
+                  "Matt Jones",
+                  "Matt Kaufer",
+                  "Max Schwarzer",
+                  "Meghan Shah",
+                  "Mehmet Yatbaz",
+                  "Melody Y. Guan",
+                  "Mengyuan Xu",
+                  "Mengyuan Yan",
+                  "Mia Glaese",
+                  "Mianna Chen",
+                  "Michael Lampe",
+                  "Michael Malek",
+                  "Michele Wang",
+                  "Michelle Fradin",
+                  "Mike McClay",
+                  "Mikhail Pavlov",
+                  "Miles Wang",
+                  "Mingxuan Wang",
+                  "Mira Murati",
+                  "Mo Bavarian",
+                  "Mostafa Rohaninejad",
+                  "Nat McAleese",
+                  "Neil Chowdhury",
+                  "Neil Chowdhury",
+                  "Nick Ryder",
+                  "Nikolas Tezak",
+                  "Noam Brown",
+                  "Ofir Nachum",
+                  "Oleg Boiko",
+                  "Oleg Murk",
+                  "Olivia Watkins",
+                  "Patrick Chao",
+                  "Paul Ashbourne",
+                  "Pavel Izmailov",
+                  "Peter Zhokhov",
+                  "Rachel Dias",
+                  "Rahul Arora",
+                  "Randall Lin",
+                  "Rapha Gontijo Lopes",
+                  "Raz Gaon",
+                  "Reah Miyara",
+                  "Reimar Leike",
+                  "Renny Hwang",
+                  "Rhythm Garg",
+                  "Robin Brown",
+                  "Roshan James",
+                  "Rui Shu",
+                  "Ryan Cheu",
+                  "Ryan Greene",
+                  "Saachi Jain",
+                  "Sam Altman",
+                  "Sam Toizer",
+                  "Sam Toyer",
+                  "Samuel Miserendino",
+                  "Sandhini Agarwal",
+                  "Santiago Hernandez",
+                  "Sasha Baker",
+                  "Scott McKinney",
+                  "Scottie Yan",
+                  "Shengjia Zhao",
+                  "Shengli Hu",
+                  "Shibani Santurkar",
+                  "Shraman Ray Chaudhuri",
+                  "Shuyuan Zhang",
+                  "Siyuan Fu",
+                  "Spencer Papay",
+                  "Steph Lin",
+                  "Suchir Balaji",
+                  "Suvansh Sanjeev",
+                  "Szymon Sidor",
+                  "Tal Broda",
+                  "Aidan Clark",
+                  "Tao Wang",
+                  "Taylor Gordon",
+                  "Ted Sanders",
+                  "Tejal Patwardhan",
+                  "Thibault Sottiaux",
+                  "Thomas Degry",
+                  "Thomas Dimson",
+                  "Tianhao Zheng",
+                  "Timur Garipov",
+                  "Tom Stasi",
+                  "Trapit Bansal",
+                  "Trevor Creech",
+                  "Troy Peterson",
+                  "Tyna Eloundou",
+                  "Valerie Qi",
+                  "Vineet Kosaraju",
+                  "Vinnie Monaco",
+                  "Vitchyr Pong",
+                  "Vlad Fomenko",
+                  "Weiyi Zheng",
+                  "Wenda Zhou",
+                  "Wenting Zhan",
+                  "Wes McCabe",
+                  "Wojciech Zaremba",
+                  "Yann Dubois",
+                  "Yinghai Lu",
+                  "Yining Chen",
+                  "Young Cha",
+                  "Yu Bai",
+                  "Yuchen He",
+                  "Yuchen Zhang",
+                  "Yunyun Wang",
+                  "Zheng Shao",
+                  "Zhuohan Li"
+                ],
+                "published": "2024-12-21T18:04:31Z",
+                "updated": "2026-04-30T02:46:40Z",
+                "url": "http://arxiv.org/abs/2412.16720v2",
+                "pdf_url": "https://arxiv.org/pdf/2412.16720v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.AI",
+                "categories": [
+                  "cs.AI"
+                ]
+              },
+              {
+                "arxiv_id": "2410.21276v1",
+                "title": "GPT-4o System Card",
+                "summary": "GPT-4o is an autoregressive omni model that accepts as input any combination of text, audio, image, and video, and generates any combination of text, audio, and image outputs. It's trained end-to-end across text, vision, and audio, meaning all inputs and outputs are processed by the same neural network. GPT-4o can respond to audio inputs in as little as 232 milliseconds, with an average of 320 milliseconds, which is similar to human response time in conversation. It matches GPT-4 Turbo performance on text in English and code, with significant improvement on text in non-English languages, while also being much faster and 50\\% cheaper in the API. GPT-4o is especially better at vision and audio understanding compared to existing models. In line with our commitment to building AI safely and consistent with our voluntary commitments to the White House, we are sharing the GPT-4o System Card, which includes our Preparedness Framework evaluations. In this System Card, we provide a detailed look at GPT-4o's capabilities, limitations, and safety evaluations across multiple categories, focusing on speech-to-speech while also evaluating text and image capabilities, and measures we've implemented to ensure the model is safe and aligned. We also include third-party assessments on dangerous capabilities, as well as discussion of potential societal impacts of GPT-4o's text and vision capabilities.",
+                "authors": [
+                  "OpenAI",
+                  ":",
+                  "Aaron Hurst",
+                  "Adam Lerer",
+                  "Adam P. Goucher",
+                  "Adam Perelman",
+                  "Aditya Ramesh",
+                  "Aidan Clark",
+                  "AJ Ostrow",
+                  "Akila Welihinda",
+                  "Alan Hayes",
+                  "Alec Radford",
+                  "Aleksander Mądry",
+                  "Alex Baker-Whitcomb",
+                  "Alex Beutel",
+                  "Alex Borzunov",
+                  "Alex Carney",
+                  "Alex Chow",
+                  "Alex Kirillov",
+                  "Alex Nichol",
+                  "Alex Paino",
+                  "Alex Renzin",
+                  "Alex Tachard Passos",
+                  "Alexander Kirillov",
+                  "Alexi Christakis",
+                  "Alexis Conneau",
+                  "Ali Kamali",
+                  "Allan Jabri",
+                  "Allison Moyer",
+                  "Allison Tam",
+                  "Amadou Crookes",
+                  "Amin Tootoochian",
+                  "Amin Tootoonchian",
+                  "Ananya Kumar",
+                  "Andrea Vallone",
+                  "Andrej Karpathy",
+                  "Andrew Braunstein",
+                  "Andrew Cann",
+                  "Andrew Codispoti",
+                  "Andrew Galu",
+                  "Andrew Kondrich",
+                  "Andrew Tulloch",
+                  "Andrey Mishchenko",
+                  "Angela Baek",
+                  "Angela Jiang",
+                  "Antoine Pelisse",
+                  "Antonia Woodford",
+                  "Anuj Gosalia",
+                  "Arka Dhar",
+                  "Ashley Pantuliano",
+                  "Avi Nayak",
+                  "Avital Oliver",
+                  "Barret Zoph",
+                  "Behrooz Ghorbani",
+                  "Ben Leimberger",
+                  "Ben Rossen",
+                  "Ben Sokolowsky",
+                  "Ben Wang",
+                  "Benjamin Zweig",
+                  "Beth Hoover",
+                  "Blake Samic",
+                  "Bob McGrew",
+                  "Bobby Spero",
+                  "Bogo Giertler",
+                  "Bowen Cheng",
+                  "Brad Lightcap",
+                  "Brandon Walkin",
+                  "Brendan Quinn",
+                  "Brian Guarraci",
+                  "Brian Hsu",
+                  "Bright Kellogg",
+                  "Brydon Eastman",
+                  "Camillo Lugaresi",
+                  "Carroll Wainwright",
+                  "Cary Bassin",
+                  "Cary Hudson",
+                  "Casey Chu",
+                  "Chad Nelson",
+                  "Chak Li",
+                  "Chan Jun Shern",
+                  "Channing Conger",
+                  "Charlotte Barette",
+                  "Chelsea Voss",
+                  "Chen Ding",
+                  "Cheng Lu",
+                  "Chong Zhang",
+                  "Chris Beaumont",
+                  "Chris Hallacy",
+                  "Chris Koch",
+                  "Christian Gibson",
+                  "Christina Kim",
+                  "Christine Choi",
+                  "Christine McLeavey",
+                  "Christopher Hesse",
+                  "Claudia Fischer",
+                  "Clemens Winter",
+                  "Coley Czarnecki",
+                  "Colin Jarvis",
+                  "Colin Wei",
+                  "Constantin Koumouzelis",
+                  "Dane Sherburn",
+                  "Daniel Kappler",
+                  "Daniel Levin",
+                  "Daniel Levy",
+                  "David Carr",
+                  "David Farhi",
+                  "David Mely",
+                  "David Robinson",
+                  "David Sasaki",
+                  "Denny Jin",
+                  "Dev Valladares",
+                  "Dimitris Tsipras",
+                  "Doug Li",
+                  "Duc Phong Nguyen",
+                  "Duncan Findlay",
+                  "Edede Oiwoh",
+                  "Edmund Wong",
+                  "Ehsan Asdar",
+                  "Elizabeth Proehl",
+                  "Elizabeth Yang",
+                  "Eric Antonow",
+                  "Eric Kramer",
+                  "Eric Peterson",
+                  "Eric Sigler",
+                  "Eric Wallace",
+                  "Eugene Brevdo",
+                  "Evan Mays",
+                  "Farzad Khorasani",
+                  "Felipe Petroski Such",
+                  "Filippo Raso",
+                  "Francis Zhang",
+                  "Fred von Lohmann",
+                  "Freddie Sulit",
+                  "Gabriel Goh",
+                  "Gene Oden",
+                  "Geoff Salmon",
+                  "Giulio Starace",
+                  "Greg Brockman",
+                  "Hadi Salman",
+                  "Haiming Bao",
+                  "Haitang Hu",
+                  "Hannah Wong",
+                  "Haoyu Wang",
+                  "Heather Schmidt",
+                  "Heather Whitney",
+                  "Heewoo Jun",
+                  "Hendrik Kirchner",
+                  "Henrique Ponde de Oliveira Pinto",
+                  "Hongyu Ren",
+                  "Huiwen Chang",
+                  "Hyung Won Chung",
+                  "Ian Kivlichan",
+                  "Ian O'Connell",
+                  "Ian O'Connell",
+                  "Ian Osband",
+                  "Ian Silber",
+                  "Ian Sohl",
+                  "Ibrahim Okuyucu",
+                  "Ikai Lan",
+                  "Ilya Kostrikov",
+                  "Ilya Sutskever",
+                  "Ingmar Kanitscheider",
+                  "Ishaan Gulrajani",
+                  "Jacob Coxon",
+                  "Jacob Menick",
+                  "Jakub Pachocki",
+                  "James Aung",
+                  "James Betker",
+                  "James Crooks",
+                  "James Lennon",
+                  "Jamie Kiros",
+                  "Jan Leike",
+                  "Jane Park",
+                  "Jason Kwon",
+                  "Jason Phang",
+                  "Jason Teplitz",
+                  "Jason Wei",
+                  "Jason Wolfe",
+                  "Jay Chen",
+                  "Jeff Harris",
+                  "Jenia Varavva",
+                  "Jessica Gan Lee",
+                  "Jessica Shieh",
+                  "Ji Lin",
+                  "Jiahui Yu",
+                  "Jiayi Weng",
+                  "Jie Tang",
+                  "Jieqi Yu",
+                  "Joanne Jang",
+                  "Joaquin Quinonero Candela",
+                  "Joe Beutler",
+                  "Joe Landers",
+                  "Joel Parish",
+                  "Johannes Heidecke",
+                  "John Schulman",
+                  "Jonathan Lachman",
+                  "Jonathan McKay",
+                  "Jonathan Uesato",
+                  "Jonathan Ward",
+                  "Jong Wook Kim",
+                  "Joost Huizinga",
+                  "Jordan Sitkin",
+                  "Jos Kraaijeveld",
+                  "Josh Gross",
+                  "Josh Kaplan",
+                  "Josh Snyder",
+                  "Joshua Achiam",
+                  "Joy Jiao",
+                  "Joyce Lee",
+                  "Juntang Zhuang",
+                  "Justyn Harriman",
+                  "Kai Fricke",
+                  "Kai Hayashi",
+                  "Karan Singhal",
+                  "Katy Shi",
+                  "Kavin Karthik",
+                  "Kayla Wood",
+                  "Kendra Rimbach",
+                  "Kenny Hsu",
+                  "Kenny Nguyen",
+                  "Keren Gu-Lemberg",
+                  "Kevin Button",
+                  "Kevin Liu",
+                  "Kiel Howe",
+                  "Krithika Muthukumar",
+                  "Kyle Luther",
+                  "Lama Ahmad",
+                  "Larry Kai",
+                  "Lauren Itow",
+                  "Lauren Workman",
+                  "Leher Pathak",
+                  "Leo Chen",
+                  "Li Jing",
+                  "Lia Guy",
+                  "Liam Fedus",
+                  "Liang Zhou",
+                  "Lien Mamitsuka",
+                  "Lilian Weng",
+                  "Lindsay McCallum",
+                  "Lindsey Held",
+                  "Long Ouyang",
+                  "Louis Feuvrier",
+                  "Lu Zhang",
+                  "Lukas Kondraciuk",
+                  "Lukasz Kaiser",
+                  "Luke Hewitt",
+                  "Luke Metz",
+                  "Lyric Doshi",
+                  "Mada Aflak",
+                  "Maddie Simens",
+                  "Madelaine Boyd",
+                  "Madeleine Thompson",
+                  "Marat Dukhan",
+                  "Mark Chen",
+                  "Mark Gray",
+                  "Mark Hudnall",
+                  "Marvin Zhang",
+                  "Marwan Aljubeh",
+                  "Mateusz Litwin",
+                  "Matthew Zeng",
+                  "Max Johnson",
+                  "Maya Shetty",
+                  "Mayank Gupta",
+                  "Meghan Shah",
+                  "Mehmet Yatbaz",
+                  "Meng Jia Yang",
+                  "Mengchao Zhong",
+                  "Mia Glaese",
+                  "Mianna Chen",
+                  "Michael Janner",
+                  "Michael Lampe",
+                  "Michael Petrov",
+                  "Michael Wu",
+                  "Michele Wang",
+                  "Michelle Fradin",
+                  "Michelle Pokrass",
+                  "Miguel Castro",
+                  "Miguel Oom Temudo de Castro",
+                  "Mikhail Pavlov",
+                  "Miles Brundage",
+                  "Miles Wang",
+                  "Minal Khan",
+                  "Mira Murati",
+                  "Mo Bavarian",
+                  "Molly Lin",
+                  "Murat Yesildal",
+                  "Nacho Soto",
+                  "Natalia Gimelshein",
+                  "Natalie Cone",
+                  "Natalie Staudacher",
+                  "Natalie Summers",
+                  "Natan LaFontaine",
+                  "Neil Chowdhury",
+                  "Nick Ryder",
+                  "Nick Stathas",
+                  "Nick Turley",
+                  "Nik Tezak",
+                  "Niko Felix",
+                  "Nithanth Kudige",
+                  "Nitish Keskar",
+                  "Noah Deutsch",
+                  "Noel Bundick",
+                  "Nora Puckett",
+                  "Ofir Nachum",
+                  "Ola Okelola",
+                  "Oleg Boiko",
+                  "Oleg Murk",
+                  "Oliver Jaffe",
+                  "Olivia Watkins",
+                  "Olivier Godement",
+                  "Owen Campbell-Moore",
+                  "Patrick Chao",
+                  "Paul McMillan",
+                  "Pavel Belov",
+                  "Peng Su",
+                  "Peter Bak",
+                  "Peter Bakkum",
+                  "Peter Deng",
+                  "Peter Dolan",
+                  "Peter Hoeschele",
+                  "Peter Welinder",
+                  "Phil Tillet",
+                  "Philip Pronin",
+                  "Philippe Tillet",
+                  "Prafulla Dhariwal",
+                  "Qiming Yuan",
+                  "Rachel Dias",
+                  "Rachel Lim",
+                  "Rahul Arora",
+                  "Rajan Troll",
+                  "Randall Lin",
+                  "Rapha Gontijo Lopes",
+                  "Raul Puri",
+                  "Reah Miyara",
+                  "Reimar Leike",
+                  "Renaud Gaubert",
+                  "Reza Zamani",
+                  "Ricky Wang",
+                  "Rob Donnelly",
+                  "Rob Honsby",
+                  "Rocky Smith",
+                  "Rohan Sahai",
+                  "Rohit Ramchandani",
+                  "Romain Huet",
+                  "Rory Carmichael",
+                  "Rowan Zellers",
+                  "Roy Chen",
+                  "Ruby Chen",
+                  "Ruslan Nigmatullin",
+                  "Ryan Cheu",
+                  "Saachi Jain",
+                  "Sam Altman",
+                  "Sam Schoenholz",
+                  "Sam Toizer",
+                  "Samuel Miserendino",
+                  "Sandhini Agarwal",
+                  "Sara Culver",
+                  "Scott Ethersmith",
+                  "Scott Gray",
+                  "Sean Grove",
+                  "Sean Metzger",
+                  "Shamez Hermani",
+                  "Shantanu Jain",
+                  "Shengjia Zhao",
+                  "Sherwin Wu",
+                  "Shino Jomoto",
+                  "Shirong Wu",
+                  "Shuaiqi",
+                  "Xia",
+                  "Sonia Phene",
+                  "Spencer Papay",
+                  "Srinivas Narayanan",
+                  "Steve Coffey",
+                  "Steve Lee",
+                  "Stewart Hall",
+                  "Suchir Balaji",
+                  "Tal Broda",
+                  "Tal Stramer",
+                  "Tao Xu",
+                  "Tarun Gogineni",
+                  "Taya Christianson",
+                  "Ted Sanders",
+                  "Tejal Patwardhan",
+                  "Thomas Cunninghman",
+                  "Thomas Degry",
+                  "Thomas Dimson",
+                  "Thomas Raoux",
+                  "Thomas Shadwell",
+                  "Tianhao Zheng",
+                  "Todd Underwood",
+                  "Todor Markov",
+                  "Toki Sherbakov",
+                  "Tom Rubin",
+                  "Tom Stasi",
+                  "Tomer Kaftan",
+                  "Tristan Heywood",
+                  "Troy Peterson",
+                  "Tyce Walters",
+                  "Tyna Eloundou",
+                  "Valerie Qi",
+                  "Veit Moeller",
+                  "Vinnie Monaco",
+                  "Vishal Kuo",
+                  "Vlad Fomenko",
+                  "Wayne Chang",
+                  "Weiyi Zheng",
+                  "Wenda Zhou",
+                  "Wesam Manassra",
+                  "Will Sheu",
+                  "Wojciech Zaremba",
+                  "Yash Patil",
+                  "Yilei Qian",
+                  "Yongjik Kim",
+                  "Youlong Cheng",
+                  "Yu Zhang",
+                  "Yuchen He",
+                  "Yuchen Zhang",
+                  "Yujia Jin",
+                  "Yunxing Dai",
+                  "Yury Malkov"
+                ],
+                "published": "2024-10-25T17:43:01Z",
+                "updated": "2024-10-25T17:43:01Z",
+                "url": "http://arxiv.org/abs/2410.21276v1",
+                "pdf_url": "https://arxiv.org/pdf/2410.21276v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CL",
+                "categories": [
+                  "cs.CL",
+                  "cs.AI",
+                  "cs.CV",
+                  "cs.CY",
+                  "cs.LG",
+                  "cs.SD",
+                  "eess.AS"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ]
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://anthropic.com/news/claude",
+            "items": [
+              {
+                "title": "https://anthropic.com/news/claude",
+                "url": "https://anthropic.com/news/claude",
+                "source": "anthropic.com",
+                "summary": "[Skip to main content](https://www.anthropic.com/news/claude#main-content)\n\nA 404 poem byClaude Fable 5Claude Opus 5.5Claude Sonnet 5.5Claude Haiku 5.5\n\nYou came"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call timeline"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call deduplicate"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {},
+          "result": {
+            "tool": "deduplicate",
+            "error": "TypeError",
+            "message": "items must be a list of objects"
+          }
+        }
+      ]
+    }
+  ],
+  "action_execution": "dry_run_no_telegram"
+}

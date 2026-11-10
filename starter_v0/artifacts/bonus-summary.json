@@ -1,0 +1,1138 @@
+{
+  "generated_at": "2026-11-10T20:08:07+07:00",
+  "source_policy": "Only existing JSON/YAML/XML/code files were read; no run was changed and no API was called.",
+  "inventory": {
+    "tool_count": 14,
+    "tools": [
+      "clarify",
+      "deduplicate",
+      "export_digest",
+      "extract_links",
+      "fetch",
+      "format",
+      "lookup",
+      "paper_text",
+      "papers",
+      "policy",
+      "send",
+      "social_search",
+      "source_audit",
+      "timeline"
+    ],
+    "student_tool_count": 4,
+    "student_tools": {
+      "deduplicate": {
+        "registered": true,
+        "implementation": true,
+        "documentation": true
+      },
+      "export_digest": {
+        "registered": true,
+        "implementation": true,
+        "documentation": true
+      },
+      "extract_links": {
+        "registered": true,
+        "implementation": true,
+        "documentation": true
+      },
+      "source_audit": {
+        "registered": true,
+        "implementation": true,
+        "documentation": true
+      }
+    },
+    "ui_present": true,
+    "group_cases": 16,
+    "group_single_turn": 8,
+    "group_multi_turn": 8
+  },
+  "tests": {
+    "available": true,
+    "tests": 229,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 229,
+    "seconds": 6.942,
+    "timestamp": "2026-11-10T17:53:28.484110+07:00"
+  },
+  "cloud_bonus": {
+    "base": {
+      "status": "completed",
+      "run_file": "runs/v8-bonus_B_base_openai_20261110T170920329810.json",
+      "version": "v8-bonus",
+      "provider": "openai",
+      "model": "gpt-4o-mini",
+      "suite": "base",
+      "generated_at": "2026-11-10T17:09:20",
+      "artifact_version": "v8-bonus+p8a06c763d482+tc91a1b7b4da6",
+      "prompt_hash": "8a06c763d482d84eda6cb228315883b43160d3e7cc856db23785236f0c45256e",
+      "tools_hash": "c91a1b7b4da62a8842d104bf1957f42803a722ad9338d053e7ff1e060153bf73",
+      "snapshot_prompt": "artifacts/system_prompt.md",
+      "snapshot_tools": "artifacts/tools.yaml",
+      "snapshot_matches": true,
+      "tool_count": 14,
+      "action_execution": "dry_run_no_telegram",
+      "summary": {
+        "total_cases": 20,
+        "measured_cases": 20,
+        "provider_error_cases": 0,
+        "passed_cases": 19,
+        "case_accuracy": 0.95,
+        "tool_routing_accuracy": 1.0,
+        "argument_accuracy": 0.95,
+        "multiturn_accuracy": 1.0,
+        "failure_counts": {
+          "wrong_boundary": 1
+        },
+        "observed_mismatch_counts": {
+          "wrong_arg_value": 1
+        }
+      },
+      "observed_patterns": {
+        "case_counts": {
+          "unknown_tool_name": 0,
+          "wrong_tool_name": 0,
+          "invalid_json_arguments": 0,
+          "required_no_call": 0,
+          "missed_clarify": 0,
+          "duplicate_calls": 0,
+          "unexpected_tool_on_no_tool": 0,
+          "wrong_args_with_correct_routing": 1
+        },
+        "examples": {
+          "unknown_tool_name": [],
+          "wrong_tool_name": [],
+          "invalid_json_arguments": [],
+          "required_no_call": [],
+          "missed_clarify": [],
+          "duplicate_calls": [],
+          "unexpected_tool_on_no_tool": [],
+          "wrong_args_with_correct_routing": [
+            "R12_confirm_before_send"
+          ]
+        },
+        "unknown_names": {},
+        "tool_error_cases": 8,
+        "tool_error_case_ids": [
+          "R01_user_tweets_routing",
+          "R02_search_tweets_routing",
+          "R05_limit_arg",
+          "R07_search_type_arg",
+          "R13_parallel_web_and_tweets",
+          "M01_clarify_then_fill",
+          "M03_correction_handle",
+          "M05_correction_limit"
+        ],
+        "tool_error_events": 8,
+        "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+      }
+    },
+    "group": {
+      "status": "completed",
+      "run_file": "runs/v8-bonus_B_group_openai_20261110T170816913898.json",
+      "version": "v8-bonus",
+      "provider": "openai",
+      "model": "gpt-4o-mini",
+      "suite": "group",
+      "generated_at": "2026-11-10T17:08:16",
+      "artifact_version": "v8-bonus+p8a06c763d482+tc91a1b7b4da6",
+      "prompt_hash": "8a06c763d482d84eda6cb228315883b43160d3e7cc856db23785236f0c45256e",
+      "tools_hash": "c91a1b7b4da62a8842d104bf1957f42803a722ad9338d053e7ff1e060153bf73",
+      "snapshot_prompt": "artifacts/system_prompt.md",
+      "snapshot_tools": "artifacts/tools.yaml",
+      "snapshot_matches": true,
+      "tool_count": 14,
+      "action_execution": "dry_run_no_telegram",
+      "summary": {
+        "total_cases": 16,
+        "measured_cases": 16,
+        "provider_error_cases": 0,
+        "passed_cases": 16,
+        "case_accuracy": 1.0,
+        "tool_routing_accuracy": 1.0,
+        "argument_accuracy": 1.0,
+        "multiturn_accuracy": 1.0,
+        "failure_counts": {},
+        "observed_mismatch_counts": {}
+      },
+      "observed_patterns": {
+        "case_counts": {
+          "unknown_tool_name": 0,
+          "wrong_tool_name": 0,
+          "invalid_json_arguments": 0,
+          "required_no_call": 0,
+          "missed_clarify": 0,
+          "duplicate_calls": 0,
+          "unexpected_tool_on_no_tool": 0,
+          "wrong_args_with_correct_routing": 0
+        },
+        "examples": {
+          "unknown_tool_name": [],
+          "wrong_tool_name": [],
+          "invalid_json_arguments": [],
+          "required_no_call": [],
+          "missed_clarify": [],
+          "duplicate_calls": [],
+          "unexpected_tool_on_no_tool": [],
+          "wrong_args_with_correct_routing": []
+        },
+        "unknown_names": {},
+        "tool_error_cases": 2,
+        "tool_error_case_ids": [
+          "G03_social_top_and_limit",
+          "G07_correct_ranking_and_quantity"
+        ],
+        "tool_error_events": 2,
+        "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+      }
+    },
+    "extension": {
+      "status": "completed",
+      "run_file": "runs/v8-bonus_B_extension_openai_20261110T170913555070.json",
+      "version": "v8-bonus",
+      "provider": "openai",
+      "model": "gpt-4o-mini",
+      "suite": "extension",
+      "generated_at": "2026-11-10T17:09:13",
+      "artifact_version": "v8-bonus+p8a06c763d482+tc91a1b7b4da6",
+      "prompt_hash": "8a06c763d482d84eda6cb228315883b43160d3e7cc856db23785236f0c45256e",
+      "tools_hash": "c91a1b7b4da62a8842d104bf1957f42803a722ad9338d053e7ff1e060153bf73",
+      "snapshot_prompt": "artifacts/system_prompt.md",
+      "snapshot_tools": "artifacts/tools.yaml",
+      "snapshot_matches": true,
+      "tool_count": 14,
+      "action_execution": "dry_run_no_telegram",
+      "summary": {
+        "total_cases": 10,
+        "measured_cases": 10,
+        "provider_error_cases": 0,
+        "passed_cases": 8,
+        "case_accuracy": 0.8,
+        "tool_routing_accuracy": 0.9,
+        "argument_accuracy": 0.8,
+        "multiturn_accuracy": null,
+        "failure_counts": {
+          "wrong_tool": 2
+        },
+        "observed_mismatch_counts": {
+          "wrong_arg_value": 1,
+          "missing_tool_call": 1
+        }
+      },
+      "observed_patterns": {
+        "case_counts": {
+          "unknown_tool_name": 0,
+          "wrong_tool_name": 0,
+          "invalid_json_arguments": 0,
+          "required_no_call": 0,
+          "missed_clarify": 0,
+          "duplicate_calls": 0,
+          "unexpected_tool_on_no_tool": 0,
+          "wrong_args_with_correct_routing": 1
+        },
+        "examples": {
+          "unknown_tool_name": [],
+          "wrong_tool_name": [],
+          "invalid_json_arguments": [],
+          "required_no_call": [],
+          "missed_clarify": [],
+          "duplicate_calls": [],
+          "unexpected_tool_on_no_tool": [],
+          "wrong_args_with_correct_routing": [
+            "E01_company_source_policy"
+          ]
+        },
+        "unknown_names": {},
+        "tool_error_cases": 0,
+        "tool_error_case_ids": [],
+        "tool_error_events": 0,
+        "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+      }
+    }
+  },
+  "local_challenge": {
+    "runs": [
+      {
+        "status": "completed",
+        "run_file": "runs/v6-qwen3b_B_base_ollama_20261110T165759259540.json",
+        "version": "v6-qwen3b",
+        "provider": "ollama",
+        "model": "qwen2.5:3b",
+        "suite": "base",
+        "generated_at": "2026-11-10T16:57:59",
+        "artifact_version": "v6-qwen3b+p508a98436ab2+t33f07f67b016",
+        "prompt_hash": "508a98436ab209b2a42e251ee9ff6c504e7c17e5d0fe19d6bb2abe6f6e8dce90",
+        "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+        "snapshot_prompt": "artifacts/local_challenge/v6-cloud/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v6-cloud/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 11,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 3,
+          "case_accuracy": 0.15,
+          "tool_routing_accuracy": 0.15,
+          "argument_accuracy": 0.15,
+          "multiturn_accuracy": 0.1667,
+          "failure_counts": {
+            "wrong_tool": 6,
+            "wrong_arg_value": 6,
+            "unnecessary_tool": 1,
+            "missing_info": 3,
+            "wrong_boundary": 1
+          },
+          "observed_mismatch_counts": {
+            "missing_tool_call": 16,
+            "unexpected_tool_call": 1
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 10,
+            "invalid_json_arguments": 0,
+            "required_no_call": 7,
+            "missed_clarify": 3,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 1,
+            "wrong_args_with_correct_routing": 0
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [
+              "R01_user_tweets_routing",
+              "R03_web_news_routing",
+              "R04_read_url_routing",
+              "R06_timeframe_arg",
+              "R09_no_tool_capability",
+              "R11_missing_url",
+              "R12_confirm_before_send",
+              "R13_parallel_web_and_tweets",
+              "M03_correction_handle",
+              "M06_switch_tool"
+            ],
+            "invalid_json_arguments": [],
+            "required_no_call": [
+              "R02_search_tweets_routing",
+              "R05_limit_arg",
+              "R07_search_type_arg",
+              "R10_missing_handle",
+              "M01_clarify_then_fill",
+              "M02_carryover_timeframe",
+              "M05_correction_limit"
+            ],
+            "missed_clarify": [
+              "R10_missing_handle",
+              "R11_missing_url",
+              "R12_confirm_before_send"
+            ],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [
+              "R09_no_tool_capability"
+            ],
+            "wrong_args_with_correct_routing": []
+          },
+          "unknown_names": {},
+          "tool_error_cases": 2,
+          "tool_error_case_ids": [
+            "R09_no_tool_capability",
+            "M06_switch_tool"
+          ],
+          "tool_error_events": 2,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v6-qwen3b",
+        "expected_provider": "ollama",
+        "expected_model": "qwen2.5:3b",
+        "stage": "Baseline local"
+      },
+      {
+        "status": "completed",
+        "run_file": "runs/v6-qwen7b_B_base_ollama_20261110T165946557678.json",
+        "version": "v6-qwen7b",
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "suite": "base",
+        "generated_at": "2026-11-10T16:59:46",
+        "artifact_version": "v6-qwen7b+p508a98436ab2+t33f07f67b016",
+        "prompt_hash": "508a98436ab209b2a42e251ee9ff6c504e7c17e5d0fe19d6bb2abe6f6e8dce90",
+        "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+        "snapshot_prompt": "artifacts/local_challenge/v6-cloud/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v6-cloud/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 11,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 4,
+          "case_accuracy": 0.2,
+          "tool_routing_accuracy": 0.2,
+          "argument_accuracy": 0.2,
+          "multiturn_accuracy": 0.1667,
+          "failure_counts": {
+            "wrong_tool": 6,
+            "wrong_arg_value": 6,
+            "missing_info": 3,
+            "wrong_boundary": 1
+          },
+          "observed_mismatch_counts": {
+            "missing_tool_call": 16
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 7,
+            "invalid_json_arguments": 0,
+            "required_no_call": 9,
+            "missed_clarify": 3,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 0,
+            "wrong_args_with_correct_routing": 0
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [
+              "R03_web_news_routing",
+              "R04_read_url_routing",
+              "R06_timeframe_arg",
+              "R12_confirm_before_send",
+              "M02_carryover_timeframe",
+              "M03_correction_handle",
+              "M05_correction_limit"
+            ],
+            "invalid_json_arguments": [],
+            "required_no_call": [
+              "R01_user_tweets_routing",
+              "R02_search_tweets_routing",
+              "R05_limit_arg",
+              "R07_search_type_arg",
+              "R10_missing_handle",
+              "R11_missing_url",
+              "R13_parallel_web_and_tweets",
+              "M01_clarify_then_fill",
+              "M06_switch_tool"
+            ],
+            "missed_clarify": [
+              "R10_missing_handle",
+              "R11_missing_url",
+              "R12_confirm_before_send"
+            ],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [],
+            "wrong_args_with_correct_routing": []
+          },
+          "unknown_names": {},
+          "tool_error_cases": 3,
+          "tool_error_case_ids": [
+            "R04_read_url_routing",
+            "M03_correction_handle",
+            "M05_correction_limit"
+          ],
+          "tool_error_events": 3,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v6-qwen7b",
+        "expected_provider": "ollama",
+        "expected_model": "qwen2.5:7b",
+        "stage": "Baseline local"
+      },
+      {
+        "status": "completed",
+        "run_file": "runs/v4-local-qwen3b_B_base_ollama_20261110T170830351928.json",
+        "version": "v4-local-qwen3b",
+        "provider": "ollama",
+        "model": "qwen2.5:3b",
+        "suite": "base",
+        "generated_at": "2026-11-10T17:08:30",
+        "artifact_version": "v4-local-qwen3b+p735f90bd19c4+t33f07f67b016",
+        "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+        "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+        "snapshot_prompt": "artifacts/local_challenge/v4-local/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v4-local/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 11,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 5,
+          "case_accuracy": 0.25,
+          "tool_routing_accuracy": 0.5,
+          "argument_accuracy": 0.25,
+          "multiturn_accuracy": 0.1667,
+          "failure_counts": {
+            "wrong_tool": 5,
+            "wrong_arg_value": 6,
+            "missing_info": 3,
+            "wrong_boundary": 1
+          },
+          "observed_mismatch_counts": {
+            "wrong_arg_value": 6,
+            "missing_tool_call": 9
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 4,
+            "invalid_json_arguments": 0,
+            "required_no_call": 5,
+            "missed_clarify": 3,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 0,
+            "wrong_args_with_correct_routing": 5
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [
+              "R02_search_tweets_routing",
+              "R10_missing_handle",
+              "M03_correction_handle",
+              "M06_switch_tool"
+            ],
+            "invalid_json_arguments": [],
+            "required_no_call": [
+              "R11_missing_url",
+              "R12_confirm_before_send",
+              "M01_clarify_then_fill",
+              "M02_carryover_timeframe",
+              "M05_correction_limit"
+            ],
+            "missed_clarify": [
+              "R10_missing_handle",
+              "R11_missing_url",
+              "R12_confirm_before_send"
+            ],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [],
+            "wrong_args_with_correct_routing": [
+              "R01_user_tweets_routing",
+              "R03_web_news_routing",
+              "R05_limit_arg",
+              "R06_timeframe_arg",
+              "R07_search_type_arg"
+            ]
+          },
+          "unknown_names": {},
+          "tool_error_cases": 7,
+          "tool_error_case_ids": [
+            "R01_user_tweets_routing",
+            "R02_search_tweets_routing",
+            "R05_limit_arg",
+            "R06_timeframe_arg",
+            "R07_search_type_arg",
+            "R10_missing_handle",
+            "M06_switch_tool"
+          ],
+          "tool_error_events": 7,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v4-local-qwen3b",
+        "expected_provider": "ollama",
+        "expected_model": "qwen2.5:3b",
+        "stage": "v4-local · rút prompt"
+      },
+      {
+        "status": "completed",
+        "run_file": "runs/v4-local-qwen7b_B_base_ollama_20261110T171019920061.json",
+        "version": "v4-local-qwen7b",
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "suite": "base",
+        "generated_at": "2026-11-10T17:10:19",
+        "artifact_version": "v4-local-qwen7b+p735f90bd19c4+t33f07f67b016",
+        "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+        "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+        "snapshot_prompt": "artifacts/local_challenge/v4-local/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v4-local/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 11,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 5,
+          "case_accuracy": 0.25,
+          "tool_routing_accuracy": 0.5,
+          "argument_accuracy": 0.25,
+          "multiturn_accuracy": 0.1667,
+          "failure_counts": {
+            "wrong_tool": 5,
+            "wrong_arg_value": 6,
+            "missing_info": 3,
+            "wrong_boundary": 1
+          },
+          "observed_mismatch_counts": {
+            "wrong_arg_value": 6,
+            "missing_tool_call": 9
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 6,
+            "invalid_json_arguments": 0,
+            "required_no_call": 4,
+            "missed_clarify": 3,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 0,
+            "wrong_args_with_correct_routing": 5
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [
+              "R05_limit_arg",
+              "R10_missing_handle",
+              "R13_parallel_web_and_tweets",
+              "M02_carryover_timeframe",
+              "M03_correction_handle",
+              "M05_correction_limit"
+            ],
+            "invalid_json_arguments": [],
+            "required_no_call": [
+              "R11_missing_url",
+              "R12_confirm_before_send",
+              "M01_clarify_then_fill",
+              "M06_switch_tool"
+            ],
+            "missed_clarify": [
+              "R10_missing_handle",
+              "R11_missing_url",
+              "R12_confirm_before_send"
+            ],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [],
+            "wrong_args_with_correct_routing": [
+              "R01_user_tweets_routing",
+              "R03_web_news_routing",
+              "R04_read_url_routing",
+              "R06_timeframe_arg",
+              "R07_search_type_arg"
+            ]
+          },
+          "unknown_names": {},
+          "tool_error_cases": 11,
+          "tool_error_case_ids": [
+            "R01_user_tweets_routing",
+            "R02_search_tweets_routing",
+            "R03_web_news_routing",
+            "R04_read_url_routing",
+            "R05_limit_arg",
+            "R06_timeframe_arg",
+            "R07_search_type_arg",
+            "R10_missing_handle",
+            "R13_parallel_web_and_tweets",
+            "M03_correction_handle",
+            "M05_correction_limit"
+          ],
+          "tool_error_events": 11,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v4-local-qwen7b",
+        "expected_provider": "ollama",
+        "expected_model": "qwen2.5:7b",
+        "stage": "v4-local · rút prompt"
+      },
+      {
+        "status": "completed",
+        "run_file": "runs/v5-local-qwen3b_B_base_ollama_20261110T171218451428.json",
+        "version": "v5-local-qwen3b",
+        "provider": "ollama",
+        "model": "qwen2.5:3b",
+        "suite": "base",
+        "generated_at": "2026-11-10T17:12:18",
+        "artifact_version": "v5-local-qwen3b+p735f90bd19c4+t0020ceef9089",
+        "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+        "tools_hash": "0020ceef90896b6cbd5ed2e066468a1111507f35bb2d38276646f8e9a6f0fbdc",
+        "snapshot_prompt": "artifacts/local_challenge/v5-local/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v5-local/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 5,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 14,
+          "case_accuracy": 0.7,
+          "tool_routing_accuracy": 0.75,
+          "argument_accuracy": 0.7,
+          "multiturn_accuracy": 0.6667,
+          "failure_counts": {
+            "missing_info": 2,
+            "wrong_boundary": 1,
+            "out_of_scope": 1,
+            "wrong_arg_value": 1,
+            "wrong_tool": 1
+          },
+          "observed_mismatch_counts": {
+            "missing_tool_call": 4,
+            "unexpected_tool_call": 1,
+            "wrong_arg_value": 1
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 4,
+            "invalid_json_arguments": 0,
+            "required_no_call": 1,
+            "missed_clarify": 3,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 1,
+            "wrong_args_with_correct_routing": 1
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [
+              "R10_missing_handle",
+              "R12_confirm_before_send",
+              "R14_out_of_scope_coding",
+              "M06_switch_tool"
+            ],
+            "invalid_json_arguments": [],
+            "required_no_call": [
+              "R11_missing_url"
+            ],
+            "missed_clarify": [
+              "R10_missing_handle",
+              "R11_missing_url",
+              "R12_confirm_before_send"
+            ],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [
+              "R14_out_of_scope_coding"
+            ],
+            "wrong_args_with_correct_routing": [
+              "M03_correction_handle"
+            ]
+          },
+          "unknown_names": {},
+          "tool_error_cases": 11,
+          "tool_error_case_ids": [
+            "R01_user_tweets_routing",
+            "R02_search_tweets_routing",
+            "R05_limit_arg",
+            "R07_search_type_arg",
+            "R10_missing_handle",
+            "R12_confirm_before_send",
+            "R13_parallel_web_and_tweets",
+            "M01_clarify_then_fill",
+            "M03_correction_handle",
+            "M05_correction_limit",
+            "M06_switch_tool"
+          ],
+          "tool_error_events": 11,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v5-local-qwen3b",
+        "expected_provider": "ollama",
+        "expected_model": "qwen2.5:3b",
+        "stage": "v5-local · giảm tool"
+      },
+      {
+        "status": "completed",
+        "run_file": "runs/v5-local-qwen7b_B_base_ollama_20261110T171353375157.json",
+        "version": "v5-local-qwen7b",
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "suite": "base",
+        "generated_at": "2026-11-10T17:13:53",
+        "artifact_version": "v5-local-qwen7b+p735f90bd19c4+t0020ceef9089",
+        "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+        "tools_hash": "0020ceef90896b6cbd5ed2e066468a1111507f35bb2d38276646f8e9a6f0fbdc",
+        "snapshot_prompt": "artifacts/local_challenge/v5-local/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v5-local/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 5,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 15,
+          "case_accuracy": 0.75,
+          "tool_routing_accuracy": 0.8,
+          "argument_accuracy": 0.75,
+          "multiturn_accuracy": 0.6667,
+          "failure_counts": {
+            "missing_info": 3,
+            "wrong_boundary": 1,
+            "wrong_arg_value": 1
+          },
+          "observed_mismatch_counts": {
+            "missing_tool_call": 4,
+            "wrong_arg_value": 1
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 3,
+            "invalid_json_arguments": 0,
+            "required_no_call": 1,
+            "missed_clarify": 2,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 0,
+            "wrong_args_with_correct_routing": 1
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [
+              "R10_missing_handle",
+              "M01_clarify_then_fill",
+              "M05_correction_limit"
+            ],
+            "invalid_json_arguments": [],
+            "required_no_call": [
+              "R11_missing_url"
+            ],
+            "missed_clarify": [
+              "R10_missing_handle",
+              "R11_missing_url"
+            ],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [],
+            "wrong_args_with_correct_routing": [
+              "R12_confirm_before_send"
+            ]
+          },
+          "unknown_names": {},
+          "tool_error_cases": 9,
+          "tool_error_case_ids": [
+            "R01_user_tweets_routing",
+            "R02_search_tweets_routing",
+            "R05_limit_arg",
+            "R07_search_type_arg",
+            "R10_missing_handle",
+            "R13_parallel_web_and_tweets",
+            "M01_clarify_then_fill",
+            "M03_correction_handle",
+            "M05_correction_limit"
+          ],
+          "tool_error_events": 9,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v5-local-qwen7b",
+        "expected_provider": "ollama",
+        "expected_model": "qwen2.5:7b",
+        "stage": "v5-local · giảm tool"
+      },
+      {
+        "status": "completed",
+        "run_file": "runs/v6-cloud-reference_B_base_openai_20261110T171144446413.json",
+        "version": "v6-cloud-reference",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "suite": "base",
+        "generated_at": "2026-11-10T17:11:44",
+        "artifact_version": "v6-cloud-reference+p508a98436ab2+t33f07f67b016",
+        "prompt_hash": "508a98436ab209b2a42e251ee9ff6c504e7c17e5d0fe19d6bb2abe6f6e8dce90",
+        "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+        "snapshot_prompt": "artifacts/local_challenge/v6-cloud/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v6-cloud/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 11,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 19,
+          "case_accuracy": 0.95,
+          "tool_routing_accuracy": 1.0,
+          "argument_accuracy": 0.95,
+          "multiturn_accuracy": 1.0,
+          "failure_counts": {
+            "wrong_boundary": 1
+          },
+          "observed_mismatch_counts": {
+            "wrong_arg_value": 1
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 0,
+            "invalid_json_arguments": 0,
+            "required_no_call": 0,
+            "missed_clarify": 0,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 0,
+            "wrong_args_with_correct_routing": 1
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [],
+            "invalid_json_arguments": [],
+            "required_no_call": [],
+            "missed_clarify": [],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [],
+            "wrong_args_with_correct_routing": [
+              "R12_confirm_before_send"
+            ]
+          },
+          "unknown_names": {},
+          "tool_error_cases": 8,
+          "tool_error_case_ids": [
+            "R01_user_tweets_routing",
+            "R02_search_tweets_routing",
+            "R05_limit_arg",
+            "R07_search_type_arg",
+            "R13_parallel_web_and_tweets",
+            "M01_clarify_then_fill",
+            "M03_correction_handle",
+            "M05_correction_limit"
+          ],
+          "tool_error_events": 8,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v6-cloud-reference",
+        "expected_provider": "openai",
+        "expected_model": "gpt-4o-mini",
+        "stage": "Cloud đối chứng"
+      },
+      {
+        "status": "completed",
+        "run_file": "runs/v5-local-cloud-check_B_base_openai_20261110T171224367249.json",
+        "version": "v5-local-cloud-check",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "suite": "base",
+        "generated_at": "2026-11-10T17:12:24",
+        "artifact_version": "v5-local-cloud-check+p735f90bd19c4+t0020ceef9089",
+        "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+        "tools_hash": "0020ceef90896b6cbd5ed2e066468a1111507f35bb2d38276646f8e9a6f0fbdc",
+        "snapshot_prompt": "artifacts/local_challenge/v5-local/system_prompt.md",
+        "snapshot_tools": "artifacts/local_challenge/v5-local/tools.yaml",
+        "snapshot_matches": true,
+        "tool_count": 5,
+        "action_execution": "dry_run_no_telegram",
+        "summary": {
+          "total_cases": 20,
+          "measured_cases": 20,
+          "provider_error_cases": 0,
+          "passed_cases": 18,
+          "case_accuracy": 0.9,
+          "tool_routing_accuracy": 0.95,
+          "argument_accuracy": 0.9,
+          "multiturn_accuracy": 1.0,
+          "failure_counts": {
+            "missing_info": 1,
+            "wrong_boundary": 1
+          },
+          "observed_mismatch_counts": {
+            "missing_tool_call": 1,
+            "wrong_arg_value": 1
+          }
+        },
+        "observed_patterns": {
+          "case_counts": {
+            "unknown_tool_name": 0,
+            "wrong_tool_name": 1,
+            "invalid_json_arguments": 0,
+            "required_no_call": 0,
+            "missed_clarify": 1,
+            "duplicate_calls": 0,
+            "unexpected_tool_on_no_tool": 0,
+            "wrong_args_with_correct_routing": 1
+          },
+          "examples": {
+            "unknown_tool_name": [],
+            "wrong_tool_name": [
+              "R10_missing_handle"
+            ],
+            "invalid_json_arguments": [],
+            "required_no_call": [],
+            "missed_clarify": [
+              "R10_missing_handle"
+            ],
+            "duplicate_calls": [],
+            "unexpected_tool_on_no_tool": [],
+            "wrong_args_with_correct_routing": [
+              "R12_confirm_before_send"
+            ]
+          },
+          "unknown_names": {},
+          "tool_error_cases": 9,
+          "tool_error_case_ids": [
+            "R01_user_tweets_routing",
+            "R02_search_tweets_routing",
+            "R05_limit_arg",
+            "R07_search_type_arg",
+            "R10_missing_handle",
+            "R13_parallel_web_and_tweets",
+            "M01_clarify_then_fill",
+            "M03_correction_handle",
+            "M05_correction_limit"
+          ],
+          "tool_error_events": 9,
+          "counting_note": "Case-level observed patterns; counts overlap. Provider exceptions excluded. Tool errors do not change routing/argument score."
+        },
+        "expected_version": "v5-local-cloud-check",
+        "expected_provider": "openai",
+        "expected_model": "gpt-4o-mini",
+        "stage": "Kiểm tra ngược trên cloud"
+      }
+    ],
+    "completed_runs": 8,
+    "expected_runs": 8,
+    "same_base_case_payload": true,
+    "all_snapshots_match": true,
+    "pattern_definitions": {
+      "unknown_tool_name": "Tên tool không được khai báo",
+      "wrong_tool_name": "Gọi tên tool ngoài tập được mong đợi",
+      "invalid_json_arguments": "Arguments JSON lỗi",
+      "required_no_call": "Case cần tool nhưng không gọi",
+      "missed_clarify": "Cần clarify nhưng không gọi clarify",
+      "duplicate_calls": "Lặp đúng tool và cùng arguments",
+      "unexpected_tool_on_no_tool": "Gọi tool ở case yêu cầu không dùng tool",
+      "wrong_args_with_correct_routing": "Đúng routing nhưng sai args"
+    },
+    "pattern_note": "Đếm số case từ actual tool calls và flags chấm; các nhóm có thể giao nhau. Không dùng nhãn failure_type của dataset làm nguyên nhân.",
+    "runtime_note": "Local provider giới hạn max_tokens=512, timeout=120 giây, SDK retries=0. Context trong environment.json là quan sát /api/ps tại thời điểm snapshot, không phải num_ctx được đặt rõ trong từng request hoặc log context cho mọi case.",
+    "runtime_evidence_file": "artifacts/local_challenge/environment.json",
+    "runtime_evidence": {
+      "recorded_at": "2026-11-10T17:18:32.796681+07:00",
+      "ollama_version": {
+        "version": "0.40.15"
+      },
+      "models": {
+        "qwen2.5:3b": {
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen2",
+            "families": [
+              "qwen2"
+            ],
+            "parameter_size": "3.1B",
+            "quantization_level": "Q4_K_M"
+          },
+          "capabilities": [
+            "completion",
+            "tools"
+          ],
+          "parameters": null
+        },
+        "qwen2.5:7b": {
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen2",
+            "families": [
+              "qwen2"
+            ],
+            "parameter_size": "7.6B",
+            "quantization_level": "Q4_K_M"
+          },
+          "capabilities": [
+            "completion",
+            "tools"
+          ],
+          "parameters": null
+        }
+      },
+      "loaded_models": {
+        "models": [
+          {
+            "name": "qwen2.5:7b",
+            "model": "qwen2.5:7b",
+            "size": 4755397016,
+            "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "qwen2",
+              "families": [
+                "qwen2"
+              ],
+              "parameter_size": "7.6B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-11-10T17:18:52.8100813+07:00",
+            "size_vram": 4755397016,
+            "context_length": 4096,
+            "runner": "llamacpp"
+          }
+        ]
+      },
+      "request_settings": {
+        "timeout": 120.0,
+        "max_retries": 0,
+        "max_tokens": 512
+      },
+      "telegram_execution": "disabled_by_user",
+      "notes": "Only model inference is local; retrieval tools still use external APIs."
+    }
+  },
+  "confirmation": {
+    "evidence_file": "artifacts/bonus-confirmation.json",
+    "summary": {
+      "passed": 4,
+      "total": 4,
+      "all_passed": true,
+      "telegram_sent": false
+    },
+    "model_invoked": true,
+    "dialogue_source": "scripted_test",
+    "telegram_sent": false,
+    "telegram_network_requests": 0,
+    "transcript": "transcripts/v8-bonus-confirmation_openai_20261110T171006039788.transcript.json",
+    "note": "Hội thoại kiểm thử có OpenAI thật, lượt đồng ý được lập trình và executor mô phỏng. Không phải ủy quyền người dùng để gửi Telegram thật."
+  },
+  "extra_tools": {
+    "evidence_file": "artifacts/bonus-live-tools.json",
+    "summary": {
+      "passed": 3,
+      "total": 3
+    },
+    "events": [
+      {
+        "tool": "policy",
+        "passed": true,
+        "execution": "local_knowledge",
+        "elapsed_seconds": 0.0
+      },
+      {
+        "tool": "papers",
+        "passed": true,
+        "execution": "live_network",
+        "elapsed_seconds": 1.282
+      },
+      {
+        "tool": "paper_text",
+        "passed": true,
+        "execution": "live_network",
+        "elapsed_seconds": 12.562
+      }
+    ],
+    "note": "policy dùng handbook mẫu cục bộ; papers/paper_text gọi arXiv thật."
+  },
+  "demo": {
+    "local_url": "http://127.0.0.1:8501",
+    "public_url": "https://regarded-height-belongs-manor.trycloudflare.com",
+    "recorded_active": true,
+    "note": "Đường dẫn theo deployment.json; script tổng hợp không tự kiểm tra uptime."
+  },
+  "limits": [
+    "Accuracy chấm tool routing/arguments, không chấm đầy đủ chất lượng câu trả lời hoặc độ đúng của dữ liệu tool.",
+    "Provider errors bị loại khỏi mẫu số; luôn đọc số measured và provider_error_cases cùng accuracy.",
+    "Các case multi-turn eval gộp lịch sử vào một message, không thay thế hội thoại live nhiều vòng.",
+    "Model suy luận local; các tool web/arXiv vẫn gọi mạng và gửi truy vấn tới dịch vụ tương ứng.",
+    "source_audit kiểm tra metadata/loại nguồn, không xác minh sự kiện hay tính độc lập của nhiều nguồn.",
+    "X/Twitter có HTTPError trong các run đã ghi; PASS routing không chứng minh backend nguồn đó hoạt động.",
+    "Không có tin nhắn Telegram thật được gửi trong kiểm chứng bonus này."
+  ]
+}

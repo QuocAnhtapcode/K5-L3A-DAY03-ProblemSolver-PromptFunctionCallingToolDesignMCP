@@ -1,8 +1,19 @@
 __pycache__/
 *.pyc
 .venv/
+.benchmarks/
 .DS_Store
 .env
 .env.*
 !.env.example
 arxiv_papers/
+
+# Generated local exports; keep selected evidence under artifacts/
+exported_digests/
+
+# Intermediate experiment progress; submission evidence stays in runs/.
+artifacts/local_challenge/baseline.json
+artifacts/local_challenge/v4-local.json
+artifacts/local_challenge/v5-local.json
+artifacts/local_challenge/cloud-reference.json
+artifacts/local_challenge/cloud-check.json

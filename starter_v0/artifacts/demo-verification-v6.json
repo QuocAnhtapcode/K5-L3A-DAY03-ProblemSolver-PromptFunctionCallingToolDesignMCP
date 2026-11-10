@@ -1,0 +1,31 @@
+{
+  "verified_at": "2026-11-10T12:56:53+07:00",
+  "timezone": "Asia/Bangkok",
+  "public_url": "https://whether-hans-statutes-scuba.trycloudflare.com",
+  "local_url": "http://127.0.0.1:8501",
+  "public_http_status": 200,
+  "local_http_status": 200,
+  "browser_ui_verified": true,
+  "browser_checks": [
+    "chat preset and real OpenAI response",
+    "tool list",
+    "evaluation evidence tab",
+    "transcript download"
+  ],
+  "ui_deduplicate": {
+    "input_count": 3,
+    "output_count": 2,
+    "duplicates_removed": 1
+  },
+  "ui_download_verified_as_json": true,
+  "cli_transcript": "transcripts/v6_openai_20261110T120147152912.transcript.json",
+  "cli_turns": 4,
+  "unit_tests": {
+    "tests": 116,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "screenshot": "artifacts/demo-ui.jpg",
+  "report": "artifacts/REPORT.md"
+}

@@ -1,0 +1,1374 @@
+{
+  "run_id": "v5-local-qwen3b_B_base_ollama_20261110T171218451428",
+  "version": "v5-local-qwen3b",
+  "artifact_version": "v5-local-qwen3b+p735f90bd19c4+t0020ceef9089",
+  "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+  "tools_hash": "0020ceef90896b6cbd5ed2e066468a1111507f35bb2d38276646f8e9a6f0fbdc",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "system_prompt": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\system_prompt_local.md",
+  "tools": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools_local.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T17:12:18",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 14,
+    "case_accuracy": 0.7,
+    "tool_routing_accuracy": 0.75,
+    "argument_accuracy": 0.7,
+    "multiturn_accuracy": 0.6667,
+    "failure_counts": {
+      "missing_info": 2,
+      "wrong_boundary": 1,
+      "out_of_scope": 1,
+      "wrong_arg_value": 1,
+      "wrong_tool": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 4,
+      "unexpected_tool_call": 1,
+      "wrong_arg_value": 1
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=sama"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "GPT-5",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "GPT-5",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=GPT-5&search_type=Latest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "timeframe": "day",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "timeframe": "day",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Opinion: AI cannot replace being human – The Battalion",
+                "url": "https://thebatt.com/opinion/opinion-ai-cannot-replace-being-human",
+                "source": "thebatt.com",
+                "summary": "I understand the appeal. College is busy. Between classes, jobs, extracurriculars, leadership positions and trying to maintain some semblance of a social life, there are never enough hours in the day. AI makes things easier. It can generate an outline, rewrite a paragraph, summarize a reading or produce an entire essay before you have even finished your Celsius. But convenience does not necessarily facilitate education. [...] There is also something to be said about individuality. AI can generate an argument, imitate a writing style or suggest a creative direction, but our perspectives are developed through our own experiences, disagreements, mistakes and interpretations. The things that make our voices interesting are often the very things that cannot be neatly generated from a prompt. If we constantly rely on the same tools to tell us what to think and how to express it, we risk losing the differences that make [...] I am not asking anyone to abandon AI. I use it, and I recognize the benefits it provides. But I do think we need to become more conscientious about when we use it and what we are asking it to do for us. Let it help with the tedious tasks. Let it serve as a resource. But do not let it become a substitute for your own intellectual development.",
+                "score": 0.4031679
+              },
+              {
+                "title": "Wisdom in the Age of AI - First Things",
+                "url": "https://firstthings.com/wisdom-in-the-age-of-ai",
+                "source": "firstthings.com",
+                "summary": "Also conspicuously absent was any serious attention to the possible spiritual warfare dimension of AI. Some prominent Christian thinkers, including Rod Dreher and Paul Kingsnorth, are genuinely concerned that AI could serve as a conduit for demonic forces. The Christian who is serious about the reality of spiritual warfare should at least consider this possibility. Not to do so is a failure of wisdom. After all, “our struggle is not against flesh and blood, but against the rulers, against the [...] Why so few theologians and a complete absence of biblical scholars, when the central theme of the conference was wisdom in the age of AI? If Scripture is our inerrant foundation for all life and practice, and Christian theologians and biblical scholars are uniquely trained to mine the sacred texts for wise insights, then shouldn’t these scholars be strongly represented? [...] rulers, against the authorities, against the powers of this dark world and against the spiritual forces of evil in the heavenly realms” (Eph. 6:12). Of course, many mainstream scholars will mock this as kooky fringe thinking, so it is to be expected that even devout Christian scholars might hesitate to voice this concern even in an informal context, much less present the idea at an academic conference. But it is just such anxious reticence that could gravely handicap the Church in our quest for",
+                "score": 0.23155381
+              },
+              {
+                "title": "UA regents delay statement of intent on AI amid feedback",
+                "url": "https://www.alaskasnewssource.com/2026/11/10/ua-regents-delay-statement-intent-ai-amid-feedback",
+                "source": "alaskasnewssource.com",
+                "summary": "Work on the university system’s intent language began in 2025, Taylor said, when faculty requested guidance from administration on the use of AI in the classroom.\n\nWhen complete, the document is designed not to act as policy, but simply to outline the approach the UA institution is taking toward AI, develop guiding principles and put forward expectations of future actions from the administration, including eventually coming up with actual policy. [...] The action was recommended by Chief Technology Officer Benjamin Shier, and pushes off the final decision on the university system’s AI intent language until February, or until requested by UA President Matt Cooper.\n\nTaylor described the feedback being received about the draft “AI Engaged” document as “passionate.” [...] FAIRBANKS, Alaska (KTUU/KTVF) - The University of Alaska (UA) Board of Regents delayed releasing a statement of intent covering the system’s use of artificial intelligence during its November meeting Friday, giving the information technology department time to incorporate feedback from faculty, staff and students into the document.",
+                "score": 0.22167104
+              },
+              {
+                "title": "Asia not riding but building the AI boom – GIS Reports",
+                "url": "https://www.gisreportsonline.com/r/asia-building-ai-boom",
+                "source": "gisreportsonline.com",
+                "summary": "The AI ecosystem can be generally separated between three elements: models, compute power and supply chains – with the U.S. and China competing and leading for the first two. Asian countries are looking at how they can stand out amid this intense East-West competition, while capitalizing on their strengths in technology manufacturing supply chains. This has led smaller economies to identify their competitive advantages while investing in novel applications for AI in various industries such as [...] Due to demographic realities, manufacturing and exports are essential to Asian economies. AI is expected to support transitions as each country manages declines in their populations and workforce while maintaining economic growth and prosperity.\n\nContact ustoday for tailored geopolitical insights and industry-specific advisory services.\n\n## Sign up for our newsletter\n\nReceive insights from our experts every week in your inbox. [...] AI is now a priority for all governments in Asia, with each taking a different approach. Government-to-government coordination is focusing on finding ways to collaborate in the regulatory space on issues like export controls and supply chain monitoring. Elected officials are looking to support their domestic industries in the hope that local companies increase their participation in global markets.\n\n## The epicenter of AI technology is Taiwan",
+                "score": 0.20856592
+              },
+              {
+                "title": "Big Walk Used AI In 'The Final Stretch' Of Development, Kicking Off Intense Awards Debate",
+                "url": "https://aftermath.site/big-walk-ai-igf-jurors-controversy",
+                "source": "aftermath.site",
+                "summary": "Skip to content\n\nAftermath\n\nSign in   Subscribe\n\nSubscribe \n\nFollow us\n\n AI\n\n# Big Walk Used AI In 'The Final Stretch' Of Development, Kicking Off Intense Awards Debate\n\n'We support the work of those who are trying to limit the harm generative AI is doing to videogames and our world, and apologise that Big Walk’s LLM usage may not meet their standards'\n\nBy Luke Plunkett\n\n   Big Walk Used AI In 'The Final Stretch' Of Development, Kicking Off Intense Awards Debate\n\nPublished:\n\n| [...] AI\n\n/\n\n### 'Nvidia CEO Jensen Huang Had An Affair With A Chinese Spy' Is A Headline I Have Tried And Failed To Make Any Funnier\n\nCome on, man\n\nBy Luke Plunkett\n\n/\n\nCop Bastard Is A Conflicting Homage To Shotguns And John Woo \n\n Impressions\n\n/\n\n### Cop Bastard Is A Conflicting Homage To Shotguns And John Woo\n\nIt's a shame about the voice acting\n\nBy Luke Plunkett\n\n/\n\nHow To Quit Spotify And Improve Your Life In The Process \n\n music\n\n/ [...] Despite this seemingly minor use of AI, the fact remains the game used AI in development, which for some in the IGF jury pool (and beyond) was clearly a huge disappointment, especially given the game's other progressive stances. For others, however, it's merely a sign of the times, or an instance where people's distrust and exhaustion with the tech was causing them to alienate a game that otherwise had been among many's shortlist for GOTY.",
+                "score": 0.202917
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://openai.com/blog/gpt-5",
+            "items": [
+              {
+                "title": "OpenAI",
+                "url": "https://openai.com/blog/gpt-5",
+                "source": "openai.com",
+                "summary": "OpenAI\n\n# 404\n\nSearch finds no result\n\nThe question still earns its keep\n\nAsk it a new way\n\nby [gpt-6-astra(opens in a new window)](https://chatgpt.com/?surface=work&model=gpt-6-astra-wm&openaicom-did=52cdc990-ae75-4748-bf07-215286d35858&openaicom_referred=true)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 10
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=elonmusk"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "timeframe": "week",
+              "topic": "news",
+              "query": "tech"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "timeframe": "week",
+            "topic": "news",
+            "query": "tech"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "tech",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Tech set to still sway US stock market's course despite AI-driven swoon | Reuters",
+                "url": "https://www.reuters.com/business/tech-set-still-sway-us-stock-markets-course-despite-ai-driven-swoon-2026-11-09",
+                "source": "reuters.com",
+                "summary": "Yet even with the drop, tech (.SPLRCT) remains by far the biggest sector in the S&P 500, the benchmark index for the US stock market. Although its sway has diminished modestly, the tech sector still held a greater than 35% weight in the S&P 500 (.SPX) as of Thursday's ​close. [...] The continued heavy weighting of technology is a byproduct of the huge gains for ​the sector during the US stock bull market that began in October 2022. Even with the tech sector's latest slide, it has gained more than 200% over that period, nearly double the S&P 500's gain. [...] \"If somebody is in a profit-taking mode, there ​are still profits to be had,\" said Chuck Carlson, CEO at Horizon Investment Services.\n\nThe slide in tech has also made valuations for the stocks appear — at least on the surface — more modest. The tech sector's forward ‌price-to-earnings ratio — ⁠based on earnings estimates for the next 12 months — fell to 17.1 as of Thursday, according to LSEG Datastream, after it rose above 32 in October 2025.",
+                "score": 0.46599558
+              },
+              {
+                "title": "Texas Tech defeats UCF 2-0 to advance to Big 12 semifinals - Texas Tech Red Raiders",
+                "url": "https://texastech.com/news/2026/11/9/womens-soccer-texas-tech-defeats-ucf-2-0-to-advance-to-big-12-semifinals",
+                "source": "texastech.com",
+                "summary": "MANSFIELD, Texas – The No. 2 seeded Texas Tech (13-2-4) soccer team defeated No. 7 seeded UCF (11-5-2), 2-0, Monday night at Texas Health Stadium.\n\nTech moves onto the semifinals match taking place Wednesday night at 7 p.m. against either No. 3 seed Baylor or No. 6 seed Houston. [...] Tech's first shot in the first 45 minutes came in the 19th off the foot of Raleigh Greason who tried to tuck one away to the keeper's left, but it was denied near the post. A few minutes Taylor Zdrojewski's shot was blocked before Greason fired two in a row that forced a save and the other a block. The attempts would pay off as Tech's next shot found the back of the net for the 1-0 lead. [...] + Student-Athlete Development\n  + Health & Wellness\n  + Licensing & Trademarks\n  + Red Raider Club\n  + Texas Tech Athletics Partners\n  + Athletic Council\n  + Student Employment\n  + House Settlement\n  + Volunteer Coach Settlement\n  + Texas Tech University\n  + This is Texas Tech\n  + University Website\n  + EADA - Dept. of Education\n  + Virtual Campus Tour\n  + Texas Tech Club\n  + Title IX Compliance\n  + More Links\n  + Camps\n  + Gameday Employment\n  + Sports Network\n  + Sponsorship Opportunities",
+                "score": 0.37353352
+              },
+              {
+                "title": "Texas Tech Rallies in Fourth Quarter to Defeat West Virginia 53-48 - West Virginia University Athletics",
+                "url": "https://wvusports.com/news/2026/11/8/football-texas-rallies-in-fourth-quarter-to-defeat-west-virginia",
+                "source": "wvusports.com",
+                "summary": "Texas Tech improves to 8-1 overall and 5-1 in Big 12 to keep its College Football Playoff aspirations alive. The Red Raiders have games remaining at Oklahoma State, at Baylor and home to TCU to conclude the regular season.  \n   \n The Mountaineers return to Morgantown to face Kansas next Saturday seeking a sixth victory of the season to become bowl eligible. The Jayhawks lost a heartbreaker to UCF earlier today in Lawrence. [...] Texas Tech used a 12-point fourth quarter rally to defeat upset-minded West Virginia 53-48 on Saturday night at Galaxy Stadium in Lubbock, Texas.  \n    \n The 16 ½-point underdog Mountaineers used a 21-point third quarter to take a 48-41 lead into the fourth quarter, but the 13th-ranked Red Raiders made the winning plays at the end for their 14th-straight home triumph. [...] West Virginia outscored Texas Tech 21-0 in the third quarter, thanks to a Mountaineer defense that held the Red Raiders to just 12 yards in the quarter.   \n    \n Tech's third quarter possessions consisted of three plays for minus-12 yards, four plays for 10 yards and three plays for 2 yards.  \n    \n West Virginia, meanwhile, got a pair of touchdown runs from Hawkins, the second coming with 1:12 left in the third quarter to put the Mountaineers ahead 48-41.",
+                "score": 0.2752714
+              },
+              {
+                "title": "Georgia Tech Football Makes Staff Changes - Georgia Tech Yellow Jackets",
+                "url": "https://ramblinwreck.com/news/2026/11/9/fb-staff-changes",
+                "source": "ramblinwreck.com",
+                "summary": "Key is also restructuring Georgia Tech’s offensive staff. In addition to adjustments to on-field and in-game coaching responsibilities, the structure of Tech’s game-planning and other off-the-field duties are being revamped for the final three games of the season to address deficiencies on the offensive side of the ball. [...] defensive backs coach Vinnie Sunseri taking over defensive play-calling duties;\n assistant wide receivers coach DeAndre Hopkins serving as the primary wide receivers coach;\n assistant offensive line coach Brandon Torrey serving as the primary offensive line coach;\n assistant head coach/defensive line coach Jess Simpson coaching defensive ends and outside linebackers (in addition to defensive tackles);\n senior defensive analyst Jack Tyler coaching linebackers. [...] THE FLATS – Four Georgia Tech football coaches – defensive coordinator/linebackers coach Jason Semore, offensive line coach Allen Mogridge, outside linebackers/defensive ends coach Kyle Pope and wide receivers coach Jafar Williams – have been relieved of their duties, effective immediately, head coach Brent Key announced on Monday.",
+                "score": 0.2523246
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Top"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/search.php?query=OpenAI&search_type=Top"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "None of the provided tools are suitable for solving the integral problem. These tools are designed for web information retrieval, social media analysis, and other tasks unrelated to mathematics. I recommend using a mathematics tool or a math solver for this specific task.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một trợ lý được lập trình để hỗ trợ với nhiều tác vụ khác nhau. Tôi có thể tìm kiếm thông tin trên web, xem lịch sử bài đăng từ tài khoản Twitter cụ thể, tìm bài đăng phổ biến hoặc mới nhất về chủ đề cụ thể trên nhiều tài khoản, và thậm chí đọc nội dung từ một URL cụ thể. Tôi cũng có thể trả lời các câu hỏi theo yêu cầu. Hãy cho tôi biết bạn cần hỗ trợ với điều gì cụ thể.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=sama"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi cần URL của bài viết bạn muốn tóm tắt. Vui lòng cung cấp URL đó.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "URL_OF_ARTICLE"
+            }
+          }
+        ],
+        "actual_text": "To proceed with your request, I need the URL of the article you want to post. Could you please provide me with the URL?\n\n",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call fetch"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "URL_OF_ARTICLE"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "HTTPError",
+            "message": "400 Client Error: Bad Request for url: https://api.firecrawl.dev/v1/scrape"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "max_results": 5,
+              "timeframe": "day",
+              "topic": "news"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Latest",
+              "limit": 5,
+              "query": "AI"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "max_results": 5,
+            "timeframe": "day",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Opinion: AI cannot replace being human – The Battalion",
+                "url": "https://thebatt.com/opinion/opinion-ai-cannot-replace-being-human",
+                "source": "thebatt.com",
+                "summary": "I understand the appeal. College is busy. Between classes, jobs, extracurriculars, leadership positions and trying to maintain some semblance of a social life, there are never enough hours in the day. AI makes things easier. It can generate an outline, rewrite a paragraph, summarize a reading or produce an entire essay before you have even finished your Celsius. But convenience does not necessarily facilitate education. [...] There is also something to be said about individuality. AI can generate an argument, imitate a writing style or suggest a creative direction, but our perspectives are developed through our own experiences, disagreements, mistakes and interpretations. The things that make our voices interesting are often the very things that cannot be neatly generated from a prompt. If we constantly rely on the same tools to tell us what to think and how to express it, we risk losing the differences that make [...] I am not asking anyone to abandon AI. I use it, and I recognize the benefits it provides. But I do think we need to become more conscientious about when we use it and what we are asking it to do for us. Let it help with the tedious tasks. Let it serve as a resource. But do not let it become a substitute for your own intellectual development.",
+                "score": 0.4031679
+              },
+              {
+                "title": "Wisdom in the Age of AI - First Things",
+                "url": "https://firstthings.com/wisdom-in-the-age-of-ai",
+                "source": "firstthings.com",
+                "summary": "Also conspicuously absent was any serious attention to the possible spiritual warfare dimension of AI. Some prominent Christian thinkers, including Rod Dreher and Paul Kingsnorth, are genuinely concerned that AI could serve as a conduit for demonic forces. The Christian who is serious about the reality of spiritual warfare should at least consider this possibility. Not to do so is a failure of wisdom. After all, “our struggle is not against flesh and blood, but against the rulers, against the [...] Why so few theologians and a complete absence of biblical scholars, when the central theme of the conference was wisdom in the age of AI? If Scripture is our inerrant foundation for all life and practice, and Christian theologians and biblical scholars are uniquely trained to mine the sacred texts for wise insights, then shouldn’t these scholars be strongly represented? [...] rulers, against the authorities, against the powers of this dark world and against the spiritual forces of evil in the heavenly realms” (Eph. 6:12). Of course, many mainstream scholars will mock this as kooky fringe thinking, so it is to be expected that even devout Christian scholars might hesitate to voice this concern even in an informal context, much less present the idea at an academic conference. But it is just such anxious reticence that could gravely handicap the Church in our quest for",
+                "score": 0.23155381
+              },
+              {
+                "title": "UA regents delay statement of intent on AI amid feedback",
+                "url": "https://www.alaskasnewssource.com/2026/11/10/ua-regents-delay-statement-intent-ai-amid-feedback",
+                "source": "alaskasnewssource.com",
+                "summary": "Work on the university system’s intent language began in 2025, Taylor said, when faculty requested guidance from administration on the use of AI in the classroom.\n\nWhen complete, the document is designed not to act as policy, but simply to outline the approach the UA institution is taking toward AI, develop guiding principles and put forward expectations of future actions from the administration, including eventually coming up with actual policy. [...] The action was recommended by Chief Technology Officer Benjamin Shier, and pushes off the final decision on the university system’s AI intent language until February, or until requested by UA President Matt Cooper.\n\nTaylor described the feedback being received about the draft “AI Engaged” document as “passionate.” [...] FAIRBANKS, Alaska (KTUU/KTVF) - The University of Alaska (UA) Board of Regents delayed releasing a statement of intent covering the system’s use of artificial intelligence during its November meeting Friday, giving the information technology department time to incorporate feedback from faculty, staff and students into the document.",
+                "score": 0.22167104
+              },
+              {
+                "title": "Asia not riding but building the AI boom – GIS Reports",
+                "url": "https://www.gisreportsonline.com/r/asia-building-ai-boom",
+                "source": "gisreportsonline.com",
+                "summary": "The AI ecosystem can be generally separated between three elements: models, compute power and supply chains – with the U.S. and China competing and leading for the first two. Asian countries are looking at how they can stand out amid this intense East-West competition, while capitalizing on their strengths in technology manufacturing supply chains. This has led smaller economies to identify their competitive advantages while investing in novel applications for AI in various industries such as [...] Due to demographic realities, manufacturing and exports are essential to Asian economies. AI is expected to support transitions as each country manages declines in their populations and workforce while maintaining economic growth and prosperity.\n\nContact ustoday for tailored geopolitical insights and industry-specific advisory services.\n\n## Sign up for our newsletter\n\nReceive insights from our experts every week in your inbox. [...] AI is now a priority for all governments in Asia, with each taking a different approach. Government-to-government coordination is focusing on finding ways to collaborate in the regulatory space on issues like export controls and supply chain monitoring. Elected officials are looking to support their domestic industries in the hope that local companies increase their participation in global markets.\n\n## The epicenter of AI technology is Taiwan",
+                "score": 0.20856592
+              },
+              {
+                "title": "Big Walk Used AI In 'The Final Stretch' Of Development, Kicking Off Intense Awards Debate",
+                "url": "https://aftermath.site/big-walk-ai-igf-jurors-controversy",
+                "source": "aftermath.site",
+                "summary": "Skip to content\n\nAftermath\n\nSign in   Subscribe\n\nSubscribe \n\nFollow us\n\n AI\n\n# Big Walk Used AI In 'The Final Stretch' Of Development, Kicking Off Intense Awards Debate\n\n'We support the work of those who are trying to limit the harm generative AI is doing to videogames and our world, and apologise that Big Walk’s LLM usage may not meet their standards'\n\nBy Luke Plunkett\n\n   Big Walk Used AI In 'The Final Stretch' Of Development, Kicking Off Intense Awards Debate\n\nPublished:\n\n| [...] AI\n\n/\n\n### 'Nvidia CEO Jensen Huang Had An Affair With A Chinese Spy' Is A Headline I Have Tried And Failed To Make Any Funnier\n\nCome on, man\n\nBy Luke Plunkett\n\n/\n\nCop Bastard Is A Conflicting Homage To Shotguns And John Woo \n\n Impressions\n\n/\n\n### Cop Bastard Is A Conflicting Homage To Shotguns And John Woo\n\nIt's a shame about the voice acting\n\nBy Luke Plunkett\n\n/\n\nHow To Quit Spotify And Improve Your Life In The Process \n\n music\n\n/ [...] Despite this seemingly minor use of AI, the fact remains the game used AI in development, which for some in the IGF jury pool (and beyond) was clearly a huge disappointment, especially given the game's other progressive stances. For others, however, it's merely a sign of the times, or an instance where people's distrust and exhaustion with the tech was causing them to alienate a game that otherwise had been among many's shortlist for GOTY.",
+                "score": 0.202917
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "search_type": "Latest",
+            "limit": 5,
+            "query": "AI"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=AI&search_type=Latest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn tôi viết một hàm Python tính toán Fibonacci bằng cách sử dụng recursion. Bạn cần hàm được viết ở ngôn ngữ nào?"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": "unexpected_tool_call",
+        "failure_type": "out_of_scope",
+        "failures": [
+          "expected no tool call"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn tôi viết một hàm Python tính toán Fibonacci bằng cách sử dụng recursion. Bạn cần hàm được viết ở ngôn ngữ nào?"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn tôi viết một hàm Python tính toán Fibonacci bằng cách sử dụng recursion. Bạn cần hàm được viết ở ngôn ngữ nào?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=elonmusk"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "max_results": 5,
+              "timeframe": "day",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "robotics",
+            "max_results": 5,
+            "timeframe": "day",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Recent advances in AI are creating a 'paradigm shift' for robotics - Berkeley News",
+                "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                "source": "news.berkeley.edu",
+                "summary": "Traditionally, engineers can directly program the software that tells robots how to perceive objects, plan movements and control their actions, a process called model-based robotics. Or, with model-free robotics, they can train robots to learn behaviors from demonstrations through imitation learning. The first approach requires extensive engineering, while the second needs enormous amounts of data and time. [...] Berkeley-based Ambi Robotics, which specializes in logistics and warehouse order fulfillment, applied the new methods earlier this year to analyze parcel sorting data and test updates to robot behavior. Tests showed an increased capacity of over 15,000 packages sorted annually per robot; the change is now deployed across 30% of the company’s U.S. fleet. [...] Ken Goldberg\n\n“Agentic robotics is a fundamental shift in how robots are controlled,” Goldberg said. “Instead of collecting massive amounts of data and hand-tuning every behavior, teams of agents can quickly generate, test and refine robot programs that allow human engineers to interpret how the programs work for fine-tuning and verification.”",
+                "score": 0.52057004
+              },
+              {
+                "title": "AI² Robotics Joins Indonesia’s National Strategic Industries | Gasgoo",
+                "url": "https://autonews.gasgoo.com/articles/news/ai-robotics-joins-indonesias-national-strategic-industries-2120056200636563457",
+                "source": "autonews.gasgoo.com",
+                "summary": "Underpinning this deployment is AI² Robotics's integrated \"Model × Hardware × Scenario\" capability. The approach centers on a brain-like embodied large model as the intelligence core, mass-producible and stable robotic bodies as the vehicle, and real-world productivity scenarios as the driving force. [...] Gasgoo Munich-On November 9, AI² Robotics announced it has signed a memorandum of understanding with the Danantara Development Management Fund (DDMF), the investment arm of Indonesia's state-backed wealth fund Danantara Indonesia. The partnership will focus on pilot applications, industrial collaboration, and local deployment of general-purpose intelligent robots and embodied AI technology across the archipelago. [...] The agreement was signed during the inaugural Danantara Technology Innovation Investment Forum (DTIIF 2026) in Jakarta, with Zhang Peng, AI² Robotics's co-founder, signing on behalf of the company.\n\nImage Credit: AI² Robotics\n\nOperating independently under the president's office, Danantara Indonesia holds substantial influence. AI² Robotics is now the first—and currently the only—robotics company to join DDMF's embodied AI cooperation roster.",
+                "score": 0.47300056
+              },
+              {
+                "title": "ListEasier introduces AI robotics for automated e-commerce listings",
+                "url": "https://www.retail-insight-network.com/news/listeasier-ai-robotics-automated-e-commerce-listings",
+                "source": "retail-insight-network.com",
+                "summary": "Find out more\n\nUnder the system, robotics hardware places items, captures images from several angles using computer vision and records spatial dimensions without manual intervention.\n\nListEasier’s vision and natural language processing models then analyse the visual data, extract product attributes, identify condition details and generate listing metadata. [...] Its PriceEasier engine calculates price points across global marketplaces, while completed catalogue profiles are sent to sales channels and marketplaces in seconds.\n\nListEasier said the launch covers warehouse automation, industrial reverse logistics and high-volume e-commerce inventory processing, segments it estimates represent a C$45bn (US$31.89bn) total addressable market.\n\nThe system is designed to reduce manual labour requirements and inspection delays in listing workflows, it added. [...] The launch follows the company’s reported milestone of listing more than $200m in gross merchandise value and a sixfold increase in data-processing speed.\n\nListEasier co-founder and COO Josh van der Meulen said: “Transitioning AI out of the browser and directly onto the warehouse floor represents a structural shift in inventory processing. We are turning manual physical inventory intake into a high-speed, automated assembly line.”",
+                "score": 0.41250706
+              },
+              {
+                "title": "Autonomous EV developer Humble Robotics adds $51M to expand - TT",
+                "url": "https://www.ttnews.com/articles/autonomous-ev-humble-51m",
+                "source": "ttnews.com",
+                "summary": "Humble Robotics raised $51 million in Series A financing, bringing its total funding to $75 million less than a year after its founding.\n The company is developing the Humble Hauler, a battery-electric, cabless Class 8 autonomous vehicle for regional freight routes under 250 miles.\n Humble will fund customer pilots, testing, early manufacturing and expansion into vehicles for 40-foot containers and 53-foot dry van and refrigerated trailers. [...] Stay on top of transportation news: [Get TTNews in your inbox.]\n\nHumble Robotics secured $51 million in new financing, bringing the autonomous electric vehicle developer’s total funding to $75 million less than a year after its founding. [...] The Hauler uses vision-language-action models and is equipped with cameras, lidar and radar that provide 360-degree coverage of its surroundings. The battery-electric skateboard platform has an aerodynamic shield at the front, while shipping containers can be attached through a twist-lock interface.",
+                "score": 0.4017588
+              },
+              {
+                "title": "Kenwood High School JROTC Robotics Program earns regional recognition - ClarksvilleNow.com",
+                "url": "https://clarksvillenow.com/local/kenwood-high-school-jrotc-robotics-program-earns-regional-recognition",
+                "source": "clarksvillenow.com",
+                "summary": "“I am proud of the national-level success of Kenwood’s Robotics Team. It reflects the faculty, JROTC instructors, and cadets’ hard work and dedication toward creating an elite mindset at the school,” Lightner said.\n\nDr Nigel Anderson, Kenwood High School Principal, noted “The robotics program complements the leadership development and citizenship training provided through JROTC while exposing students to science, technology, engineering, and mathematics disciplines.” [...] CLARKSVILLE TN – The Kenwood High School JROTC Robotics Program has grown from a single robotics team into a four-team program that is competing successfully at regional and national-level events. The program currently fields Teams 26163X, 26163A, 26163L, and 26163S, providing students with opportunities to develop skills in engineering, programming, and problem-solving. [...] During the current robotics’ competition season, Team 26163X captured first place at the Tennessee State Fair Robotics Competition. The team followed that performance with another first-place finish at a competition in Elizabethton, Tennessee, where it also received a technical award recognizing excellence in robot design and engineering.",
+                "score": 0.36473283
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "screenname: expected 'karpathy', got 'sama'",
+          "limit: expected 3, got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=sama"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://anthropic.com/news/claude",
+            "items": [
+              {
+                "title": "https://anthropic.com/news/claude",
+                "url": "https://anthropic.com/news/claude",
+                "source": "anthropic.com",
+                "summary": "[Skip to main content](https://www.anthropic.com/news/claude#main-content)\n\nA 404 poem byClaude Fable 5Claude Opus 5.5Claude Sonnet 5.5Claude Haiku 5.5\n\nYou came"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/timeline.php?screenname=elonmusk"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Latest",
+              "query": "OpenAI"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call lookup",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "search_type": "Latest",
+            "query": "OpenAI"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "429 Client Error: Too Many Requests for url: https://twitter-api45.p.rapidapi.com/search.php?query=OpenAI&search_type=Latest"
+          }
+        }
+      ]
+    }
+  ],
+  "action_execution": "dry_run_no_telegram"
+}

@@ -1,0 +1,73 @@
+{
+  "recorded_at": "2026-11-10T17:18:32.796681+07:00",
+  "ollama_version": {
+    "version": "0.40.15"
+  },
+  "models": {
+    "qwen2.5:3b": {
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen2",
+        "families": [
+          "qwen2"
+        ],
+        "parameter_size": "3.1B",
+        "quantization_level": "Q4_K_M"
+      },
+      "capabilities": [
+        "completion",
+        "tools"
+      ],
+      "parameters": null
+    },
+    "qwen2.5:7b": {
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen2",
+        "families": [
+          "qwen2"
+        ],
+        "parameter_size": "7.6B",
+        "quantization_level": "Q4_K_M"
+      },
+      "capabilities": [
+        "completion",
+        "tools"
+      ],
+      "parameters": null
+    }
+  },
+  "loaded_models": {
+    "models": [
+      {
+        "name": "qwen2.5:7b",
+        "model": "qwen2.5:7b",
+        "size": 4755397016,
+        "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-11-10T17:18:52.8100813+07:00",
+        "size_vram": 4755397016,
+        "context_length": 4096,
+        "runner": "llamacpp"
+      }
+    ]
+  },
+  "request_settings": {
+    "timeout": 120.0,
+    "max_retries": 0,
+    "max_tokens": 512
+  },
+  "telegram_execution": "disabled_by_user",
+  "notes": "Only model inference is local; retrieval tools still use external APIs."
+}

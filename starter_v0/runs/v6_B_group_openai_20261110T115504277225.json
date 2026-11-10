@@ -1,0 +1,701 @@
+{
+  "run_id": "v6_B_group_openai_20261110T115504277225",
+  "version": "v6",
+  "artifact_version": "v6+p508a98436ab2+t33f07f67b016",
+  "prompt_hash": "508a98436ab209b2a42e251ee9ff6c504e7c17e5d0fe19d6bb2abe6f6e8dce90",
+  "tools_hash": "33f07f67b0160a5d5e3709defe851aa919bbb9237515cd46763bede6ccd6e20e",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "system_prompt": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T11:55:04",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_deduplicate_supplied_items",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "deduplicate_supplied_items",
+        "difficulty": "medium",
+        "what_it_tests": "Đã có items và cần bỏ URL trùng: route tới deduplicate, không tìm web hay format. Case này chấm routing; logic xử lý items và tham số tracking được kiểm tra bằng unit test."
+      },
+      "input": "Loại các bài trùng URL khỏi danh sách đã có sau đây, giữ bài đầu tiên và cho biết có bao nhiêu bài bị loại: [{\"title\":\"Bài A\",\"url\":\"https://example.org/ai?utm_source=mail#intro\"},{\"title\":\"Bài A bản sao\",\"url\":\"https://example.org/ai\"},{\"title\":\"Bài B\",\"url\":\"https://example.org/robotics\"}].",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "url": "https://example.org/ai?utm_source=mail#intro",
+                  "title": "Bài A"
+                },
+                {
+                  "url": "https://example.org/ai",
+                  "title": "Bài A bản sao"
+                },
+                {
+                  "url": "https://example.org/robotics",
+                  "title": "Bài B"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "url": "https://example.org/ai?utm_source=mail#intro",
+                "title": "Bài A"
+              },
+              {
+                "url": "https://example.org/ai",
+                "title": "Bài A bản sao"
+              },
+              {
+                "url": "https://example.org/robotics",
+                "title": "Bài B"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "url": "https://example.org/ai?utm_source=mail#intro",
+                "title": "Bài A"
+              },
+              {
+                "url": "https://example.org/robotics",
+                "title": "Bài B"
+              }
+            ],
+            "input_count": 3,
+            "output_count": 2,
+            "duplicates_removed": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_two_specific_urls",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_specific_urls",
+        "difficulty": "medium",
+        "what_it_tests": "Hai URL cụ thể cần hai fetch trong cùng lượt; không thay bằng tìm web hoặc format khi chưa có kết quả."
+      },
+      "input": "Đọc cả hai link này để đối chiếu nội dung: https://example.org/report/a và https://example.org/report/b",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/report/a"
+            }
+          },
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/report/b"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/report/a"
+            }
+          },
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/report/b"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.org/report/a"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.org/report/a",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.org/report/a",
+                "source": "example.org",
+                "summary": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou de surveillance est à éviter.\n\nДанный домен предназначен для использования в примерах документации без необходимости получения предварительного разрешения. Это не сервис; не рекомендуется его использование для тестирования и мониторинга.\n\nEste dominio está destinado al uso en ejemplos de documentación sin necesidad de permiso. Esto no es un servicio; evitar utilizarlo para realizar pruebas o monitoreos.\n\n [Learn more](https://iana.org/help/example-domains)"
+              }
+            ]
+          }
+        },
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.org/report/b"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.org/report/b",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.org/report/b",
+                "source": "example.org",
+                "summary": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou de surveillance est à éviter.\n\nДанный домен предназначен для использования в примерах документации без необходимости получения предварительного разрешения. Это не сервис; не рекомендуется его использование для тестирования и мониторинга.\n\nEste dominio está destinado al uso en ejemplos de documentación sin necesidad de permiso. Esto no es un servicio; evitar utilizarlo para realizar pruebas o monitoreos.\n\n [Learn more](https://iana.org/help/example-domains)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_social_top_and_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "social_ranking_and_quantity",
+        "difficulty": "medium",
+        "what_it_tests": "Giữ đúng chủ đề robotics; phổ biến dùng Top và số lượng là integer 4."
+      },
+      "input": "Tìm 4 tweet phổ biến nhất về robotics trên X.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "robotics",
+              "search_type": "Top",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "robotics",
+              "search_type": "Top",
+              "limit": 4
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "robotics",
+            "search_type": "Top",
+            "limit": 4
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=robotics&search_type=Top"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_missing_clipboard_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "unavailable_url_requires_clarification",
+        "difficulty": "medium",
+        "what_it_tests": "Agent không có quyền đọc clipboard qua các tool đã khai báo; phải xin URL thay vì bịa URL hoặc tìm web."
+      },
+      "input": "Đọc và tóm tắt link trong clipboard của tôi; tôi chưa dán link vào chat.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Vui lòng dán link mà bạn muốn tôi đọc và tóm tắt.",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Vui lòng dán link mà bạn muốn tôi đọc và tóm tắt.",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Vui lòng dán link mà bạn muốn tôi đọc và tóm tắt.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_capabilities_without_tool",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "capabilities_and_guardrail_explanation",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi về khả năng và nguyên tắc hoạt động cần trả lời trực tiếp; không truy xuất dữ liệu hoặc gửi tin."
+      },
+      "input": "Bạn có thể giúp gì với các nguồn research và có tự ý gửi Telegram không?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi có thể giúp bạn tìm kiếm thông tin từ các nguồn nghiên cứu, bài báo, tin tức, và các bài đăng trên mạng xã hội. Tuy nhiên, tôi không thể tự ý gửi nội dung lên Telegram mà không có sự xác nhận từ bạn. Nếu bạn cần gửi nội dung nào đó, tôi sẽ yêu cầu bạn xác nhận trước khi thực hiện. Bạn có cần tìm kiếm thông tin cụ thể nào không?",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G06_carry_month_switch_topic",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "carry_timeframe_after_topic_correction",
+        "difficulty": "hard",
+        "what_it_tests": "Đổi chủ đề robotics thành OpenAI nhưng giữ topic=news và timeframe=month từ ngữ cảnh."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin về robotics trong tháng này."
+        },
+        {
+          "role": "user",
+          "content": "Đổi chủ đề thành OpenAI."
+        },
+        {
+          "role": "user",
+          "content": "Giữ nguyên khoảng thời gian đã yêu cầu và chỉ tìm tin về OpenAI."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "OpenAI",
+            "topic": "news",
+            "timeframe": "month"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "OpenAI",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "OpenAI",
+                "url": "https://tavily.com/knowledge/company/p4PyTakV77G9",
+                "source": "tavily.com",
+                "summary": "# OpenAI\nID: p4PyTakV77G9\nWebsite: www.openai.com\nHeadquarters: San Francisco, CA, United States\nLinkedIn: www.linkedin.com/company/openai · 11,529,792 followers\nIndustry: Research Services\nIndustry codes: SIC 87, 873, NAICS 54, 541\nCompany type: Partnership\nSocial profiles: www.facebook.com/openai, www.twitter.com/openai, www.crunchbase.com/organization/openai, www.instagram.com/openai.gpt, www.instagram.com/openai, www.youtube.com/@openai, www.youtube.com/openai, github.com/openai [...] Description: OpenAI is a company that believes in research and development to lead to artificial general intelligence, a system that can solve human-level problems. [...] ## Products and services\nKeywords: research & development, emerging ai software, openai, artificial intelligence machine learning, artificial general intelligence, development, research, human-level problems, technology, application-software, artificial-intelligence, platform",
+                "score": 0.90593183
+              },
+              {
+                "title": "Setting a new standard for responsible AI infrastructure | OpenAI",
+                "url": "https://openai.com/index/setting-new-standard-responsible-ai-infrastructure",
+                "source": "openai.com",
+                "summary": "The promise of AI is that it gives people more power to shape their own futures. It can help someone learn a new skill, build a business, or solve a problem that was previously out of reach. Building more computing infrastructure capacity in the United States can help lower the cost of delivering AI, put these tools in more people’s hands, and ensure America stays at the forefront of the technology. [...] protect residents, and ensure that the benefits of AI infrastructure are broadly shared. [...] Create opportunities for local workers and businesses.We’ll publish the jobs we expect to create, work with unions and training providers to help residents prepare for them, and report annually on hiring and apprenticeships. We’ll also make sustained investments in priorities residents help select.",
+                "score": 0.72231215
+              },
+              {
+                "title": "Making it easier for websites to express AI training preferences | OpenAI",
+                "url": "https://openai.com/index/helping-websites-express-ai-training-preferences",
+                "source": "openai.com",
+                "summary": "Audio 1\n\nShare\n\nToday, we’re announcing that OpenAI will honor a common signal⁠(opens in a new window) in robots.txt, the file that lets websites express their preferences about the use of their content for foundational generative AI training. This voluntary effort makes it easier for publishers and website operators to communicate the same preference to multiple participating providers at once. [...] API Platform\n   Overview\n   API Log In(opens in a new window)\n   Docs(opens in a new window)\n\nBusiness\n   Overview\n   Solutions\n   Resources\n   Plugins\n   Customer Stories\n   Partner Network\n   Contact Sales\n\nDevelopers\n   Plugins(opens in a new window)\n   Models(opens in a new window)\n   Docs(opens in a new window)\n   Resources(opens in a new window)\n   Developer Forum(opens in a new window)\n\nCompany\n   About Us\n   Our Charter\n   Careers\n   News [...] This draws on the ongoing work⁠(opens in a new window) of the Internet Engineering Task Force’s (IETF) AI Preferences working group. We’re joining other participants in the working group in today’s announcement of this shared signal, and believe this strengthens our continued participation in the IETF standards discussions. OpenAI will continue to adapt its practices as those conversations and the landscape continue to evolve in view of appropriate controls and fairness.",
+                "score": 0.5931622
+              },
+              {
+                "title": "OpenAI to acquire Pierre Computer Company, Inc.",
+                "url": "https://openai.com/index/openai-to-acquire-pierre",
+                "source": "openai.com",
+                "summary": "Today we're announcing that OpenAI will acquire Pierre Computer Company, Inc⁠(opens in a new window). (“Pierre”), the company behind Code Storage⁠(opens in a new window) and a family of standout open-source developer tools. If you’ve browsed files or reviewed a change in the Codex app, you’ve already used Pierre’s Trees and Diffs libraries. We’re excited to work with the Pierre team to build on the Git workflows that developers already rely on and adapt them to how teams work with coding [...] Business\n   Overview\n   Solutions\n   Resources\n   Plugins\n   Customer Stories\n   Partner Network\n   Contact Sales\n\nDevelopers\n   Plugins(opens in a new window)\n   Models(opens in a new window)\n   Docs(opens in a new window)\n   Resources(opens in a new window)\n   Developer Forum(opens in a new window)\n\nCompany\n   About Us\n   Our Charter\n   Careers\n   News\n\nSupport\n   Help Center(opens in a new window)\n   OpenAI Status(opens in a new window) [...] Skip to main content\n\n\n\nLog inTry ChatGPT(opens in a new window)\n\n   Research\n   Products\n   Business\n   Developers\n   Company\n   Foundation(opens in a new window)\n\nOpenAI to acquire Pierre Computer Company, Inc. | OpenAI\n\nNovember 4, 2026\n\nCompany\n\n# OpenAI to acquire Pierre Computer Company, Inc.\n\nExpanding Codex’s tools for building, understanding, and reviewing code.\n\nShare\n\nCraftsmanship meets scale for the agentic era",
+                "score": 0.5100334
+              },
+              {
+                "title": "A thousand fewer paths to root",
+                "url": "https://openai.com/index/a-thousand-fewer-paths-to-root",
+                "source": "openai.com",
+                "summary": "Developers\n   Plugins(opens in a new window)\n   Models(opens in a new window)\n   Docs(opens in a new window)\n   Resources(opens in a new window)\n   Developer Forum(opens in a new window)\n\nCompany\n   About Us\n   Our Charter\n   Careers\n   News\n\nSupport\n   Help Center(opens in a new window)\n   OpenAI Status(opens in a new window)\n\nMore\n   Stories\n   Academy\n   Supply Co.\n   Livestreams\n   Podcast\n   RSS\n\nTerms & Policies\n   Terms of Use\n   Privacy Policy\n   Other Policies",
+                "score": 0.44767818
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_correct_ranking_and_quantity",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "latest_argument_corrections",
+        "difficulty": "hard",
+        "what_it_tests": "Hai lần đính chính phải ghi đè Top thành Latest và limit 8 thành 2, đồng thời giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm 8 tweet phổ biến về OpenAI."
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang bài mới nhất thay vì bài phổ biến."
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy 2 bài, vẫn chủ đề OpenAI."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Latest",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Latest",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Latest",
+            "limit": 2
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "HTTPError",
+            "message": "403 Client Error: Forbidden for url: https://twitter-api45.p.rapidapi.com/search.php?query=OpenAI&search_type=Latest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_use_corrected_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "corrected_url_preserves_query_string",
+        "difficulty": "hard",
+        "what_it_tests": "Dùng URL mới nhất và giữ query string; không đọc lại URL cũ hoặc thay bằng trang chủ."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đọc bài https://example.org/old-report"
+        },
+        {
+          "role": "user",
+          "content": "Tôi gửi nhầm; link đúng là https://example.org/new-report?lang=vi"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc link tôi sửa gần nhất."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/new-report?lang=vi"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/new-report?lang=vi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.org/new-report?lang=vi"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.org/new-report?lang=vi",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.org/new-report?lang=vi",
+                "source": "example.org",
+                "summary": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou de surveillance est à éviter.\n\nДанный домен предназначен для использования в примерах документации без необходимости получения предварительного разрешения. Это не сервис; не рекомендуется его использование для тестирования и мониторинга.\n\nEste dominio está destinado al uso en ejemplos de documentación sin necesidad de permiso. Esto no es un servicio; evitar utilizarlo para realizar pruebas o monitoreos.\n\n [Learn more](https://iana.org/help/example-domains)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_cancel_publication",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "cancelled_action_must_not_execute",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt mới nhất từ chối và hủy xuất bản; không gọi send, không coi yêu cầu chuẩn bị ở lượt trước là xác nhận."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Chuẩn bị bản tin 'Bản tin research thử nghiệm' để đăng Telegram; chưa gửi."
+        },
+        {
+          "role": "assistant",
+          "content": "Nội dung dự kiến: Bản tin research thử nghiệm. Bạn có xác nhận gửi lên kênh Telegram đã cấu hình không?"
+        },
+        {
+          "role": "user",
+          "content": "Không, hủy việc đăng và không gửi gì nữa."
+        }
+      ],
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Việc đăng đã bị hủy và sẽ không có nội dung nào được gửi lên kênh Telegram. Nếu bạn cần hỗ trợ gì khác, hãy cho tôi biết!",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G10_cancel_research_switch_out_of_scope",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "latest_scope_after_cancellation",
+        "difficulty": "hard",
+        "what_it_tests": "Chỉ xử lý yêu cầu mới ngoài phạm vi research, không tiếp tục lookup cho yêu cầu đã hủy và không dùng send làm kênh trả lời."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin research về AI trong tuần này."
+        },
+        {
+          "role": "user",
+          "content": "Bỏ yêu cầu tìm tin trước."
+        },
+        {
+          "role": "user",
+          "content": "Bây giờ giải phương trình 2x + 4 = 0 cho tôi."
+        }
+      ],
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi không thể giải phương trình toán học. Tuy nhiên, bạn có thể sử dụng các công cụ trực tuyến hoặc phần mềm toán học để giải phương trình này. Nếu bạn cần thông tin hoặc nghiên cứu về AI, hãy cho tôi biết!",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    }
+  ]
+}

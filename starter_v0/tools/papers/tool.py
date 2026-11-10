@@ -1,44 +1,14 @@
 from __future__ import annotations
 
-import os
 import re
-import time
 import xml.etree.ElementTree as ET
 from typing import Any
 
-import requests
-
-from tools._shared import TIMEOUT, err
+from tools._shared import err
+from tools.papers._http import arxiv_get as _arxiv_get
 
 
 ARXIV_API_URL = "https://export.arxiv.org/api/query"
-ARXIV_MIN_INTERVAL_SECONDS = 3.0
-_last_arxiv_request_at = 0.0
-
-
-def _arxiv_user_agent() -> str:
-    return os.getenv("ARXIV_USER_AGENT", "AI20k-Day03-Research-Agent/1.0 (educational lab; contact: local)")
-
-
-def _rate_limit_arxiv() -> None:
-    global _last_arxiv_request_at
-    elapsed = time.monotonic() - _last_arxiv_request_at
-    if elapsed < ARXIV_MIN_INTERVAL_SECONDS:
-        time.sleep(ARXIV_MIN_INTERVAL_SECONDS - elapsed)
-    _last_arxiv_request_at = time.monotonic()
-
-
-def _arxiv_get(url: str, *, params: dict[str, Any] | None = None) -> requests.Response:
-    last_response: requests.Response | None = None
-    for attempt in range(3):
-        _rate_limit_arxiv()
-        response = requests.get(url, params=params, headers={"User-Agent": _arxiv_user_agent()}, timeout=TIMEOUT)
-        last_response = response
-        if response.status_code != 429:
-            return response
-        time.sleep(3 * (attempt + 1))
-    assert last_response is not None
-    return last_response
 
 
 def _arxiv_search_query(query: str) -> str:
@@ -61,6 +31,8 @@ def _entry_text(entry: ET.Element, path: str, namespaces: dict[str, str]) -> str
 
 def arxiv_search(query: str = "", max_results: int = 5, sort_by: str = "relevance") -> dict[str, Any]:
     try:
+        if not isinstance(query, str) or not query.strip():
+            raise ValueError("query must be a non-empty string")
         max_results = max(1, min(int(max_results or 5), 10))
         sort_by = sort_by if sort_by in {"relevance", "lastUpdatedDate", "submittedDate"} else "relevance"
         params = {

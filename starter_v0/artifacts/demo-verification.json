@@ -1,0 +1,40 @@
+{
+  "verified_at": "2026-11-10T20:06:42.554210+07:00",
+  "timezone": "Asia/Bangkok",
+  "version": "v8-bonus",
+  "public_url": "https://regarded-height-belongs-manor.trycloudflare.com",
+  "local_url": "http://127.0.0.1:8501",
+  "public_http_status": 200,
+  "local_http_status": 200,
+  "browser_ui_verified": true,
+  "browser_ui_verified_on": "http://127.0.0.1:8501",
+  "public_page_rendered_in_browser": false,
+  "browser_checks": [
+    "OpenAI main artifacts show base19/20 and group16/16",
+    "CSV export has a visible real download button outside details",
+    "actual CSV downloaded and byte-identical to server, 2 rows",
+    "OpenAI and Ollama provider selector",
+    "installed qwen2.5:3b and qwen2.5:7b choices",
+    "real qwen2.5:7b capability answer with exact-model15/20 score"
+  ],
+  "csv_download": {
+    "path": "artifacts/demo-export.csv",
+    "item_count": 2,
+    "matches_server_bytes": true,
+    "sha256": "4a9232f478a6875e04310b054b0333534d4c989854e6f56cea557009e8b84314"
+  },
+  "csv_ui_transcript": "transcripts/web_v8-bonus_openai_gpt-4o-mini_20261110T173947060197_2305a74a.transcript.json",
+  "ollama_ui_transcript": "transcripts/web_v8-bonus_ollama_qwen2.5_7b_20261110T174044370950_8d091d3a.transcript.json",
+  "screenshot": "artifacts/bonus-ui-ollama.jpg",
+  "unit_tests": {
+    "tests": 229,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 229
+  },
+  "telegram_sent": false,
+  "report": "artifacts/REPORT.md",
+  "browser_verification_note": "Full browser workflow verified at local_url; refreshed public tunnel verified by HTTP after the previous quick tunnel expired.",
+  "previous_public_page_rendered_in_browser": "https://confidential-cast-component-needs.trycloudflare.com"
+}

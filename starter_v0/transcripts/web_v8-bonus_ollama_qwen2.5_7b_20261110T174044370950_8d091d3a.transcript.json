@@ -1,0 +1,36 @@
+{
+  "transcript_id": "web_v8-bonus_ollama_qwen2.5_7b_20261110T174044370950_8d091d3a",
+  "version": "v8-bonus",
+  "artifact_version": "v8-bonus+p735f90bd19c4+t0020ceef9089",
+  "prompt_hash": "735f90bd19c4670ff8c4df6f6045f343466061e619861e5d9fe09d44f7396b3d",
+  "tools_hash": "0020ceef90896b6cbd5ed2e066468a1111507f35bb2d38276646f8e9a6f0fbdc",
+  "provider": "ollama",
+  "model": "qwen2.5:7b",
+  "source": "streamlit_web_demo",
+  "publishing_mode": "draft_only",
+  "system_prompt": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\system_prompt_local.md",
+  "tools": "D:\\AIThucChien\\DAY03\\K5-L3A-DAY03-ProblemSolver-Prompt-Engineering-Tool-Calling-Labs-student\\starter_v0\\artifacts\\tools_local.yaml",
+  "history_window": 5,
+  "max_tool_rounds": 4,
+  "created_at": "2026-11-10T17:40:44",
+  "updated_at": "2026-11-10T17:41:05",
+  "turns": [
+    {
+      "turn_index": 1,
+      "started_at": "2026-11-10T17:40:58",
+      "user": "Bạn có thể hỗ trợ những việc gì?",
+      "status": "answered",
+      "assistant_text": "Tôi có thể hỗ trợ nhiều tác vụ như tìm kiếm thông tin trên web, đọc và tóm tắt trang web từ URL, tra cứu tin tức theo chủ đề, xem các bài đăng gần đây từ một tài khoản X/Twitter cụ thể, hoặc tìm bài đăng X/Twitter về một chủ đề cụ thể. Tôi cũng có thể xác nhận gửi thông báo Telegram nếu cần. Hãy cho tôi biết bạn cần hỗ trợ gì cụ thể!",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "Tôi có thể hỗ trợ nhiều tác vụ như tìm kiếm thông tin trên web, đọc và tóm tắt trang web từ URL, tra cứu tin tức theo chủ đề, xem các bài đăng gần đây từ một tài khoản X/Twitter cụ thể, hoặc tìm bài đăng X/Twitter về một chủ đề cụ thể. Tôi cũng có thể xác nhận gửi thông báo Telegram nếu cần. Hãy cho tôi biết bạn cần hỗ trợ gì cụ thể!",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [],
+      "ended_at": "2026-11-10T17:41:05"
+    }
+  ]
+}
